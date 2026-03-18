@@ -1,6 +1,6 @@
 {{meta {load_files: ["code/chapter/16_game.js", "code/levels.js", "code/_stop_keys.js"], zip: "html include=[\"css/game.css\"]"}}}
 
-# Project: A Platform Game
+# Projeto: Um Jogo de Plataforma
 
 {{quote {author: "Iain Banks", title: "The Player of Games", chapter: true}
 
@@ -12,63 +12,63 @@ quote}}
 
 {{figure {url: "img/chapter_picture_16.jpg", alt: "Illustration showing a computer game character jumping over lava in a two dimensional world", chapter: "framed"}}}
 
-Much of my initial fascination with computers, like that of many nerdy kids, had to do with computer ((game))s. I was drawn into the tiny simulated ((world))s that I could manipulate and in which stories (sort of) unfolded—more, I suppose, because of the way I projected my ((imagination)) into them than because of the possibilities they actually offered.
+Muito do meu fascínio inicial com computadores, como o de muitas crianças nerds, tinha a ver com ((jogo))s de computador. Eu era atraído pelos minúsculos ((mundo))s simulados que eu podia manipular e nos quais histórias (mais ou menos) se desenrolavam — mais, suponho, por causa da forma como eu projetava minha ((imaginação)) neles do que por causa das possibilidades que eles realmente ofereciam.
 
-I don't wish a ((career)) in game programming on anyone. As with the ((music)) industry, the discrepancy between the number of eager young people wanting to work in it and the actual demand for such people creates a rather unhealthy environment. But writing games for fun is amusing.
+Não desejo uma ((carreira)) em programação de jogos a ninguém. Assim como na indústria da ((música)), a discrepância entre o número de jovens ávidos querendo trabalhar nela e a demanda real por tais pessoas cria um ambiente bastante insalubre. Mas escrever jogos por diversão é divertido.
 
 {{index "jump-and-run game", dimensions}}
 
-This chapter will walk through the implementation of a small ((platform game)). Platform games (or "jump and run" games) are games that expect the ((player)) to move a figure through a ((world)), which is usually two-dimensional and viewed from the side, while jumping over and onto things.
+Este capítulo vai percorrer a implementação de um pequeno ((jogo de plataforma)). Jogos de plataforma (ou jogos de "pular e correr") são jogos que esperam que o ((jogador)) mova uma figura através de um ((mundo)), que geralmente é bidimensional e visto de lado, enquanto pula sobre e em cima de coisas.
 
-## The game
+## O jogo
 
 {{index minimalism, "Palef, Thomas", "Dark Blue (game)"}}
 
-Our ((game)) will be roughly based on [Dark Blue](http://www.lessmilk.com/games/10)[ (_www.lessmilk.com/games/10_)]{if book} by Thomas Palef. I chose that game because it is both entertaining and minimalist and because it can be built without too much ((code)). It looks like this:
+Nosso ((jogo)) será vagamente baseado em [Dark Blue](http://www.lessmilk.com/games/10)[ (_www.lessmilk.com/games/10_)]{if book} de Thomas Palef. Escolhi esse jogo porque é tanto divertido quanto minimalista e porque pode ser construído sem muito ((código)). Ele se parece com isto:
 
 {{figure {url: "img/darkblue.png", alt: "Screenshot of the 'Dark Blue' game, showing a world made out of colored boxes. There's a black box representing the player, standing on lines of white against a blue background. Small yellow coins float in the air, and some parts of the background are red, representing lava."}}}
 
 {{index coin, lava}}
 
-The dark ((box)) represents the ((player)), whose task is to collect the yellow boxes (coins) while avoiding the red stuff (lava). A ((level)) is completed when all coins have been collected.
+A ((caixa)) escura representa o ((jogador)), cuja tarefa é coletar as caixas amarelas (moedas) enquanto evita o material vermelho (lava). Um ((nível)) é completado quando todas as moedas são coletadas.
 
 {{index keyboard, jumping}}
 
-The player can walk around with the left and right arrow keys and can jump with the up arrow. Jumping is this game character's specialty. It can reach several times its own height and can change direction in midair. This may not be entirely realistic, but it helps give the player the feeling of being in direct control of the on-screen ((avatar)).
+O jogador pode andar com as teclas de seta esquerda e direita e pode pular com a seta para cima. Pular é a especialidade desse personagem de jogo. Ele pode alcançar várias vezes sua própria altura e pode mudar de direção no ar. Isso pode não ser totalmente realista, mas ajuda a dar ao jogador a sensação de estar no controle direto do ((avatar)) na tela.
 
 {{index "fractional number", discretization, "artificial life", "electronic life"}}
 
-The ((game)) consists of a static ((background)), laid out like a ((grid)), with the moving elements overlaid on that background. Each field on the grid is either empty, solid, or ((lava)). The moving elements are the player, coins, and certain pieces of lava. The positions of these elements are not constrained to the grid—their coordinates may be fractional, allowing smooth ((motion)).
+O ((jogo)) consiste em um ((fundo)) estático, disposto como uma ((grade)), com os elementos móveis sobrepostos nesse fundo. Cada campo na grade é vazio, sólido ou ((lava)). Os elementos móveis são o jogador, moedas e certos pedaços de lava. As posições desses elementos não são restritas à grade — suas coordenadas podem ser fracionárias, permitindo ((movimentação)) suave.
 
-## The technology
+## A tecnologia
 
 {{index "event handling", keyboard, [DOM, graphics]}}
 
-We will use the ((browser)) DOM to display the game, and we'll read user input by handling key events.
+Usaremos o ((DOM)) do ((navegador)) para exibir o jogo, e leremos a entrada do usuário manipulando eventos de tecla.
 
 {{index rectangle, "background (CSS)", "position (CSS)", graphics}}
 
-The screen- and keyboard-related code is only a small part of the work we need to do to build this ((game)). Since everything looks like colored ((box))es, drawing is uncomplicated: we create DOM elements and use styling to give them a background color, size, and position.
+O código relacionado à tela e ao teclado é apenas uma pequena parte do trabalho que precisamos fazer para construir este ((jogo)). Como tudo parece ((caixa))s coloridas, desenhar é descomplicado: criamos elementos DOM e usamos estilos para dar a eles uma cor de fundo, tamanho e posição.
 
 {{index "table (HTML tag)"}}
 
-We can represent the background as a table, since it is an unchanging ((grid)) of squares. The free-moving elements can be overlaid using absolutely positioned elements.
+Podemos representar o fundo como uma tabela, já que é uma ((grade)) imutável de quadrados. Os elementos de movimento livre podem ser sobrepostos usando elementos posicionados absolutamente.
 
 {{index performance, [DOM, graphics]}}
 
-In games and other programs that should animate ((graphics)) and respond to user ((input)) without noticeable delay, ((efficiency)) is important. Although the DOM was not originally designed for high-performance graphics, it is actually better at this than you would expect. You saw some ((animation))s in [Chapter ?](dom#animation). On a modern machine, a simple game like this performs well, even if we don't worry about ((optimization)) very much.
+Em jogos e outros programas que devem animar ((gráficos)) e responder à ((entrada)) do usuário sem atraso perceptível, ((eficiência)) é importante. Embora o DOM não tenha sido originalmente projetado para gráficos de alto desempenho, ele é na verdade melhor nisso do que você esperaria. Você viu algumas ((animação))ões no [Capítulo ?](dom#animation). Em uma máquina moderna, um jogo simples como este funciona bem, mesmo que não nos preocupemos muito com ((otimização)).
 
 {{index canvas, [DOM, graphics]}}
 
-In the [next chapter](canvas), we will explore another ((browser)) technology, the `<canvas>` tag, which provides a more traditional way to draw graphics, working in terms of shapes and ((pixel))s rather than DOM elements.
+No [próximo capítulo](canvas), exploraremos outra tecnologia de ((navegador)), a tag `<canvas>`, que fornece uma forma mais tradicional de desenhar gráficos, trabalhando em termos de formas e ((pixel))s em vez de elementos DOM.
 
-## Levels
+## Níveis
 
 {{index dimensions}}
 
-We'll want a human-readable, human-editable way to specify levels. Since it is okay for everything to start out on a grid, we could use big strings in which each character represents an element—either a part of the background grid or a moving element.
+Vamos querer uma forma legível por humanos e editável por humanos de especificar níveis. Como está tudo bem que tudo comece em uma grade, poderíamos usar strings grandes nas quais cada caractere representa um elemento — ou uma parte da grade de fundo ou um elemento móvel.
 
-The plan for a small level might look like this:
+O plano para um nível pequeno pode se parecer com isto:
 
 ```{includeCode: true}
 let simpleLevelPlan = `
@@ -85,21 +85,21 @@ let simpleLevelPlan = `
 
 {{index level}}
 
-Periods are empty space, hash (`#`) characters are walls, and plus signs are lava. The ((player))'s starting position is the ((at sign)) (`@`). Every O character is a coin, and the equal sign (`=`) at the top is a block of lava that moves back and forth horizontally.
+Pontos são espaço vazio, caracteres cerquilha (`#`) são paredes e sinais de mais são lava. A posição inicial do ((jogador)) é o ((arroba)) (`@`). Cada caractere O é uma moeda, e o sinal de igual (`=`) no topo é um bloco de lava que se move horizontalmente para frente e para trás.
 
 {{index bouncing}}
 
-We'll support two additional kinds of moving ((lava)): the pipe character (`|`) creates vertically moving blobs, and `v` indicates _dripping_ lava—vertically moving lava that doesn't bounce back and forth but only moves down, jumping back to its start position when it hits the floor.
+Suportaremos dois tipos adicionais de ((lava)) móvel: o caractere de barra vertical (`|`) cria bolhas que se movem verticalmente, e `v` indica lava _gotejante_ — lava que se move verticalmente e não quica para frente e para trás, mas apenas se move para baixo, voltando à sua posição inicial quando atinge o chão.
 
-A whole ((game)) consists of multiple ((level))s that the ((player)) must complete. A level is completed when all ((coin))s have been collected. If the player touches ((lava)), the current level is restored to its starting position, and the player may try again.
+Um ((jogo)) inteiro consiste em múltiplos ((nível))eis que o ((jogador)) deve completar. Um nível é completado quando todas as ((moeda))s são coletadas. Se o jogador tocar a ((lava)), o nível atual é restaurado à sua posição inicial, e o jogador pode tentar novamente.
 
 {{id level}}
 
-## Reading a level
+## Lendo um nível
 
 {{index "Level class"}}
 
-The following ((class)) stores a ((level)) object. Its argument should be the string that defines the level.
+A ((classe)) a seguir armazena um objeto de ((nível)). Seu argumento deve ser a string que define o nível.
 
 ```{includeCode: true}
 class Level {
@@ -126,27 +126,27 @@ class Level {
 
 {{index "trim method", "split method", [whitespace, trimming]}}
 
-The `trim` method is used to remove whitespace at the start and end of the plan string. This allows our example plan to start with a newline so that all lines are directly below each other. The remaining string is split on ((newline character))s, and each line is spread into an array, producing arrays of characters.
+O método `trim` é usado para remover espaço em branco no início e no final da string do plano. Isso permite que nosso plano de exemplo comece com uma nova linha para que todas as linhas fiquem diretamente abaixo umas das outras. A string restante é dividida em caracteres de ((nova linha)), e cada linha é espalhada em um array, produzindo arrays de caracteres.
 
 {{index [array, "as matrix"]}}
 
-So `rows` holds an array of arrays of characters, the rows of the plan. We can derive the level's width and height from these. But we must still separate the moving elements from the background grid. We'll call moving elements _actors_. They'll be stored in an array of objects. The background will be an array of arrays of strings, holding field types such as `"empty"`, `"wall"`, or `"lava"`.
+Então `rows` contém um array de arrays de caracteres, as linhas do plano. Podemos derivar a largura e altura do nível a partir deles. Mas ainda precisamos separar os elementos móveis da grade de fundo. Chamaremos os elementos móveis de _atores_. Eles serão armazenados em um array de objetos. O fundo será um array de arrays de strings, contendo tipos de campo como `"empty"`, `"wall"` ou `"lava"`.
 
 {{index "map method"}}
 
-To create these arrays, we map over the rows and then over their content. Remember that `map` passes the array index as a second argument to the mapping function, which tells us the x- and y-coordinates of a given character. Positions in the game will be stored as pairs of coordinates, with the upper left being 0,0 and each background square being 1 unit high and wide.
+Para criar esses arrays, mapeamos sobre as linhas e depois sobre seu conteúdo. Lembre-se que `map` passa o índice do array como segundo argumento para a função de mapeamento, que nos diz as coordenadas x e y de um dado caractere. Posições no jogo serão armazenadas como pares de coordenadas, com o canto superior esquerdo sendo 0,0 e cada quadrado de fundo tendo 1 unidade de altura e largura.
 
 {{index "static method"}}
 
-To interpret the characters in the plan, the `Level` constructor uses the `levelChars` object, which, for each character used in the level descriptions, holds a string if it is a background type, and a class if it produces an actor. When `type` is an actor class, its static `create` method is used to create an object, which is added to `startActors`, and the mapping function returns `"empty"` for this background square.
+Para interpretar os caracteres no plano, o construtor de `Level` usa o objeto `levelChars`, que, para cada caractere usado nas descrições de nível, contém uma string se é um tipo de fundo, e uma classe se produz um ator. Quando `type` é uma classe de ator, seu método estático `create` é usado para criar um objeto, que é adicionado a `startActors`, e a função de mapeamento retorna `"empty"` para esse quadrado de fundo.
 
 {{index "Vec class"}}
 
-The position of the actor is stored as a `Vec` object. This is a two-dimensional vector, an object with `x` and `y` properties, as seen in the exercises of [Chapter ?](object#exercise_vector).
+A posição do ator é armazenada como um objeto `Vec`. Este é um vetor bidimensional, um objeto com propriedades `x` e `y`, como visto nos exercícios do [Capítulo ?](object#exercise_vector).
 
 {{index [state, in objects]}}
 
-As the game runs, actors will end up in different places or even disappear entirely (as coins do when collected). We'll use a `State` class to track the state of a running game.
+Conforme o jogo roda, atores acabarão em posições diferentes ou até desaparecerão completamente (como moedas ao serem coletadas). Usaremos uma classe `State` para rastrear o estado de um jogo em execução.
 
 ```{includeCode: true}
 class State {
@@ -166,25 +166,25 @@ class State {
 }
 ```
 
-The `status` property will switch to `"lost"` or `"won"` when the game has ended.
+A propriedade `status` mudará para `"lost"` ou `"won"` quando o jogo terminar.
 
-This is again a persistent data structure—updating the game state creates a new state and leaves the old one intact.
+Esta é novamente uma estrutura de dados persistente — atualizar o estado do jogo cria um novo estado e deixa o antigo intacto.
 
-## Actors
+## Atores
 
 {{index actor, "Vec class", [interface, object]}}
 
-Actor objects represent the current position and state of a given moving element (player, coin, or mobile lava) in our game. All actor objects conform to the same interface. They have `size` and `pos` properties holding the size and the coordinates of the upper-left corner of the rectangle representing this actor, and an `update` method.
+Objetos de ator representam a posição atual e o estado de um dado elemento móvel (jogador, moeda ou lava móvel) em nosso jogo. Todos os objetos de ator se conformam à mesma interface. Eles têm propriedades `size` e `pos` contendo o tamanho e as coordenadas do canto superior esquerdo do retângulo representando esse ator, e um método `update`.
 
-This `update` method is used to compute their new state and position after a given time step. It simulates the thing the actor does—moving in response to the arrow keys for the player and bouncing back and forth for the lava—and returns a new, updated actor object.
+Esse método `update` é usado para calcular o novo estado e posição deles após um dado passo de tempo. Ele simula a coisa que o ator faz — mover em resposta às teclas de seta para o jogador e quicar para frente e para trás para a lava — e retorna um novo objeto de ator atualizado.
 
-A `type` property contains a string that identifies the type of the actor—`"player"`, `"coin"`, or `"lava"`. This is useful when drawing the game—the look of the rectangle drawn for an actor is based on its type.
+Uma propriedade `type` contém uma string que identifica o tipo do ator — `"player"`, `"coin"` ou `"lava"`. Isso é útil ao desenhar o jogo — a aparência do retângulo desenhado para um ator é baseada em seu tipo.
 
-Actor classes have a static `create` method that is used by the `Level` constructor to create an actor from a character in the level plan. It is given the coordinates of the character and the character itself, which is necessary because the `Lava` class handles several different characters.
+Classes de ator têm um método estático `create` que é usado pelo construtor de `Level` para criar um ator a partir de um caractere no plano do nível. Recebe as coordenadas do caractere e o próprio caractere, o que é necessário porque a classe `Lava` lida com vários caracteres diferentes.
 
 {{id vector}}
 
-This is the `Vec` class that we'll use for our two-dimensional values, such as the position and size of actors.
+Esta é a classe `Vec` que usaremos para nossos valores bidimensionais, como a posição e o tamanho dos atores.
 
 ```{includeCode: true}
 class Vec {
@@ -202,13 +202,13 @@ class Vec {
 
 {{index "times method", multiplication}}
 
-The `times` method scales a vector by a given number. It will be useful when we need to multiply a speed vector by a time interval to get the distance traveled during that time.
+O método `times` escala um vetor por um dado número. Será útil quando precisarmos multiplicar um vetor de velocidade por um intervalo de tempo para obter a distância percorrida durante esse tempo.
 
-The different types of actors get their own classes, since their behavior is very different. Let's define these classes. We'll get to their `update` methods later.
+Os diferentes tipos de atores têm suas próprias classes, já que seus comportamentos são muito diferentes. Vamos definir essas classes. Chegaremos aos seus métodos `update` mais tarde.
 
 {{index simulation, "Player class"}}
 
-The player class has a `speed` property that stores its current speed to simulate momentum and gravity.
+A classe do jogador tem uma propriedade `speed` que armazena sua velocidade atual para simular momentum e gravidade.
 
 ```{includeCode: true}
 class Player {
@@ -228,15 +228,15 @@ class Player {
 Player.prototype.size = new Vec(0.8, 1.5);
 ```
 
-Because a player is one-and-a-half squares high, its initial position is set to be half a square above the position where the `@` character appeared. This way, its bottom aligns with the bottom of the square where it appeared.
+Como um jogador tem um quadrado e meio de altura, sua posição inicial é definida para ficar meio quadrado acima da posição onde o caractere `@` apareceu. Dessa forma, sua parte inferior se alinha com o fundo do quadrado onde apareceu.
 
-The `size` property is the same for all instances of `Player`, so we store it on the prototype rather than on the instances themselves. We could have used a ((getter)) like `type`, but that would create and return a new `Vec` object every time the property is read, which would be wasteful. (Strings, being ((immutable)), don't have to be re-created every time they are evaluated.)
+A propriedade `size` é a mesma para todas as instâncias de `Player`, então a armazenamos no protótipo em vez das instâncias. Poderíamos ter usado um ((getter)) como `type`, mas isso criaria e retornaria um novo objeto `Vec` toda vez que a propriedade fosse lida, o que seria desperdício. (Strings, sendo ((imutáveis)), não precisam ser recriadas toda vez que são avaliadas.)
 
 {{index "Lava class", bouncing}}
 
-When constructing a `Lava` actor, we need to initialize the object differently depending on the character it is based on. Dynamic lava moves along at its current speed until it hits an obstacle. At that point, if it has a `reset` property, it will jump back to its start position (dripping). If it does not, it will invert its speed and continue in the other direction (bouncing).
+Ao construir um ator `Lava`, precisamos inicializar o objeto de forma diferente dependendo do caractere no qual ele se baseia. Lava dinâmica se move à sua velocidade atual até atingir um obstáculo. Nesse ponto, se tiver uma propriedade `reset`, ela voltará à sua posição inicial (gotejante). Se não tiver, ela inverterá sua velocidade e continuará na outra direção (quicante).
 
-The `create` method looks at the character that the `Level` constructor passes and creates the appropriate lava actor.
+O método `create` observa o caractere que o construtor de `Level` passa e cria o ator de lava apropriado.
 
 ```{includeCode: true}
 class Lava {
@@ -264,7 +264,7 @@ Lava.prototype.size = new Vec(1, 1);
 
 {{index "Coin class", animation}}
 
-`Coin` actors are relatively simple. They mostly just sit in their place. But to liven up the game a little, they are given a "wobble", a slight vertical back-and-forth motion. To track this, a coin object stores a base position as well as a `wobble` property that tracks the ((phase)) of the bouncing motion. Together, these determine the coin's actual position (stored in the `pos` property).
+Atores `Coin` são relativamente simples. Eles na maior parte apenas ficam em seu lugar. Mas para animar um pouco o jogo, eles recebem uma "oscilação", um leve movimento vertical para frente e para trás. Para rastrear isso, um objeto de moeda armazena uma posição base assim como uma propriedade `wobble` que rastreia a ((fase)) do movimento de oscilação. Juntas, estas determinam a posição real da moeda (armazenada na propriedade `pos`).
 
 ```{includeCode: true}
 class Coin {
@@ -288,15 +288,15 @@ Coin.prototype.size = new Vec(0.6, 0.6);
 
 {{index "Math.random function", "random number", "Math.sin function", sine, wave}}
 
-In [Chapter ?](dom#sin_cos), we saw that `Math.sin` gives us the y-coordinate of a point on a circle. That coordinate goes back and forth in a smooth waveform as we move along the circle, which makes the sine function useful for modeling a wavy motion.
+No [Capítulo ?](dom#sin_cos), vimos que `Math.sin` nos dá a coordenada y de um ponto em um círculo. Essa coordenada vai para frente e para trás em uma forma de onda suave conforme nos movemos pelo círculo, o que torna a função seno útil para modelar um movimento ondulatório.
 
 {{index pi}}
 
-To avoid a situation where all coins move up and down synchronously, the starting phase of each coin is randomized. The period of `Math.sin`'s wave, the width of a wave it produces, is 2π. We multiply the value returned by `Math.random` by that number to give the coin a random starting position on the wave.
+Para evitar uma situação em que todas as moedas se movam para cima e para baixo sincronizadamente, a fase inicial de cada moeda é aleatória. O período da onda de `Math.sin`, a largura de uma onda que ela produz, é 2π. Multiplicamos o valor retornado por `Math.random` por esse número para dar à moeda uma posição inicial aleatória na onda.
 
 {{index map, [object, "as map"]}}
 
-We can now define the `levelChars` object that maps plan characters to either background grid types or actor classes.
+Agora podemos definir o objeto `levelChars` que mapeia caracteres do plano para tipos de grade de fundo ou classes de ator.
 
 ```{includeCode: true}
 const levelChars = {
@@ -306,7 +306,7 @@ const levelChars = {
 };
 ```
 
-That gives us all the parts needed to create a `Level` instance.
+Isso nos dá todas as partes necessárias para criar uma instância de `Level`.
 
 ```{includeCode: strip_log}
 let simpleLevel = new Level(simpleLevelPlan);
@@ -314,25 +314,25 @@ console.log(`${simpleLevel.width} by ${simpleLevel.height}`);
 // → 22 by 9
 ```
 
-The task ahead is to display such levels on the screen and to model time and motion inside them.
+A tarefa à frente é exibir tais níveis na tela e modelar tempo e movimento dentro deles.
 
 {{id domdisplay}}
 
-## Drawing
+## Desenhando
 
 {{index graphics, encapsulation, "DOMDisplay class", [DOM, graphics]}}
 
-In the [next chapter](canvas#canvasdisplay), we'll ((display)) the same game in a different way. To make that possible, we put the drawing logic behind an interface and pass it to the game as an argument. That way, we can use the same game program with different new display ((module))s.
+No [próximo capítulo](canvas#canvasdisplay), vamos ((exibir)) o mesmo jogo de forma diferente. Para tornar isso possível, colocamos a lógica de desenho atrás de uma interface e a passamos ao jogo como argumento. Dessa forma, podemos usar o mesmo programa de jogo com diferentes ((módulo))s de exibição novos.
 
-A game display object draws a given ((level)) and state. We pass its constructor to the game to allow it to be replaced. The display class we define in this chapter is called `DOMDisplay` because it uses DOM elements to show the level.
+Um objeto de exibição do jogo desenha um dado ((nível)) e estado. Passamos seu construtor ao jogo para permitir que ele seja substituído. A classe de exibição que definimos neste capítulo é chamada `DOMDisplay` porque usa elementos DOM para mostrar o nível.
 
 {{index "style attribute", CSS}}
 
-We'll be using a style sheet to set the actual colors and other fixed properties of the elements that make up the game. It would also be possible to directly assign to the elements' `style` property when we create them, but that would produce more verbose programs.
+Usaremos uma folha de estilo para definir as cores reais e outras propriedades fixas dos elementos que compõem o jogo. Também seria possível atribuir diretamente à propriedade `style` dos elementos quando os criamos, mas isso produziria programas mais verbosos.
 
 {{index "class attribute"}}
 
-The following helper function provides a succinct way to create an element and give it some attributes and child nodes:
+A função auxiliar a seguir fornece uma forma sucinta de criar um elemento e dar a ele alguns atributos e nós filhos:
 
 ```{includeCode: true}
 function elt(name, attrs, ...children) {
@@ -347,7 +347,7 @@ function elt(name, attrs, ...children) {
 }
 ```
 
-A display is created by giving it a parent element to which it should append itself and a ((level)) object.
+Uma exibição é criada dando a ela um elemento pai ao qual deve se anexar e um objeto de ((nível)).
 
 ```{includeCode: true}
 class DOMDisplay {
@@ -363,11 +363,11 @@ class DOMDisplay {
 
 {{index level}}
 
-The level's ((background)) grid, which never changes, is drawn once. Actors are redrawn every time the display is updated with a given state. The `actorLayer` property will be used to track the element that holds the actors so that they can be easily removed and replaced.
+A grade de ((fundo)) do nível, que nunca muda, é desenhada uma vez. Atores são redesenhados toda vez que a exibição é atualizada com um dado estado. A propriedade `actorLayer` será usada para rastrear o elemento que contém os atores para que possam ser facilmente removidos e substituídos.
 
 {{index scaling, "DOMDisplay class"}}
 
-Our ((coordinates)) and sizes are tracked in ((grid)) units, where a size or distance of 1 means one grid block. When setting ((pixel)) sizes, we will have to scale these coordinates up—everything in the game would be ridiculously small at a single pixel per square. The `scale` constant gives the number of pixels that a single unit takes up on the screen.
+Nossas ((coordenadas)) e tamanhos são rastreados em unidades de ((grade)), onde um tamanho ou distância de 1 significa um bloco de grade. Ao definir tamanhos em ((pixel))s, teremos que escalar essas coordenadas — tudo no jogo seria ridiculamente pequeno com um único pixel por quadrado. A constante `scale` dá o número de pixels que uma única unidade ocupa na tela.
 
 ```{includeCode: true}
 const scale = 20;
@@ -385,11 +385,11 @@ function drawGrid(level) {
 
 {{index "table (HTML tag)", "tr (HTML tag)", "td (HTML tag)", "spread operator"}}
 
-The `<table>` element's form nicely corresponds to the structure of the `rows` property of the level—each row of the grid is turned into a table row (`<tr>` element). The strings in the grid are used as class names for the table cell (`<td>`) elements. The code uses the spread (triple dot) operator to pass arrays of child nodes to `elt` as separate arguments.
+A forma do elemento `<table>` corresponde bem à estrutura da propriedade `rows` do nível — cada linha da grade é transformada em uma linha de tabela (elemento `<tr>`). As strings na grade são usadas como nomes de classe para os elementos de célula de tabela (`<td>`). O código usa o operador spread (três pontos) para passar arrays de nós filhos para `elt` como argumentos separados.
 
 {{id game_css}}
 
-The following ((CSS)) makes the table look like the background we want:
+O seguinte ((CSS)) faz a tabela parecer com o fundo que queremos:
 
 ```{lang: "css"}
 .background    { background: rgb(52, 166, 251);
@@ -402,15 +402,15 @@ The following ((CSS)) makes the table look like the background we want:
 
 {{index "padding (CSS)"}}
 
-Some of these (`table-layout`, `border-spacing`, and `padding`) are used to suppress unwanted default behavior. We don't want the layout of the ((table)) to depend upon the contents of its cells, and we don't want space between the ((table)) cells or padding inside them.
+Alguns desses (`table-layout`, `border-spacing` e `padding`) são usados para suprimir comportamento padrão indesejado. Não queremos que o layout da ((tabela)) dependa do conteúdo de suas células, e não queremos espaço entre as células da ((tabela)) ou padding dentro delas.
 
 {{index "background (CSS)", "rgb (CSS)", CSS}}
 
-The `background` rule sets the background color. CSS allows colors to be specified both as words (`white`) or with a format such as `rgb(R, G, B)`, where the red, green, and blue components of the color are separated into three numbers from 0 to 255. In `rgb(52, 166, 251)`, the red component is 52, green is 166, and blue is 251. Since the blue component is the largest, the resulting color will be bluish. In the `.lava` rule, the first number (red) is the largest.
+A regra `background` define a cor de fundo. CSS permite que cores sejam especificadas tanto como palavras (`white`) ou com um formato como `rgb(R, G, B)`, onde os componentes vermelho, verde e azul da cor são separados em três números de 0 a 255. Em `rgb(52, 166, 251)`, o componente vermelho é 52, verde é 166 e azul é 251. Como o componente azul é o maior, a cor resultante será azulada. Na regra `.lava`, o primeiro número (vermelho) é o maior.
 
 {{index [DOM, graphics]}}
 
-We draw each ((actor)) by creating a DOM element for it and setting that element's position and size based on the actor's properties. The values must be multiplied by `scale` to go from game units to pixels.
+Desenhamos cada ((ator)) criando um elemento DOM para ele e definindo a posição e tamanho desse elemento com base nas propriedades do ator. Os valores devem ser multiplicados por `scale` para ir de unidades de jogo para pixels.
 
 ```{includeCode: true}
 function drawActors(actors) {
@@ -427,7 +427,7 @@ function drawActors(actors) {
 
 {{index "position (CSS)", "class attribute"}}
 
-To give an element more than one class, we separate the class names by spaces. In the following ((CSS)) code, the `actor` class gives the actors their absolute position. Their type name is used as an extra class to give them a color. We don't have to define the `lava` class again because we're reusing the class for the lava grid squares we defined earlier.
+Para dar a um elemento mais de uma classe, separamos os nomes das classes por espaços. No código ((CSS)) a seguir, a classe `actor` dá aos atores sua posição absoluta. O nome do tipo é usado como classe extra para dar a eles uma cor. Não precisamos definir a classe `lava` novamente porque estamos reutilizando a classe para os quadrados de lava na grade que definimos anteriormente.
 
 ```{lang: "css"}
 .actor  { position: absolute;            }
@@ -437,7 +437,7 @@ To give an element more than one class, we separate the class names by spaces. I
 
 {{index graphics, optimization, efficiency, [state, "of application"], [DOM, graphics]}}
 
-The `syncState` method is used to make the display show a given state. It first removes the old actor graphics, if any, and then redraws the actors in their new positions. It may be tempting to try to reuse the DOM elements for actors, but to make that work, we would need a lot of additional bookkeeping to associate actors with DOM elements and to make sure we remove elements when their actors vanish. Since there will typically be only a handful of actors in the game, redrawing all of them is not expensive.
+O método `syncState` é usado para fazer a exibição mostrar um dado estado. Ele primeiro remove os gráficos antigos dos atores, se houver, e depois redesenha os atores em suas novas posições. Pode ser tentador tentar reutilizar os elementos DOM para atores, mas para fazer isso funcionar, precisaríamos de muita contabilidade adicional para associar atores a elementos DOM e garantir que removemos elementos quando seus atores desaparecem. Como tipicamente haverá apenas um punhado de atores no jogo, redesenhar todos eles não é custoso.
 
 ```{includeCode: true}
 DOMDisplay.prototype.syncState = function(state) {
@@ -451,7 +451,7 @@ DOMDisplay.prototype.syncState = function(state) {
 
 {{index level, "class attribute"}}
 
-By adding the level's current status as a class name to the wrapper, we can style the player actor slightly differently when the game is won or lost by adding a ((CSS)) rule that takes effect only when the player has an ((ancestor element)) with a given class.
+Ao adicionar o status atual do nível como nome de classe ao wrapper, podemos estilizar o ator do jogador de forma ligeiramente diferente quando o jogo é vencido ou perdido adicionando uma regra ((CSS)) que tem efeito apenas quando o jogador tem um ((elemento ancestral)) com uma dada classe.
 
 ```{lang: "css"}
 .lost .player {
@@ -464,13 +464,13 @@ By adding the level's current status as a class name to the wrapper, we can styl
 
 {{index player, "box shadow (CSS)"}}
 
-After touching ((lava)), the player turns dark red, suggesting scorching. When the last coin has been collected, we add two blurred white shadows—one to the upper left and one to the upper right—to create a white halo effect.
+Após tocar ((lava)), o jogador fica vermelho escuro, sugerindo que foi chamuscado. Quando a última moeda é coletada, adicionamos duas sombras brancas borradas — uma para o canto superior esquerdo e outra para o superior direito — para criar um efeito de halo branco.
 
 {{id viewport}}
 
 {{index "position (CSS)", "max-width (CSS)", "overflow (CSS)", "max-height (CSS)", viewport, scrolling, [DOM, graphics]}}
 
-We can't assume that the level always fits in the _viewport_, the element into which we draw the game. That is why we need the `scrollPlayerIntoView` call: it ensures that if the level is protruding outside the viewport, we scroll that viewport to make sure the player is near its center. The following ((CSS)) gives the game's wrapping DOM element a maximum size and ensures that anything that sticks out of the element's box is not visible. We also give it a relative position so that the actors inside it are positioned relative to the level's upper-left corner.
+Não podemos assumir que o nível sempre cabe no _viewport_, o elemento no qual desenhamos o jogo. É por isso que precisamos da chamada `scrollPlayerIntoView`: ela garante que se o nível está transbordando para fora do viewport, rolamos esse viewport para garantir que o jogador esteja perto de seu centro. O ((CSS)) a seguir dá ao elemento DOM wrapper do jogo um tamanho máximo e garante que qualquer coisa que saia da caixa do elemento não seja visível. Também damos a ele uma posição relativa para que os atores dentro dele sejam posicionados em relação ao canto superior esquerdo do nível.
 
 ```{lang: css}
 .game {
@@ -483,7 +483,7 @@ We can't assume that the level always fits in the _viewport_, the element into w
 
 {{index scrolling}}
 
-In the `scrollPlayerIntoView` method, we find the player's position and update the wrapping element's scroll position. We change the scroll position by manipulating that element's `scrollLeft` and `scrollTop` properties when the player is too close to the edge.
+No método `scrollPlayerIntoView`, encontramos a posição do jogador e atualizamos a posição de rolagem do elemento wrapper. Mudamos a posição de rolagem manipulando as propriedades `scrollLeft` e `scrollTop` desse elemento quando o jogador está muito perto da borda.
 
 ```{includeCode: true}
 DOMDisplay.prototype.scrollPlayerIntoView = function(state) {
@@ -491,7 +491,7 @@ DOMDisplay.prototype.scrollPlayerIntoView = function(state) {
   let height = this.dom.clientHeight;
   let margin = width / 3;
 
-  // The viewport
+  // O viewport
   let left = this.dom.scrollLeft, right = left + width;
   let top = this.dom.scrollTop, bottom = top + height;
 
@@ -514,17 +514,17 @@ DOMDisplay.prototype.scrollPlayerIntoView = function(state) {
 
 {{index center, coordinates, readability}}
 
-The way the player's center is found shows how the methods on our `Vec` type allow computations with objects to be written in a relatively readable way. To find the actor's center, we add its position (its upper-left corner) and half its size. That is the center in level coordinates, but we need it in pixel coordinates, so we then multiply the resulting vector by our display scale.
+A forma como o centro do jogador é encontrado mostra como os métodos em nosso tipo `Vec` permitem que cálculos com objetos sejam escritos de forma relativamente legível. Para encontrar o centro do ator, adicionamos sua posição (seu canto superior esquerdo) e metade de seu tamanho. Esse é o centro em coordenadas de nível, mas precisamos dele em coordenadas de pixel, então multiplicamos o vetor resultante pela escala de exibição.
 
 {{index validation}}
 
-Next, a series of checks verifies that the player position isn't outside of the allowed range. Note that sometimes this will set nonsense scroll coordinates that are below zero or beyond the element's scrollable area. This is okay—the DOM will constrain them to acceptable values. Setting `scrollLeft` to `-10` will cause it to become `0`.
+Em seguida, uma série de verificações confirma que a posição do jogador não está fora da faixa permitida. Note que às vezes isso definirá coordenadas de rolagem sem sentido que estão abaixo de zero ou além da área rolável do elemento. Isso é aceitável — o DOM as restringirá a valores aceitáveis. Definir `scrollLeft` como `-10` fará com que se torne `0`.
 
-While it would have been slightly simpler to always try to scroll the player to the center of the ((viewport)), this creates a rather jarring effect. As you are jumping, the view will constantly shift up and down. It's more pleasant to have a "neutral" area in the middle of the screen where you can move around without causing any scrolling.
+Embora fosse ligeiramente mais simples sempre tentar rolar o jogador para o centro do ((viewport)), isso cria um efeito bastante brusco. Conforme você pula, a visão constantemente se desloca para cima e para baixo. É mais agradável ter uma área "neutra" no meio da tela onde você pode se mover sem causar rolagem.
 
 {{index [game, screenshot]}}
 
-We are now able to display our tiny level.
+Agora podemos exibir nosso pequeno nível.
 
 ```{lang: html}
 <link rel="stylesheet" href="css/game.css">
@@ -544,33 +544,33 @@ if}}
 
 {{index "link (HTML tag)", CSS}}
 
-The `<link>` tag, when used with `rel="stylesheet"`, is a way to load a CSS file into a page. The file `game.css` contains the styles necessary for our game.
+A tag `<link>`, quando usada com `rel="stylesheet"`, é uma forma de carregar um arquivo CSS em uma página. O arquivo `game.css` contém os estilos necessários para nosso jogo.
 
-## Motion and collision
+## Movimento e colisão
 
 {{index physics, [animation, "platform game"]}}
 
-Now we're at the point where we can start adding motion. The basic approach taken by most games like this is to split ((time)) into small steps and, for each step, move the actors by a distance corresponding to their speed multiplied by the size of the time step. We'll measure time in seconds, so speeds are expressed in units per second.
+Agora estamos no ponto em que podemos começar a adicionar movimento. A abordagem básica adotada pela maioria dos jogos como este é dividir o ((tempo)) em pequenos passos e, para cada passo, mover os atores por uma distância correspondente à sua velocidade multiplicada pelo tamanho do passo de tempo. Mediremos o tempo em segundos, então velocidades são expressas em unidades por segundo.
 
 {{index obstacle, "collision detection"}}
 
-Moving things is easy. The difficult part is dealing with the interactions between the elements. When the player hits a wall or floor, they should not simply move through it. The game must notice when a given motion causes an object to hit another object and respond accordingly. For walls, the motion must be stopped. When hitting a coin, that coin must be collected. When touching lava, the game should be lost.
+Mover coisas é fácil. A parte difícil é lidar com as interações entre os elementos. Quando o jogador atinge uma parede ou chão, ele não deve simplesmente passar através dela. O jogo deve notar quando um dado movimento faz um objeto atingir outro objeto e responder de acordo. Para paredes, o movimento deve ser interrompido. Ao atingir uma moeda, essa moeda deve ser coletada. Ao tocar lava, o jogo deve ser perdido.
 
-Solving this for the general case is a major task. You can find libraries, usually called _((physics engine))s_, that simulate interaction between physical objects in two or three ((dimensions)). We'll take a more modest approach in this chapter, handling only collisions between rectangular objects and handling them in a rather simplistic way.
+Resolver isso para o caso geral é uma tarefa importante. Você pode encontrar bibliotecas, geralmente chamadas de _((motor de física))_, que simulam interação entre objetos físicos em duas ou três ((dimensões)). Adotaremos uma abordagem mais modesta neste capítulo, lidando apenas com colisões entre objetos retangulares e de forma bastante simplista.
 
 {{index bouncing, "collision detection", [animation, "platform game"]}}
 
-Before moving the ((player)) or a block of ((lava)), we test whether the motion would take it inside of a wall. If it does, we simply cancel the motion altogether. The response to such a collision depends on the type of actor—the player will stop, whereas a lava block will bounce back.
+Antes de mover o ((jogador)) ou um bloco de ((lava)), testamos se o movimento o levaria para dentro de uma parede. Se levar, simplesmente cancelamos o movimento por completo. A resposta a tal colisão depende do tipo de ator — o jogador irá parar, enquanto um bloco de lava quicará para trás.
 
 {{index discretization}}
 
-This approach requires our ((time)) steps to be rather small, since it will cause motion to stop before the objects actually touch. If the time steps (and thus the motion steps) are too big, the player would end up hovering a noticeable distance above the ground. Another approach, arguably better but more complicated, would be to find the exact collision spot and move there. We will take the simple approach and hide its problems by ensuring the animation proceeds in small steps.
+Essa abordagem requer que nossos passos de ((tempo)) sejam bastante pequenos, já que fará o movimento parar antes que os objetos realmente se toquem. Se os passos de tempo (e portanto os passos de movimento) forem muito grandes, o jogador acabaria pairando a uma distância perceptível acima do chão. Outra abordagem, possivelmente melhor mas mais complicada, seria encontrar o ponto exato de colisão e mover até lá. Adotaremos a abordagem simples e esconderemos seus problemas garantindo que a animação proceda em passos pequenos.
 
 {{index obstacle, "touches method", "collision detection"}}
 
 {{id touches}}
 
-This method tells us whether a ((rectangle)) (specified by a position and a size) touches a grid element of the given type.
+Este método nos diz se um ((retângulo)) (especificado por uma posição e um tamanho) toca um elemento da grade do tipo dado.
 
 ```{includeCode: true}
 Level.prototype.touches = function(pos, size, type) {
@@ -593,13 +593,13 @@ Level.prototype.touches = function(pos, size, type) {
 
 {{index "Math.floor function", "Math.ceil function"}}
 
-The method computes the set of grid squares that the body ((overlap))s with by using `Math.floor` and `Math.ceil` on its ((coordinates)). Remember that ((grid)) squares are 1 by 1 units in size. By ((rounding)) the sides of a box up and down, we get the range of ((background)) squares that the box touches.
+O método calcula o conjunto de quadrados da grade que o corpo ((sobrepõe)) usando `Math.floor` e `Math.ceil` em suas ((coordenadas)). Lembre-se que quadrados da ((grade)) têm 1 por 1 unidade de tamanho. Ao ((arredondar)) os lados de uma caixa para cima e para baixo, obtemos a faixa de quadrados de ((fundo)) que a caixa toca.
 
 {{figure {url: "img/game-grid.svg", alt: "Diagram showing a grid with a black box overlaid on it. All of the grid squares that are partially covered by the block are marked.", width: "3cm"}}}
 
-We loop over the block of ((grid)) squares found by ((rounding)) the ((coordinates)) and return `true` when a matching square is found. Squares outside of the level are always treated as `"wall"` to ensure that the player can't leave the world and that we won't accidentally try to read outside of the bounds of our `rows` array.
+Percorremos o bloco de quadrados da ((grade)) encontrado pelo ((arredondamento)) das ((coordenadas)) e retornamos `true` quando um quadrado correspondente é encontrado. Quadrados fora do nível são sempre tratados como `"wall"` para garantir que o jogador não possa sair do mundo e que não tentaremos acidentalmente ler fora dos limites do nosso array `rows`.
 
-The state `update` method uses `touches` to figure out whether the player is touching lava.
+O método `update` do estado usa `touches` para descobrir se o jogador está tocando lava.
 
 ```{includeCode: true}
 State.prototype.update = function(time, keys) {
@@ -623,11 +623,11 @@ State.prototype.update = function(time, keys) {
 };
 ```
 
-The method is passed a time step and a data structure that tells it which keys are being held down. The first thing it does is call the `update` method on all actors, producing an array of updated actors. The actors also get the time step, the keys, and the state so that they can base their update on those. Only the player will actually read keys, since that's the only actor that's controlled by the keyboard.
+O método recebe um passo de tempo e uma estrutura de dados que informa quais teclas estão sendo pressionadas. A primeira coisa que faz é chamar o método `update` em todos os atores, produzindo um array de atores atualizados. Os atores também recebem o passo de tempo, as teclas e o estado para que possam basear sua atualização neles. Apenas o jogador realmente lerá as teclas, já que é o único ator controlado pelo teclado.
 
-If the game is already over, no further processing has to be done (the game can't be won after being lost, or vice versa). Otherwise, the method tests whether the player is touching background lava. If so, the game is lost and we're done. Finally, if the game really is still going on, it sees whether any other actors overlap the player.
+Se o jogo já acabou, nenhum processamento adicional precisa ser feito (o jogo não pode ser vencido depois de ser perdido, ou vice-versa). Caso contrário, o método testa se o jogador está tocando lava de fundo. Se estiver, o jogo está perdido e terminamos. Finalmente, se o jogo realmente ainda está em andamento, ele verifica se algum outro ator se sobrepõe ao jogador.
 
-Overlap between actors is detected with the `overlap` function. It takes two actor objects and returns `true` when they touch—which is the case when they overlap both along the x-axis and along the y-axis.
+A sobreposição entre atores é detectada com a função `overlap`. Ela recebe dois objetos de ator e retorna `true` quando eles se tocam — o que é o caso quando se sobrepõem tanto ao longo do eixo x quanto do eixo y.
 
 ```{includeCode: true}
 function overlap(actor1, actor2) {
@@ -638,7 +638,7 @@ function overlap(actor1, actor2) {
 }
 ```
 
-If any actor does overlap, its `collide` method gets a chance to update the state. Touching a lava actor sets the game status to `"lost"`. Coins vanish when you touch them and set the status to `"won"` when they are the last coin of the level.
+Se algum ator se sobrepõe, seu método `collide` tem a chance de atualizar o estado. Tocar um ator de lava define o status do jogo como `"lost"`. Moedas desaparecem quando você as toca e definem o status como `"won"` quando são a última moeda do nível.
 
 ```{includeCode: true}
 Lava.prototype.collide = function(state) {
@@ -655,11 +655,11 @@ Coin.prototype.collide = function(state) {
 
 {{id actors}}
 
-## Actor updates
+## Atualizações dos atores
 
 {{index actor, "Lava class", lava}}
 
-Actor objects' `update` methods take as arguments the time step, the state object, and a `keys` object. The one for the `Lava` actor type ignores the `keys` object.
+Os métodos `update` dos objetos de ator recebem como argumentos o passo de tempo, o objeto de estado e um objeto `keys`. O do tipo de ator `Lava` ignora o objeto `keys`.
 
 ```{includeCode: true}
 Lava.prototype.update = function(time, state) {
@@ -676,11 +676,11 @@ Lava.prototype.update = function(time, state) {
 
 {{index bouncing, multiplication, "Vec class", "collision detection"}}
 
-This `update` method computes a new position by adding the product of the ((time)) step and the current speed to its old position. If no obstacle blocks that new position, it moves there. If there is an obstacle, the behavior depends on the type of the ((lava)) block—dripping lava has a `reset` position, to which it jumps back when it hits something. Bouncing lava inverts its speed by multiplying it by `-1` so that it starts moving in the opposite direction.
+Este método `update` calcula uma nova posição adicionando o produto do passo de ((tempo)) e a velocidade atual à sua posição antiga. Se nenhum obstáculo bloqueia essa nova posição, ele se move para lá. Se houver um obstáculo, o comportamento depende do tipo do bloco de ((lava)) — lava gotejante tem uma posição `reset`, para a qual ela volta quando atinge algo. Lava quicante inverte sua velocidade multiplicando-a por `-1` para que comece a se mover na direção oposta.
 
 {{index "Coin class", coin, wave}}
 
-Coins use their `update` method to wobble. They ignore collisions with the grid, since they are simply wobbling around inside of their own square.
+Moedas usam seu método `update` para oscilar. Elas ignoram colisões com a grade, já que estão simplesmente oscilando dentro de seu próprio quadrado.
 
 ```{includeCode: true}
 const wobbleSpeed = 8, wobbleDist = 0.07;
@@ -695,11 +695,11 @@ Coin.prototype.update = function(time) {
 
 {{index "Math.sin function", sine, phase}}
 
-The `wobble` property is incremented to track time and then used as an argument to `Math.sin` to find the new position on the ((wave)). The coin's current position is then computed from its base position and an offset based on this wave.
+A propriedade `wobble` é incrementada para rastrear o tempo e depois usada como argumento para `Math.sin` para encontrar a nova posição na ((onda)). A posição atual da moeda é então calculada a partir de sua posição base e um deslocamento baseado nessa onda.
 
 {{index "collision detection", "Player class"}}
 
-That leaves the ((player)) itself. Player motion is handled separately per ((axis)) because hitting the floor should not prevent horizontal motion, and hitting a wall should not stop falling or jumping motion.
+Isso deixa o próprio ((jogador)). O movimento do jogador é tratado separadamente por ((eixo)) porque atingir o chão não deve impedir o movimento horizontal, e atingir uma parede não deve parar o movimento de queda ou salto.
 
 ```{includeCode: true}
 const playerXSpeed = 7;
@@ -731,31 +731,31 @@ Player.prototype.update = function(time, state, keys) {
 
 {{index [animation, "platform game"], keyboard}}
 
-The horizontal motion is computed based on the state of the left and right arrow keys. When there's no wall blocking the new position created by this motion, it is used. Otherwise, the old position is kept.
+O movimento horizontal é calculado com base no estado das teclas de seta esquerda e direita. Quando não há parede bloqueando a nova posição criada por esse movimento, ela é usada. Caso contrário, a posição antiga é mantida.
 
 {{index acceleration, physics}}
 
-Vertical motion works in a similar way but has to simulate ((jumping)) and ((gravity)). The player's vertical speed (`ySpeed`) is first accelerated to account for ((gravity)).
+O movimento vertical funciona de forma similar, mas precisa simular ((salto)) e ((gravidade)). A velocidade vertical do jogador (`ySpeed`) é primeiro acelerada para levar em conta a ((gravidade)).
 
 {{index "collision detection", keyboard, jumping}}
 
-We check for walls again. If we don't hit any, the new position is used. If there _is_ a wall, there are two possible outcomes. When the up arrow is pressed _and_ we are moving down (meaning the thing we hit is below us), the speed is set to a relatively large, negative value. This causes the player to jump. If that is not the case, the player simply bumped into something, and the speed is set to zero.
+Verificamos paredes novamente. Se não atingimos nenhuma, a nova posição é usada. Se _houver_ uma parede, existem dois resultados possíveis. Quando a seta para cima está pressionada _e_ estamos nos movendo para baixo (significando que a coisa que atingimos está abaixo de nós), a velocidade é definida como um valor relativamente grande e negativo. Isso faz o jogador pular. Se não for o caso, o jogador simplesmente bateu em algo, e a velocidade é definida como zero.
 
-The gravity strength, ((jumping)) speed, and other ((constant))s in the game were determined by simply trying out some numbers and seeing which ones felt right. You can try experimenting with them.
+A força da gravidade, velocidade de ((salto)) e outras ((constante))s no jogo foram determinadas simplesmente tentando alguns números e vendo quais pareciam corretos. Você pode experimentar com eles.
 
-## Tracking keys
+## Rastreando teclas
 
 {{index keyboard}}
 
-For a ((game)) like this, we do not want keys to take effect once per keypress. Rather, we want their effect (moving the player figure) to stay active as long as they are held.
+Para um ((jogo)) como este, não queremos que teclas tenham efeito uma vez por pressionamento. Em vez disso, queremos que seu efeito (mover a figura do jogador) permaneça ativo enquanto elas estiverem pressionadas.
 
 {{index "preventDefault method"}}
 
-We need to set up a key handler that stores the current state of the left, right, and up arrow keys. We will also want to call `preventDefault` for those keys so that they don't end up ((scrolling)) the page.
+Precisamos configurar um manipulador de tecla que armazena o estado atual das teclas de seta esquerda, direita e para cima. Também queremos chamar `preventDefault` para essas teclas para que não acabem ((rolando)) a página.
 
 {{index "trackKeys function", "key code", "event handling", "addEventListener method"}}
 
-The following function, when given an array of key names, will return an object that tracks the current position of those keys. It registers event handlers for `"keydown"` and `"keyup"` events and, when the key code in the event is present in the set of codes that it is tracking, updates the object.
+A função a seguir, quando recebe um array de nomes de teclas, retornará um objeto que rastreia a posição atual dessas teclas. Ela registra manipuladores de evento para eventos `"keydown"` e `"keyup"` e, quando o código de tecla no evento está presente no conjunto de códigos que está rastreando, atualiza o objeto.
 
 ```{includeCode: true}
 function trackKeys(keys) {
@@ -777,19 +777,19 @@ const arrowKeys =
 
 {{index "keydown event", "keyup event"}}
 
-The same handler function is used for both event types. It looks at the event object's `type` property to determine whether the key state should be updated to true (`"keydown"`) or false (`"keyup"`).
+A mesma função manipuladora é usada para ambos os tipos de evento. Ela olha a propriedade `type` do objeto de evento para determinar se o estado da tecla deve ser atualizado para true (`"keydown"`) ou false (`"keyup"`).
 
 {{id runAnimation}}
 
-## Running the game
+## Executando o jogo
 
 {{index "requestAnimationFrame function", [animation, "platform game"]}}
 
-The `requestAnimationFrame` function, which we saw in [Chapter ?](dom#animationFrame), provides a good way to animate a game. But its interface is quite primitive—using it requires us to track the time at which our function was called the last time around and call `requestAnimationFrame` again after every frame.
+A função `requestAnimationFrame`, que vimos no [Capítulo ?](dom#animationFrame), fornece uma boa forma de animar um jogo. Mas sua interface é bastante primitiva — usá-la requer que rastreemos o tempo em que nossa função foi chamada da última vez e chamemos `requestAnimationFrame` novamente após cada frame.
 
 {{index "runAnimation function", "callback function", [function, "as value"], [function, "higher-order"], [animation, "platform game"]}}
 
-Let's define a helper function that wraps all that in a convenient interface and allows us to simply call `runAnimation`, giving it a function that expects a time difference as an argument and draws a single frame. When the frame function returns the value `false`, the animation stops.
+Vamos definir uma função auxiliar que encapsula tudo isso em uma interface conveniente e nos permite simplesmente chamar `runAnimation`, dando a ela uma função que espera uma diferença de tempo como argumento e desenha um único frame. Quando a função de frame retorna o valor `false`, a animação para.
 
 ```{includeCode: true}
 function runAnimation(frameFunc) {
@@ -808,13 +808,13 @@ function runAnimation(frameFunc) {
 
 {{index time, discretization}}
 
-I have set a maximum frame step of 100 milliseconds (one-tenth of a second). When the browser tab or window with our page is hidden, `requestAnimationFrame` calls will be suspended until the tab or window is shown again. In this case, the difference between `lastTime` and `time` will be the entire time in which the page was hidden. Advancing the game by that much in a single step would look silly and might cause weird side effects, such as the player falling through the floor.
+Defini um passo de frame máximo de 100 milissegundos (um décimo de segundo). Quando a aba ou janela do navegador com nossa página está oculta, chamadas a `requestAnimationFrame` serão suspensas até que a aba ou janela seja mostrada novamente. Nesse caso, a diferença entre `lastTime` e `time` será o tempo inteiro em que a página ficou oculta. Avançar o jogo por tanto tempo em um único passo pareceria bobo e poderia causar efeitos colaterais estranhos, como o jogador caindo através do chão.
 
-The function also converts the time steps to seconds, which are an easier quantity to think about than milliseconds.
+A função também converte os passos de tempo para segundos, que são uma quantidade mais fácil de pensar do que milissegundos.
 
 {{index "callback function", "runLevel function", [animation, "platform game"]}}
 
-The `runLevel` function takes a `Level` object and a ((display)) constructor and returns a promise. It displays the level (in `document.body`) and lets the user play through it. When the level is finished (lost or won), `runLevel` waits one more second (to let the user see what happens) and then clears the display, stops the animation, and resolves the promise to the game's end status.
+A função `runLevel` recebe um objeto `Level` e um construtor de ((exibição)) e retorna uma promise. Ela exibe o nível (em `document.body`) e permite que o usuário jogue através dele. Quando o nível termina (perdido ou vencido), `runLevel` espera mais um segundo (para deixar o usuário ver o que acontece) e depois limpa a exibição, para a animação e resolve a promise com o status final do jogo.
 
 ```{includeCode: true}
 function runLevel(level, Display) {
@@ -842,7 +842,7 @@ function runLevel(level, Display) {
 
 {{index "runGame function"}}
 
-A game is a sequence of ((level))s. Whenever the ((player)) dies, the current level is restarted. When a level is completed, we move on to the next level. This can be expressed by the following function, which takes an array of level plans (strings) and a ((display)) constructor:
+Um jogo é uma sequência de ((nível))eis. Sempre que o ((jogador)) morre, o nível atual é reiniciado. Quando um nível é completado, avançamos para o próximo nível. Isso pode ser expresso pela seguinte função, que recebe um array de planos de nível (strings) e um construtor de ((exibição)):
 
 ```{includeCode: true}
 async function runGame(plans, Display) {
@@ -857,11 +857,11 @@ async function runGame(plans, Display) {
 
 {{index "asynchronous programming", "event handling"}}
 
-Because we made `runLevel` return a promise, `runGame` can be written using an `async` function, as shown in [Chapter ?](async). It returns another promise, which resolves when the player finishes the game.
+Como fizemos `runLevel` retornar uma promise, `runGame` pode ser escrita usando uma função `async`, como mostrado no [Capítulo ?](async). Ela retorna outra promise, que resolve quando o jogador termina o jogo.
 
 {{index game, "GAME_LEVELS dataset"}}
 
-There is a set of ((level)) plans available in the `GAME_LEVELS` binding in [this chapter's sandbox](https://eloquentjavascript.net/code#16)[ ([_https://eloquentjavascript.net/code#16_](https://eloquentjavascript.net/code#16))]{if book}. This page feeds them to `runGame`, starting an actual game.
+Existe um conjunto de planos de ((nível)) disponível na vinculação `GAME_LEVELS` na [sandbox deste capítulo](https://eloquentjavascript.net/code#16)[ ([_https://eloquentjavascript.net/code#16_](https://eloquentjavascript.net/code#16))]{if book}. Esta página os alimenta para `runGame`, iniciando um jogo real.
 
 ```{sandbox: null, focus: yes, lang: html, startCode: true}
 <link rel="stylesheet" href="css/game.css">
@@ -875,21 +875,21 @@ There is a set of ((level)) plans available in the `GAME_LEVELS` binding in [thi
 
 {{if interactive
 
-See if you can beat those. I had fun building them.
+Veja se você consegue vencê-los. Me diverti construindo-os.
 
 if}}
 
-## Exercises
+## Exercícios
 
 ### Game over
 
 {{index "lives (exercise)", game}}
 
-It's traditional for ((platform game))s to have the player start with a limited number of _lives_ and subtract one life each time they die. When the player is out of lives, the game restarts from the beginning.
+É tradicional em ((jogos de plataforma)) que o jogador comece com um número limitado de _vidas_ e subtraia uma vida cada vez que morre. Quando o jogador fica sem vidas, o jogo recomeça desde o início.
 
 {{index "runGame function"}}
 
-Adjust `runGame` to implement lives. Have the player start with three. Output the current number of lives (using `console.log`) every time a level starts.
+Ajuste `runGame` para implementar vidas. Faça o jogador começar com três. Imprima o número atual de vidas (usando `console.log`) toda vez que um nível começar.
 
 {{if interactive
 
@@ -898,7 +898,7 @@ Adjust `runGame` to implement lives. Have the player start with three. Output th
 
 <body>
 <script>
-  // The old runGame function. Modify it...
+  // A função runGame antiga. Modifique-a...
   async function runGame(plans, Display) {
     for (let level = 0; level < plans.length;) {
       let status = await runLevel(new Level(plans[level]),
@@ -914,19 +914,19 @@ Adjust `runGame` to implement lives. Have the player start with three. Output th
 
 if}}
 
-### Pausing the game
+### Pausando o jogo
 
 {{index "pausing (exercise)", "escape key", keyboard, "runLevel function", "event handling"}}
 
-Make it possible to pause (suspend) and unpause the game by pressing [esc]{keyname}. You can do this by changing the `runLevel` function to set up a keyboard event handler that interrupts or resumes the animation whenever [esc]{keyname} is hit.
+Torne possível pausar (suspender) e despausar o jogo pressionando [esc]{keyname}. Você pode fazer isso alterando a função `runLevel` para configurar um manipulador de evento de teclado que interrompe ou retoma a animação sempre que [esc]{keyname} é pressionado.
 
 {{index "runAnimation function"}}
 
-The `runAnimation` interface may not look like it is suitable for this at first glance, but it is if you rearrange the way `runLevel` calls it.
+A interface de `runAnimation` pode não parecer adequada para isso à primeira vista, mas é se você reorganizar a forma como `runLevel` a chama.
 
 {{index [binding, global], "trackKeys function"}}
 
-When you have that working, there's something else you can try. The way we've been registering keyboard event handlers is somewhat problematic. The `arrowKeys` object is currently a global binding, and its event handlers are kept around even when no game is running. You could say they _((leak))_ out of our system. Extend `trackKeys` to provide a way to unregister its handlers, then change `runLevel` to register its handlers when it starts and unregister them again when it is finished.
+Quando tiver isso funcionando, há outra coisa que pode tentar. A forma como registramos manipuladores de evento de teclado é um tanto problemática. O objeto `arrowKeys` é atualmente uma vinculação global, e seus manipuladores de evento são mantidos mesmo quando nenhum jogo está rodando. Pode-se dizer que eles _((vazam))_ do nosso sistema. Estenda `trackKeys` para fornecer uma forma de cancelar o registro de seus manipuladores, e então altere `runLevel` para registrar seus manipuladores quando começa e cancelar o registro quando termina.
 
 {{if interactive
 
@@ -935,7 +935,7 @@ When you have that working, there's something else you can try. The way we've be
 
 <body>
 <script>
-  // The old runLevel function. Modify this...
+  // A função runLevel antiga. Modifique-a...
   function runLevel(level, Display) {
     let display = new Display(document.body, level);
     let state = State.start(level);
@@ -968,29 +968,29 @@ if}}
 
 {{index "pausing (exercise)", [animation, "platform game"]}}
 
-An animation can be interrupted by returning `false` from the function given to `runAnimation`. It can be continued by calling `runAnimation` again.
+Uma animação pode ser interrompida retornando `false` da função dada a `runAnimation`. Ela pode ser continuada chamando `runAnimation` novamente.
 
 {{index closure}}
 
-So we need to communicate the fact that we are pausing the game to the function given to `runAnimation`. For that, you can use a binding that both the event handler and that function have access to.
+Então precisamos comunicar o fato de que estamos pausando o jogo para a função dada a `runAnimation`. Para isso, você pode usar uma vinculação à qual tanto o manipulador de evento quanto aquela função tenham acesso.
 
 {{index "event handling", "removeEventListener method", [function, "as value"]}}
 
-When finding a way to unregister the handlers registered by `trackKeys`, remember that the _exact_ same function value that was passed to `addEventListener` must be passed to `removeEventListener` to successfully remove a handler. Thus, the `handler` function value created in `trackKeys` must be available to the code that unregisters the handlers.
+Ao encontrar uma forma de cancelar o registro dos manipuladores registrados por `trackKeys`, lembre-se de que o _exato_ mesmo valor de função que foi passado para `addEventListener` deve ser passado para `removeEventListener` para remover um manipulador com sucesso. Assim, o valor da função `handler` criado em `trackKeys` deve estar disponível para o código que cancela o registro dos manipuladores.
 
-You can add a property to the object returned by `trackKeys`, containing either that function value or a method that handles the unregistering directly.
+Você pode adicionar uma propriedade ao objeto retornado por `trackKeys`, contendo ou aquele valor de função ou um método que lide com o cancelamento do registro diretamente.
 
 hint}}
 
-### A monster
+### Um monstro
 
 {{index "monster (exercise)"}}
 
-It is traditional for platform games to have enemies that you can defeat by jumping on top of them. This exercise asks you to add such an actor type to the game.
+É tradicional em jogos de plataforma ter inimigos que você pode derrotar pulando em cima deles. Este exercício pede que você adicione tal tipo de ator ao jogo.
 
-We'll call this actor a monster. Monsters move only horizontally. You can make them move in the direction of the player, bounce back and forth like horizontal lava, or have any other movement pattern you want. The class doesn't have to handle falling, but it should make sure the monster doesn't walk through walls.
+Chamaremos esse ator de monstro. Monstros se movem apenas horizontalmente. Você pode fazê-los se mover na direção do jogador, quicar para frente e para trás como lava horizontal, ou ter qualquer outro padrão de movimento que quiser. A classe não precisa lidar com queda, mas deve garantir que o monstro não ande através de paredes.
 
-When a monster touches the player, the effect depends on whether the player is jumping on top of them or not. You can approximate this by checking whether the player's bottom is near the monster's top. If this is the case, the monster disappears. If not, the game is lost.
+Quando um monstro toca o jogador, o efeito depende de se o jogador está pulando em cima dele ou não. Você pode aproximar isso verificando se a parte inferior do jogador está perto do topo do monstro. Se esse for o caso, o monstro desaparece. Se não, o jogo é perdido.
 
 {{if interactive
 
@@ -1000,7 +1000,7 @@ When a monster touches the player, the effect depends on whether the player is j
 
 <body>
   <script>
-    // Complete the constructor, update, and collide methods
+    // Complete o construtor, os métodos update e collide
     class Monster {
       constructor(pos, /* ... */) {}
 
@@ -1043,12 +1043,12 @@ if}}
 
 {{index "monster (exercise)", "persistent data structure"}}
 
-If you want to implement a type of motion that is stateful, such as bouncing, make sure you store the necessary state in the actor object—include it as a constructor argument and add it as a property.
+Se você quiser implementar um tipo de movimento que é baseado em estado, como quicar, certifique-se de armazenar o estado necessário no objeto do ator — inclua-o como argumento do construtor e adicione-o como propriedade.
 
-Remember that `update` returns a _new_ object rather than changing the old one.
+Lembre-se que `update` retorna um _novo_ objeto em vez de mudar o antigo.
 
 {{index "collision detection"}}
 
-When handling collision, find the player in `state.actors` and compare its position to the monster's position. To get the _bottom_ of the player, you have to add its vertical size to its vertical position. The creation of an updated state will resemble either `Coin`'s `collide` method (removing the actor) or `Lava`'s (changing the status to `"lost"`), depending on the player position.
+Ao lidar com colisão, encontre o jogador em `state.actors` e compare sua posição com a posição do monstro. Para obter a _parte inferior_ do jogador, você precisa adicionar seu tamanho vertical à sua posição vertical. A criação de um estado atualizado será semelhante ao método `collide` de `Coin` (removendo o ator) ou de `Lava` (mudando o status para `"lost"`), dependendo da posição do jogador.
 
 hint}}

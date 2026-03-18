@@ -1,4 +1,4 @@
-# JavaScript and the Browser
+# JavaScript e o Navegador
 
 {{quote {author: "Tim Berners-Lee", title: "The World Wide Web: A Very Short Personal History", chapter: true}
 
@@ -10,85 +10,85 @@ quote}}
 
 {{figure {url: "img/chapter_picture_13.jpg", alt: "Illustration showing a telephone switchboard", chapter: "framed"}}}
 
-The next chapters of this book will discuss web browsers. Without ((browser))s, there would be no JavaScript—or if there were, no one would ever have paid any attention to it.
+Os próximos capítulos deste livro discutirão navegadores web. Sem ((navegador))es, não haveria JavaScript — ou se houvesse, ninguém jamais teria prestado atenção nele.
 
 {{index decentralization, compatibility}}
 
-Web technology has been decentralized from the start, not just technically but also in terms of the way it evolved. Various browser vendors have added new functionality in ad hoc and sometimes poorly thought-out ways, which were then—sometimes—adopted by others, and finally set down in ((standards)).
+A tecnologia web tem sido descentralizada desde o início, não apenas tecnicamente, mas também na forma como evoluiu. Vários fabricantes de navegadores adicionaram novas funcionalidades de forma improvisada e às vezes mal pensada, as quais foram então — às vezes — adotadas por outros, e finalmente estabelecidas em ((padrões)).
 
-This is both a blessing and a curse. On the one hand, it is empowering to not have a central party control a system but have it be improved by various parties working in loose ((collaboration)) (or occasionally, open hostility). On the other hand, the haphazard way in which the web was developed means that the resulting system is not exactly a shining example of internal ((consistency)). Some parts of it are downright confusing and badly designed.
+Isso é tanto uma bênção quanto uma maldição. Por um lado, é empoderador não ter uma entidade central controlando um sistema, mas tê-lo sendo melhorado por diversas partes trabalhando em ((colaboração)) frouxa (ou ocasionalmente, hostilidade aberta). Por outro lado, a forma desordenada como a web foi desenvolvida significa que o sistema resultante não é exatamente um exemplo brilhante de ((consistência)) interna. Algumas partes são francamente confusas e mal projetadas.
 
-## Networks and the Internet
+## Redes e a Internet
 
-Computer ((network))s have been around since the 1950s. If you put cables between two or more computers and allow them to send data back and forth through these cables, you can do all kinds of wonderful things.
+((Rede))s de computadores existem desde os anos 1950. Se você colocar cabos entre dois ou mais computadores e permitir que eles enviem dados de um lado para outro através desses cabos, você pode fazer todo tipo de coisas maravilhosas.
 
-If connecting two machines in the same building allows us to do wonderful things, connecting machines all over the planet should be even better. The technology to start implementing this vision was developed in the 1980s, and the resulting network is called the _((internet))_. It has lived up to its promise.
+Se conectar duas máquinas no mesmo prédio nos permite fazer coisas maravilhosas, conectar máquinas por todo o planeta deve ser ainda melhor. A tecnologia para começar a implementar essa visão foi desenvolvida nos anos 1980, e a rede resultante é chamada de _((internet))_. Ela correspondeu à sua promessa.
 
-A computer can use this network to shoot bits at another computer. For any effective ((communication)) to arise out of this bit-shooting, the computers on both ends must know what the bits are supposed to represent. The meaning of any given sequence of bits depends entirely on the kind of thing that it is trying to express and on the ((encoding)) mechanism used.
+Um computador pode usar essa rede para enviar bits a outro computador. Para que qualquer ((comunicação)) efetiva surja desse envio de bits, os computadores em ambos os lados devem saber o que os bits devem representar. O significado de qualquer sequência de bits depende inteiramente do tipo de coisa que está tentando expressar e do mecanismo de ((codificação)) usado.
 
 {{index [network, protocol]}}
 
-A _network ((protocol))_ describes a style of communication over a ((network)). There are protocols for sending email, for fetching email, for sharing files, and even for controlling computers that happen to be infected by malicious software.
+Um _((protocolo)) de rede_ descreve um estilo de comunicação sobre uma ((rede)). Existem protocolos para enviar e-mail, para buscar e-mail, para compartilhar arquivos, e até para controlar computadores que foram infectados por software malicioso.
 
 {{indexsee "HyperText Transfer Protocol", HTTP}}
 
-The _HyperText Transfer Protocol_ (((HTTP))) is a protocol for retrieving named ((resource))s (chunks of information, such as web pages or pictures). It specifies that the side making the request should start with a line like this, naming the resource and the version of the protocol that it is trying to use:
+O _Protocolo de Transferência de Hipertexto_ (((HTTP))) é um protocolo para recuperar ((recurso))s nomeados (pedaços de informação, como páginas web ou imagens). Ele especifica que o lado que faz a requisição deve começar com uma linha como esta, nomeando o recurso e a versão do protocolo que está tentando usar:
 
 ```{lang: http}
 GET /index.html HTTP/1.1
 ```
 
-There are many more rules about the way the requester can include more information in the ((request)) and the way the other side, which returns the resource, packages up its content. We'll look at HTTP in a little more detail in [Chapter ?](http).
+Existem muito mais regras sobre como o requisitante pode incluir mais informações na ((requisição)) e como o outro lado, que retorna o recurso, empacota seu conteúdo. Veremos o HTTP com um pouco mais de detalhe no [Capítulo ?](http).
 
 {{index layering, stream, ordering}}
 
-Most protocols are built on top of other protocols. HTTP treats the network as a streamlike device into which you can put bits and have them arrive at the correct destination in the correct order. Providing those guarantees on top of the primitive data-sending that the network gives you is already a rather tricky problem.
+A maioria dos protocolos é construída sobre outros protocolos. O HTTP trata a rede como um dispositivo semelhante a um fluxo no qual você pode colocar bits e fazer com que cheguem ao destino correto na ordem correta. Fornecer essas garantias sobre o envio primitivo de dados que a rede oferece já é um problema bastante complicado.
 
 {{index TCP}}
 
 {{indexsee "Transmission Control Protocol", TCP}}
 
-The _Transmission Control Protocol_ (TCP) is a ((protocol)) that addresses this problem. All internet-connected devices "speak" it, and most communication on the ((internet)) is built on top of it.
+O _Protocolo de Controle de Transmissão_ (TCP) é um ((protocolo)) que resolve esse problema. Todos os dispositivos conectados à internet o "falam", e a maior parte da comunicação na ((internet)) é construída sobre ele.
 
 {{index "listening (TCP)"}}
 
-A TCP ((connection)) works as follows: one computer must be waiting, or _listening_, for other computers to start talking to it. To be able to listen for different kinds of communication at the same time on a single machine, each listener has a number (called a _((port))_) associated with it. Most ((protocol))s specify which port should be used by default. For example, when we want to send an email using the ((SMTP)) protocol, the machine through which we send it is expected to be listening on port 25.
+Uma ((conexão)) TCP funciona da seguinte forma: um computador deve estar esperando, ou _escutando_, que outros computadores comecem a falar com ele. Para poder escutar diferentes tipos de comunicação ao mesmo tempo em uma única máquina, cada ouvinte tem um número (chamado de _((porta))_) associado a ele. A maioria dos ((protocolo))s especifica qual porta deve ser usada por padrão. Por exemplo, quando queremos enviar um e-mail usando o protocolo ((SMTP)), a máquina pela qual o enviamos deve estar escutando na porta 25.
 
-Another computer can then establish a ((connection)) by connecting to the target machine using the correct port number. If the target machine can be reached and is listening on that port, the connection is successfully created. The listening computer is called the _((server))_, and the connecting computer is called the _((client))_.
+Outro computador pode então estabelecer uma ((conexão)) conectando-se à máquina alvo usando o número de porta correto. Se a máquina alvo puder ser alcançada e estiver escutando naquela porta, a conexão é criada com sucesso. O computador que escuta é chamado de _((servidor))_, e o computador que se conecta é chamado de _((cliente))_.
 
 {{index [abstraction, "of the network"]}}
 
-Such a connection acts as a two-way ((pipe)) through which bits can flow—the machines on both ends can put data into it. Once the bits are successfully transmitted, they can be read out again by the machine on the other side. This is a convenient model. You could say that ((TCP)) provides an abstraction of the network.
+Tal conexão funciona como um ((tubo)) de mão dupla por onde bits podem fluir — as máquinas em ambos os lados podem colocar dados nele. Uma vez que os bits são transmitidos com sucesso, eles podem ser lidos novamente pela máquina do outro lado. Este é um modelo conveniente. Pode-se dizer que o ((TCP)) fornece uma abstração da rede.
 
 {{id web}}
 
-## The Web
+## A Web
 
-The _((World Wide Web))_ (not to be confused with the ((internet)) as a whole) is a set of ((protocol))s and formats that allow us to visit web pages in a browser. The word _Web_ refers to the fact that such pages can easily link to each other, thus connecting into a huge ((mesh)) that users can move through.
+A _((World Wide Web))_ (que não deve ser confundida com a ((internet)) como um todo) é um conjunto de ((protocolo))s e formatos que nos permite visitar páginas web em um navegador. A palavra _Web_ se refere ao fato de que tais páginas podem facilmente se vincular umas às outras, conectando-se assim em uma enorme ((malha)) pela qual os usuários podem navegar.
 
-To become part of the web, all you need to do is connect a machine to the ((internet)) and have it listen on port 80 with the ((HTTP)) protocol so that other computers can ask it for documents.
+Para se tornar parte da web, tudo que você precisa fazer é conectar uma máquina à ((internet)) e fazê-la escutar na porta 80 com o protocolo ((HTTP)) para que outros computadores possam pedir documentos a ela.
 
 {{index URL}}
 
 {{indexsee "uniform resource locator", URL}}
 
-Each ((document)) on the web is named by a _uniform resource locator_ (URL), which looks something like this:
+Cada ((documento)) na web é nomeado por um _localizador uniforme de recursos_ (URL), que se parece com algo assim:
 
 ```{lang: null}
   http://eloquentjavascript.net/13_browser.html
  |      |                      |               |
- protocol       server               path
+ protocolo     servidor               caminho
 ```
 
 {{index HTTPS}}
 
-The first part tells us that this URL uses the HTTP ((protocol)) (as opposed to, for example, encrypted HTTP, which would be _https://_). Then comes the part that identifies which ((server)) we are requesting the document from. Last is a path string that identifies the document (or _((resource))_) we are interested in.
+A primeira parte nos diz que essa URL usa o ((protocolo)) HTTP (ao contrário, por exemplo, de HTTP criptografado, que seria _https://_). Em seguida vem a parte que identifica de qual ((servidor)) estamos solicitando o documento. Por último vem uma string de caminho que identifica o documento (ou _((recurso))_) em que estamos interessados.
 
-Machines connected to the internet get an _((IP address))_, a number that can be used to send messages to that machine, and looks something like `149.210.142.219` or `2001:4860:4860::8888`. Since lists of more or less random numbers are hard to remember and awkward to type, you can instead register a _((domain)) name_ for an address or set of addresses. I registered _eloquentjavascript.net_ to point at the IP address of a machine I control and can thus use that domain name to serve web pages.
+Máquinas conectadas à internet recebem um _((endereço IP))_, um número que pode ser usado para enviar mensagens àquela máquina, e se parece com algo como `149.210.142.219` ou `2001:4860:4860::8888`. Como listas de números mais ou menos aleatórios são difíceis de lembrar e estranhas de digitar, você pode registrar um nome de _((domínio))_ para um endereço ou conjunto de endereços. Registrei _eloquentjavascript.net_ para apontar para o endereço IP de uma máquina que controlo e posso assim usar esse nome de domínio para servir páginas web.
 
 {{index browser}}
 
-If you type this URL into your browser's ((address bar)), the browser will try to retrieve and display the ((document)) at that URL. First, your browser has to find out what address _eloquentjavascript.net_ refers to. Then, using the ((HTTP)) protocol, it will make a connection to the server at that address and ask for the resource _/13_browser.html_. If all goes well, the server sends back a document, which your browser then displays on your screen.
+Se você digitar essa URL na ((barra de endereço)) do seu navegador, o navegador tentará recuperar e exibir o ((documento)) naquela URL. Primeiro, seu navegador precisa descobrir a que endereço _eloquentjavascript.net_ se refere. Então, usando o protocolo ((HTTP)), ele fará uma conexão com o servidor naquele endereço e pedirá o recurso _/13_browser.html_. Se tudo correr bem, o servidor enviará de volta um documento, que seu navegador então exibirá na sua tela.
 
 ## HTML
 
@@ -96,9 +96,9 @@ If you type this URL into your browser's ((address bar)), the browser will try t
 
 {{indexsee "HyperText Markup Language", HTML}}
 
-_HTML_, which stands for HyperText Markup Language, is the document format used for web pages. An HTML document contains ((text)), as well as _((tag))s_ that give structure to the text, describing things such as links, paragraphs, and headings.
+_HTML_, que significa Linguagem de Marcação de Hipertexto, é o formato de documento usado para páginas web. Um documento HTML contém ((texto)), assim como _((tag))s_ que dão estrutura ao texto, descrevendo coisas como links, parágrafos e cabeçalhos.
 
-A short HTML document might look like this:
+Um documento HTML curto pode se parecer com isto:
 
 ```{lang: "html"}
 <!doctype html>
@@ -118,7 +118,7 @@ A short HTML document might look like this:
 
 {{if book
 
-This is what such a document would look like in the browser:
+É assim que tal documento ficaria no navegador:
 
 {{figure {url: "img/home-page.png", alt: "A rendered version of the home page example HTML",width: "6.3cm"}}}
 
@@ -126,37 +126,37 @@ if}}
 
 {{index [HTML, notation]}}
 
-The tags, wrapped in ((angle brackets)) (`<` and `>`, the symbols for _less than_ and _greater than_), provide information about the ((structure)) of the document. The other ((text)) is just plain text.
+As tags, envolvidas em ((colchetes angulares)) (`<` e `>`, os símbolos de _menor que_ e _maior que_), fornecem informações sobre a ((estrutura)) do documento. O outro ((texto)) é apenas texto simples.
 
 {{index doctype, version}}
 
-The document starts with `<!doctype html>`, which tells the browser to interpret the page as _modern_ HTML, as opposed to obsolete styles used in the past.
+O documento começa com `<!doctype html>`, que diz ao navegador para interpretar a página como HTML _moderno_, em oposição a estilos obsoletos usados no passado.
 
 {{index "head (HTML tag)", "body (HTML tag)", "title (HTML tag)", "h1 (HTML tag)", "p (HTML tag)"}}
 
-HTML documents have a head and a body. The head contains information _about_ the document, and the body contains the document itself. In this case, the head declares that the title of this document is "My home page" and that it uses the UTF-8 encoding, which is a way to encode Unicode text as binary data. The document's body contains a heading (`<h1>`, meaning "heading 1"—`<h2>` to `<h6>` produce subheadings) and two ((paragraph))s (`<p>`).
+Documentos HTML têm um cabeçalho (head) e um corpo (body). O cabeçalho contém informações _sobre_ o documento, e o corpo contém o documento em si. Neste caso, o cabeçalho declara que o título deste documento é "My home page" e que usa a codificação UTF-8, que é uma forma de codificar texto Unicode como dados binários. O corpo do documento contém um cabeçalho (`<h1>`, significando "cabeçalho 1" — `<h2>` a `<h6>` produzem subcabeçalhos) e dois ((parágrafo))s (`<p>`).
 
 {{index "href attribute", "a (HTML tag)"}}
 
-Tags come in several forms. An ((element)), such as the body, a paragraph, or a link, is started by an _((opening tag))_ like `<p>` and ended by a _((closing tag))_ like `</p>`. Some opening tags, such as the one for the ((link)) (`<a>`), contain extra information in the form of `name="value"` pairs. These are called _((attribute))s_. In this case, the destination of the link is indicated with `href="http://eloquentjavascript.net"`, where `href` stands for "hypertext reference".
+Tags vêm em diversas formas. Um ((elemento)), como o corpo, um parágrafo ou um link, é iniciado por uma _((tag de abertura))_ como `<p>` e terminado por uma _((tag de fechamento))_ como `</p>`. Algumas tags de abertura, como a de ((link)) (`<a>`), contêm informações extras na forma de pares `nome="valor"`. Estes são chamados de _((atributo))s_. Neste caso, o destino do link é indicado com `href="http://eloquentjavascript.net"`, onde `href` significa "referência de hipertexto".
 
 {{index "src attribute", "self-closing tag", "img (HTML tag)"}}
 
-Some kinds of ((tag))s do not enclose anything and thus do not need to be closed. The metadata tag `<meta charset="utf-8">` is an example of this.
+Alguns tipos de ((tag))s não envolvem nada e portanto não precisam ser fechadas. A tag de metadados `<meta charset="utf-8">` é um exemplo disso.
 
 {{index [escaping, "in HTML"]}}
 
-To be able to include ((angle brackets)) in the text of a document even though they have a special meaning in HTML, yet another form of special notation has to be introduced. A plain opening angle bracket is written as `&lt;` ("less than"), and a closing bracket is written as `&gt;` ("greater than"). In HTML, an ampersand (`&`) character followed by a name or character code and a semicolon (`;`) is called an _((entity))_ and will be replaced by the character it encodes.
+Para poder incluir ((colchetes angulares)) no texto de um documento, mesmo que eles tenham um significado especial em HTML, mais uma forma de notação especial precisa ser introduzida. Um colchete angular de abertura simples é escrito como `&lt;` ("menor que"), e um de fechamento como `&gt;` ("maior que"). Em HTML, um caractere de e-comercial (`&`) seguido por um nome ou código de caractere e um ponto e vírgula (`;`) é chamado de _((entidade))_ e será substituído pelo caractere que codifica.
 
 {{index ["backslash character", "in strings"], "ampersand character", "double-quote character"}}
 
-This is analogous to the way backslashes are used in JavaScript strings. Since this mechanism gives ampersand characters a special meaning too, they need to be escaped as `&amp;`. Inside attribute values, which are wrapped in double quotes, `&quot;` can be used to insert a literal quote character.
+Isso é análogo à forma como barras invertidas são usadas em strings JavaScript. Como esse mecanismo dá aos caracteres de e-comercial um significado especial também, eles precisam ser escapados como `&amp;`. Dentro de valores de atributos, que são envolvidos em aspas duplas, `&quot;` pode ser usado para inserir um caractere de aspas literal.
 
 {{index "error tolerance", parsing}}
 
-HTML is parsed in a remarkably error-tolerant way. When tags that should be there are missing, the browser automatically adds them. The way this is done has been standardized, and you can rely on all modern browsers to do it in the same way.
+HTML é analisado de forma notavelmente tolerante a erros. Quando tags que deveriam estar lá estão faltando, o navegador as adiciona automaticamente. A forma como isso é feito foi padronizada, e você pode confiar que todos os navegadores modernos farão da mesma forma.
 
-The following document will be treated just like the one shown previously:
+O documento a seguir será tratado da mesma forma que o mostrado anteriormente:
 
 ```{lang: "html"}
 <!doctype html>
@@ -172,21 +172,21 @@ The following document will be treated just like the one shown previously:
 
 {{index "title (HTML tag)", "head (HTML tag)", "body (HTML tag)", "html (HTML tag)"}}
 
-The `<html>`, `<head>`, and `<body>` tags are completely gone. The browser knows that `<meta>` and `<title>` belong in the head and that `<h1>` means the body has started. Furthermore, I am no longer explicitly closing the paragraphs, since opening a new paragraph or ending the document will close them implicitly. The quotes around the attribute values are also gone.
+As tags `<html>`, `<head>` e `<body>` sumiram completamente. O navegador sabe que `<meta>` e `<title>` pertencem ao cabeçalho e que `<h1>` significa que o corpo começou. Além disso, não estou mais fechando explicitamente os parágrafos, já que abrir um novo parágrafo ou terminar o documento os fechará implicitamente. As aspas em torno dos valores dos atributos também foram removidas.
 
-This book will usually omit the `<html>`, `<head>`, and `<body>` tags from examples to keep them short and free of clutter. I _will_ close tags and include quotes around attributes, though.
+Este livro geralmente omitirá as tags `<html>`, `<head>` e `<body>` dos exemplos para mantê-los curtos e livres de desordem. Mas eu _vou_ fechar tags e incluir aspas em torno de atributos.
 
 {{index browser}}
 
-I will also usually omit the ((doctype)) and `charset` declaration. Don't take this as encouragement to drop these from HTML documents. Browsers will often do ridiculous things when you forget them. Consider the doctype and the `charset` metadata to be implicitly present in examples, even when they are not actually shown in the text.
+Também geralmente omitirei a declaração de ((doctype)) e de `charset`. Não tome isso como incentivo para removê-las de documentos HTML. Navegadores frequentemente farão coisas ridículas quando você as esquece. Considere o doctype e os metadados de `charset` como implicitamente presentes nos exemplos, mesmo quando não são mostrados no texto.
 
 {{id script_tag}}
 
-## HTML and JavaScript
+## HTML e JavaScript
 
 {{index [JavaScript, "in HTML"], "script (HTML tag)"}}
 
-In the context of this book, the most important HTML tag is `<script>`, which allows us to include a piece of JavaScript in a document.
+No contexto deste livro, a tag HTML mais importante é `<script>`, que nos permite incluir um trecho de JavaScript em um documento.
 
 ```{lang: "html"}
 <h1>Testing alert</h1>
@@ -195,30 +195,30 @@ In the context of this book, the most important HTML tag is `<script>`, which al
 
 {{index "alert function", timeline}}
 
-Such a script will run as soon as its `<script>` tag is encountered while the browser reads the HTML. This page will pop up a dialog when opened—the `alert` function resembles `prompt`, in that it pops up a little window, but only shows a message without asking for input.
+Tal script será executado assim que sua tag `<script>` for encontrada enquanto o navegador lê o HTML. Esta página exibirá um diálogo quando aberta — a função `alert` se assemelha a `prompt`, pois abre uma pequena janela, mas apenas mostra uma mensagem sem pedir entrada.
 
 {{index "src attribute"}}
 
-Including large programs directly in HTML documents is often impractical. The `<script>` tag can be given an `src` attribute  to fetch a script file (a text file containing a JavaScript program) from a URL.
+Incluir programas grandes diretamente em documentos HTML é frequentemente impraticável. A tag `<script>` pode receber um atributo `src` para buscar um arquivo de script (um arquivo de texto contendo um programa JavaScript) de uma URL.
 
 ```{lang: "html"}
 <h1>Testing alert</h1>
 <script src="code/hello.js"></script>
 ```
 
-The _code/hello.js_ file included here contains the same program—`alert("hello!")`. When an HTML page references other URLs as part of itself, such as an image file or a script, web browsers will retrieve them immediately and include them in the page.
+O arquivo _code/hello.js_ incluído aqui contém o mesmo programa — `alert("hello!")`. Quando uma página HTML referencia outras URLs como parte de si mesma, como um arquivo de imagem ou um script, navegadores web as recuperarão imediatamente e as incluirão na página.
 
 {{index "script (HTML tag)", "closing tag"}}
 
-A script tag must always be closed with `</script>`, even if it refers to a script file and doesn't contain any code. If you forget this, the rest of the page will be interpreted as part of the script.
+Uma tag de script deve sempre ser fechada com `</script>`, mesmo que faça referência a um arquivo de script e não contenha nenhum código. Se você esquecer disso, o restante da página será interpretado como parte do script.
 
 {{index "relative path", dependency}}
 
-You can load ((ES modules)) (see [Chapter ?](modules#es)) in the browser by giving your script tag a `type="module"` attribute. Such modules can depend on other modules by using ((URL))s relative to themselves as module names in `import` declarations.
+Você pode carregar ((módulos ES)) (veja [Capítulo ?](modules#es)) no navegador dando à sua tag de script um atributo `type="module"`. Tais módulos podem depender de outros módulos usando ((URL))s relativas a si mesmos como nomes de módulo em declarações `import`.
 
 {{index "button (HTML tag)", "onclick attribute"}}
 
-Some attributes can also contain a JavaScript program. The `<button>` tag (which shows up as a button) supports an `onclick` attribute. The attribute's value will be run whenever the button is clicked.
+Alguns atributos também podem conter um programa JavaScript. A tag `<button>` (que aparece como um botão) suporta um atributo `onclick`. O valor do atributo será executado sempre que o botão for clicado.
 
 ```{lang: "html"}
 <button onclick="alert('Boom!');">DO NOT PRESS</button>
@@ -226,42 +226,42 @@ Some attributes can also contain a JavaScript program. The `<button>` tag (which
 
 {{index "single-quote character", [escaping, "in HTML"]}}
 
-Note that I had to use single quotes for the string in the `onclick` attribute because double quotes are already used to quote the whole attribute. I could also have used `&quot;` to escape the inner quotes.
+Note que tive que usar aspas simples para a string no atributo `onclick` porque aspas duplas já estão sendo usadas para delimitar o atributo inteiro. Eu também poderia ter usado `&quot;` para escapar as aspas internas.
 
-## In the sandbox
+## Na sandbox
 
 {{index "malicious script", "World Wide Web", browser, website, security}}
 
-Running programs downloaded from the ((internet)) is potentially dangerous. You don't know much about the people behind most sites you visit, and they do not necessarily mean well. Running programs by malicious actors is how you get your computer infected by ((virus))es, your data stolen, and your accounts hacked.
+Executar programas baixados da ((internet)) é potencialmente perigoso. Você não sabe muito sobre as pessoas por trás da maioria dos sites que visita, e elas não necessariamente têm boas intenções. Executar programas de agentes maliciosos é como você tem seu computador infectado por ((vírus)), seus dados roubados e suas contas hackeadas.
 
-Yet the attraction of the web is that you can browse it without necessarily ((trust))ing all the pages you visit. This is why browsers severely limit the things a JavaScript program may do: it can't look at the files on your computer or modify anything not related to the web page it was embedded in.
+No entanto, a atração da web é que você pode navegá-la sem necessariamente ((confiar)) em todas as páginas que visita. É por isso que navegadores limitam severamente as coisas que um programa JavaScript pode fazer: ele não pode olhar os arquivos no seu computador ou modificar qualquer coisa não relacionada à página web em que está incorporado.
 
 {{index isolation}}
 
-Isolating a programming environment in this way is called _((sandbox))ing_, the idea being that the program is harmlessly playing in a sandbox. But you should imagine this particular kind of sandbox as having a cage of thick steel bars over it so that the programs playing in it can't actually get out.
+Isolar um ambiente de programação dessa forma é chamado de _((sandbox))_, a ideia sendo que o programa está brincando inofensivamente em uma caixa de areia. Mas você deve imaginar esse tipo particular de caixa de areia como tendo uma gaiola de barras de aço grossas sobre ela, para que os programas brincando nela não possam realmente escapar.
 
-The hard part of sandboxing is allowing programs enough room to be useful while restricting them from doing anything dangerous. Lots of useful functionality, such as communicating with other servers or reading the content of the copy-paste ((clipboard)), can also be used for problematic, ((privacy))-invading purposes.
+A parte difícil do sandboxing é permitir que programas tenham espaço suficiente para serem úteis enquanto os restringe de fazer qualquer coisa perigosa. Muitas funcionalidades úteis, como se comunicar com outros servidores ou ler o conteúdo da ((área de transferência)), também podem ser usadas para fins problemáticos que invadem a ((privacidade)).
 
 {{index leak, exploit, security}}
 
-Every now and then, someone comes up with a new way to circumvent the limitations of a ((browser)) and do something harmful, ranging from leaking minor private information to taking over the whole machine on which the browser is running. The browser developers respond by fixing the hole, and all is well again—until the next problem is discovered, and hopefully publicized rather than secretly exploited by some government agency or criminal organization.
+De vez em quando, alguém aparece com uma nova forma de contornar as limitações de um ((navegador)) e fazer algo prejudicial, variando de vazar informações privadas menores a tomar controle da máquina inteira em que o navegador está rodando. Os desenvolvedores do navegador respondem corrigindo a falha, e tudo fica bem novamente — até que o próximo problema seja descoberto, e esperançosamente divulgado publicamente em vez de secretamente explorado por alguma agência governamental ou organização criminosa.
 
-## Compatibility and the browser wars
+## Compatibilidade e as guerras dos navegadores
 
 {{index Microsoft, "World Wide Web"}}
 
-In the early stages of the web, a browser called ((Mosaic)) dominated the market. After a few years, the balance shifted to ((Netscape)), which was, in turn, largely supplanted by Microsoft's ((Internet Explorer)). At any point where a single ((browser)) was dominant, that browser's vendor would feel entitled to unilaterally invent new features for the web. Since most users used the most popular browser, ((website))s would simply start using those features—never mind the other browsers.
+Nos estágios iniciais da web, um navegador chamado ((Mosaic)) dominava o mercado. Depois de alguns anos, o equilíbrio mudou para o ((Netscape)), que foi, por sua vez, amplamente suplantado pelo ((Internet Explorer)) da Microsoft. Em qualquer momento em que um único ((navegador)) era dominante, o fabricante desse navegador se sentia no direito de inventar unilateralmente novas funcionalidades para a web. Como a maioria dos usuários usava o navegador mais popular, ((sites)) simplesmente começavam a usar essas funcionalidades — sem se importar com os outros navegadores.
 
-This was the dark age of ((compatibility)), often called the _((browser wars))_. Web developers were left with not one unified web but two or three incompatible platforms. To make things worse, the browsers in use around 2003 were all full of ((bug))s, and of course the bugs were different for each ((browser)). Life was hard for people writing web pages.
+Essa foi a era sombria da ((compatibilidade)), frequentemente chamada de _((guerras dos navegadores))_. Desenvolvedores web ficaram com não uma web unificada, mas duas ou três plataformas incompatíveis. Para piorar as coisas, os navegadores em uso por volta de 2003 eram todos cheios de ((bug))s, e é claro que os bugs eram diferentes para cada ((navegador)). A vida era difícil para pessoas que escreviam páginas web.
 
 {{index Apple, "Internet Explorer", Mozilla}}
 
-Mozilla ((Firefox)), a not-for-profit offshoot of ((Netscape)), challenged Internet Explorer's position in the late 2000s. Because ((Microsoft)) was not particularly interested in staying competitive at the time, Firefox took a lot of market share away from it. Around the same time, ((Google)) introduced its ((Chrome)) browser and Apple's ((Safari)) browser gained popularity, leading to a situation where there were four major players, rather than one.
+O Mozilla ((Firefox)), uma ramificação sem fins lucrativos do ((Netscape)), desafiou a posição do Internet Explorer no final dos anos 2000. Como a ((Microsoft)) não estava particularmente interessada em se manter competitiva na época, o Firefox tomou grande parte de sua fatia de mercado. Mais ou menos na mesma época, o ((Google)) lançou seu navegador ((Chrome)) e o ((Safari)) da Apple ganhou popularidade, levando a uma situação em que havia quatro grandes participantes, em vez de um.
 
 {{index compatibility}}
 
-The new players had a more serious attitude toward ((standards)) and better ((engineering)) practices, giving us less incompatibility and fewer ((bug))s. Microsoft, seeing its market share crumble, came around and adopted these attitudes in its Edge browser, which replaced Internet Explorer. If you are starting to learn web development today, consider yourself lucky. The latest versions of the major browsers behave quite uniformly and have relatively few bugs.
+Os novos participantes tinham uma atitude mais séria em relação a ((padrões)) e melhores práticas de ((engenharia)), nos dando menos incompatibilidade e menos ((bug))s. A Microsoft, vendo sua participação de mercado desmoronar, adotou essas atitudes em seu navegador Edge, que substituiu o Internet Explorer. Se você está começando a aprender desenvolvimento web hoje, considere-se sortudo. As versões mais recentes dos principais navegadores se comportam de forma bastante uniforme e têm relativamente poucos bugs.
 
-Unfortunately, with Firefox's market share getting ever smaller, and Edge becoming just a wrapper around Chrome's core in 2018, this uniformity might once again take the form of a single vendor—Google, this time—having enough control over the browser market to push its idea of what the web should look like onto the rest of the world.
+Infelizmente, com a participação de mercado do Firefox ficando cada vez menor, e o Edge se tornando apenas um invólucro em torno do núcleo do Chrome em 2018, essa uniformidade pode novamente tomar a forma de um único fornecedor — Google, dessa vez — tendo controle suficiente sobre o mercado de navegadores para impor sua ideia do que a web deveria ser ao resto do mundo.
 
-For what it is worth, this long chain of historical events and accidents has produced the web platform that we have today. In the next chapters, we are going to write programs for it.
+Pelo que vale, essa longa cadeia de eventos históricos e acidentes produziu a plataforma web que temos hoje. Nos próximos capítulos, vamos escrever programas para ela.

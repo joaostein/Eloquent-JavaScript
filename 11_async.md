@@ -1,11 +1,11 @@
 {{meta {load_files: ["code/hangar2.js", "code/chapter/11_async.js"], zip: "node/html"}}}
 
-# Asynchronous Programming
+# Programação Assíncrona
 
 {{quote {author: "Laozi", title: "Tao Te Ching", chapter: true}
 
-Who can wait quietly while the mud settles?\
-Who can remain still until the moment of action?
+Quem consegue esperar quieto enquanto a lama assenta?\
+Quem consegue permanecer imóvel até o momento da ação?
 
 quote}}
 
@@ -13,67 +13,67 @@ quote}}
 
 {{figure {url: "img/chapter_picture_11.jpg", alt: "Illustration showing two crows on a tree branch", chapter: framed}}}
 
-The central part of a computer, the part that carries out the individual steps that make up our programs, is called the _((processor))_. The programs we have seen so far will keep the processor busy until they have finished their work. The speed at which something like a loop that manipulates numbers can be executed depends pretty much entirely on the speed of the computer's processor and memory.
+A parte central de um computador, a parte que executa os passos individuais que compõem nossos programas, é chamada de _((processador))_. Os programas que vimos até agora manterão o processador ocupado até terminarem seu trabalho. A velocidade com que algo como um *loop* que manipula números pode ser executado depende quase inteiramente da velocidade do processador e da memória do computador.
 
 {{index [memory, speed], [network, speed]}}
 
-But many programs interact with things outside of the processor. For example, they may communicate over a computer network or request data from the ((hard disk))—which is a lot slower than getting it from memory.
+Mas muitos programas interagem com coisas fora do processador. Por exemplo, podem se comunicar por uma rede de computadores ou solicitar dados do ((disco rígido)) — que é muito mais lento do que obtê-los da memória.
 
-When such a thing is happening, it would be a shame to let the processor sit idle—there might be some other work it could do in the meantime. In part, this is handled by your operating system, which will switch the processor between multiple running programs. But that doesn't help when we want a _single_ program to be able to make progress while it is waiting for a network request.
+Quando tal coisa está acontecendo, seria uma pena deixar o processador ocioso — pode haver outro trabalho que ele poderia fazer enquanto isso. Em parte, isso é tratado pelo seu sistema operacional, que alternará o processador entre múltiplos programas em execução. Mas isso não ajuda quando queremos que um _único_ programa consiga progredir enquanto espera por uma requisição de rede.
 
-## Asynchronicity
+## Assincronicidade
 
 {{index "synchronous programming"}}
 
-In a _synchronous_ programming model, things happen one at a time. When you call a function that performs a long-running action, it returns only when the action has finished and it can return the result. This stops your program for the time the action takes.
+Em um modelo de programação _síncrona_, as coisas acontecem uma de cada vez. Quando você chama uma função que realiza uma ação de longa duração, ela retorna somente quando a ação terminou e pode retornar o resultado. Isso paralisa seu programa pelo tempo que a ação leva.
 
 {{index "asynchronous programming"}}
 
-An _asynchronous_ model allows multiple things to happen at the same time. When you start an action, your program continues to run. When the action finishes, the program is informed and gets access to the result (for example, the data read from disk).
+Um modelo _assíncrono_ permite que múltiplas coisas aconteçam ao mesmo tempo. Quando você inicia uma ação, seu programa continua executando. Quando a ação termina, o programa é informado e obtém acesso ao resultado (por exemplo, os dados lidos do disco).
 
-We can compare synchronous and asynchronous programming using a small example: a program that makes two requests over the ((network)) and then combines the results.
+Podemos comparar a programação síncrona e assíncrona usando um pequeno exemplo: um programa que faz duas requisições pela ((rede)) e depois combina os resultados.
 
 {{index "synchronous programming"}}
 
-In a synchronous environment, where the request function returns only after it has done its work, the easiest way to perform this task is to make the requests one after the other. This has the drawback that the second request will be started only when the first has finished. The total time taken will be at least the sum of the two response times.
+Em um ambiente síncrono, onde a função de requisição retorna somente depois de ter feito seu trabalho, a maneira mais fácil de realizar essa tarefa é fazer as requisições uma após a outra. Isso tem a desvantagem de que a segunda requisição só será iniciada quando a primeira terminar. O tempo total levado será no mínimo a soma dos dois tempos de resposta.
 
 {{index parallelism}}
 
-The solution to this problem, in a synchronous system, is to start additional ((thread))s of control. A _thread_ is another running program whose execution may be interleaved with other programs by the operating system—since most modern computers contain multiple processors, multiple threads may even run at the same time, on different processors. A second thread could start the second request, and then both threads wait for their results to come back, after which they resynchronize to combine their results.
+A solução para esse problema, em um sistema síncrono, é iniciar ((thread))s adicionais de controle. Uma _thread_ é outro programa em execução cuja execução pode ser intercalada com outros programas pelo sistema operacional — já que a maioria dos computadores modernos contém múltiplos processadores, múltiplas threads podem até executar ao mesmo tempo, em processadores diferentes. Uma segunda thread poderia iniciar a segunda requisição, e então ambas as threads esperam seus resultados voltarem, após o que se ressincronizam para combinar seus resultados.
 
 {{index CPU, blocking, "asynchronous programming", timeline, "callback function"}}
 
-In the following diagram, the thick lines represent time the program spends running normally, and the thin lines represent time spent waiting for the network. In the synchronous model, the time taken by the network is _part_ of the timeline for a given thread of control. In the asynchronous model, starting a network action allows the program to continue running while the network communication happens alongside it, notifying the program when it is finished.
+No diagrama a seguir, as linhas grossas representam o tempo que o programa gasta executando normalmente, e as linhas finas representam o tempo gasto esperando pela rede. No modelo síncrono, o tempo gasto pela rede é _parte_ da linha do tempo para uma dada thread de controle. No modelo assíncrono, iniciar uma ação de rede permite que o programa continue executando enquanto a comunicação de rede acontece ao lado dele, notificando o programa quando terminar.
 
 {{figure {url: "img/control-io.svg", alt: "Diagram of showing control flow in synchronous and asynchronous programs. The first part shows a synchronous program, where the program's active and waiting phases all happen on a single, sequential line. The second part shows a multi-threaded synchronous program, with two parallel lines, on which the waiting parts happen alongside each other, causing the program to finish faster. The last part shows an asynchronous program, where the multiple asynchronous actions branch off from the main program, which at some point stops, and then resumes whenever the first thing it was waiting for finishes.",width: "8cm"}}}
 
 {{index ["control flow", asynchronous], "asynchronous programming", verbosity, performance}}
 
-Another way to describe the difference is that waiting for actions to finish is _implicit_ in the synchronous model, while it is _explicit_—under our control—in the asynchronous one.
+Outra maneira de descrever a diferença é que esperar por ações terminarem é _implícito_ no modelo síncrono, enquanto é _explícito_ — sob nosso controle — no assíncrono.
 
-Asynchronicity cuts both ways. It makes expressing programs that do not fit the straight-line model of control easier, but it can also make expressing programs that do follow a straight line more awkward. We'll see some ways to reduce this awkwardness later in the chapter.
+A assincronicidade corta para os dois lados. Ela facilita expressar programas que não se encaixam no modelo linear de controle, mas também pode tornar mais estranho expressar programas que seguem uma linha reta. Veremos algumas maneiras de reduzir essa estranheza mais adiante no capítulo.
 
-Both prominent JavaScript programming platforms—((browser))s and ((Node.js))—make operations that might take a while asynchronous, rather than relying on ((thread))s. Since programming with threads is notoriously hard (understanding what a program does is much more difficult when it's doing multiple things at once), this is generally considered a good thing.
+Ambas as plataformas proeminentes de programação JavaScript — ((browser))s e ((Node.js)) — tornam assíncronas operações que podem levar algum tempo, em vez de depender de ((thread))s. Como programar com threads é notoriamente difícil (entender o que um programa faz é muito mais difícil quando ele faz múltiplas coisas ao mesmo tempo), isso é geralmente considerado algo bom.
 
 ## Callbacks
 
 {{indexsee [function, callback], "callback function"}}
 
-One approach to ((asynchronous programming)) is to make functions that need to wait for something take an extra argument, a _((callback function))_. The asynchronous function starts a process, sets things up so that the callback function is called when the process finishes, and then returns.
+Uma abordagem à ((programação assíncrona)) é fazer com que funções que precisam esperar por algo recebam um argumento extra, uma _((função de callback))_. A função assíncrona inicia um processo, configura as coisas para que a função de *callback* seja chamada quando o processo terminar e então retorna.
 
 {{index "setTimeout function", waiting}}
 
-As an example, the `setTimeout` function, available both in Node.js and in browsers, waits a given number of milliseconds and then calls a function.
+Como exemplo, a função `setTimeout`, disponível tanto no Node.js quanto em *browsers*, espera um dado número de milissegundos e então chama uma função.
 
 ```{test: no}
 setTimeout(() => console.log("Tick"), 500);
 ```
 
-Waiting is not generally important work, but it can be very useful when you need to arrange for something to happen at a certain time or check whether some action is taking longer than expected.
+Esperar geralmente não é um trabalho importante, mas pode ser muito útil quando você precisa organizar algo para acontecer em um certo momento ou verificar se alguma ação está levando mais tempo do que o esperado.
 
 {{index "readTextFile function"}}
 
-Another example of a common asynchronous operation is reading a file from a device's storage. Imagine you have a function `readTextFile` that reads a file's content as a string and passes it to a callback function.
+Outro exemplo de uma operação assíncrona comum é ler um arquivo do armazenamento de um dispositivo. Imagine que você tem uma função `readTextFile` que lê o conteúdo de um arquivo como *string* e o passa para uma função de *callback*.
 
 ```
 readTextFile("shopping_list.txt", content => {
@@ -84,9 +84,9 @@ readTextFile("shopping_list.txt", content => {
 // → Bananas
 ```
 
-The `readTextFile` function is not part of standard JavaScript. We will see how to read files in the browser and in Node.js in later chapters.
+A função `readTextFile` não faz parte do JavaScript padrão. Veremos como ler arquivos no *browser* e no Node.js em capítulos posteriores.
 
-Performing multiple asynchronous actions in a row using callbacks means that you have to keep passing new functions to handle the ((continuation)) of the computation after the actions. An asynchronous function that compares two files and produces a boolean indicating whether their content is the same might look like this:
+Realizar múltiplas ações assíncronas em sequência usando *callbacks* significa que você precisa continuar passando novas funções para lidar com a ((continuação)) da computação após as ações. Uma função assíncrona que compara dois arquivos e produz um booleano indicando se o conteúdo deles é o mesmo poderia parecer assim:
 
 ```
 function compareFiles(fileA, fileB, callback) {
@@ -98,21 +98,21 @@ function compareFiles(fileA, fileB, callback) {
 }
 ```
 
-This style of programming is workable, but the indentation level increases with each asynchronous action because you end up in another function. Doing more complicated things, such as wrapping asynchronous actions in a loop, can get awkward.
+Esse estilo de programação é viável, mas o nível de indentação aumenta a cada ação assíncrona porque você acaba dentro de outra função. Fazer coisas mais complicadas, como envolver ações assíncronas em um *loop*, pode ficar estranho.
 
-In a way, asynchronicity is _contagious_. Any function that calls a function that works asynchronously must itself be asynchronous, using a callback or similar mechanism to deliver its result. Calling a callback is somewhat more involved and error prone than simply returning a value, so needing to structure large parts of your program that way is not great.
+De certa forma, a assincronicidade é _contagiosa_. Qualquer função que chama uma função que funciona assincronamente deve ela própria ser assíncrona, usando um *callback* ou mecanismo semelhante para entregar seu resultado. Chamar um *callback* é um pouco mais complexo e propenso a erros do que simplesmente retornar um valor, então precisar estruturar grandes partes do seu programa dessa forma não é ótimo.
 
 ## Promises
 
-A slightly different way to build an asynchronous program is to have asynchronous functions return an object that represents its (future) result instead of passing around callback functions. This way, such functions actually return something meaningful, and the shape of the program more closely resembles that of synchronous programs.
+Uma maneira ligeiramente diferente de construir um programa assíncrono é ter funções assíncronas que retornam um objeto que representa seu resultado (futuro) em vez de passar funções de *callback*. Dessa forma, tais funções realmente retornam algo significativo, e o formato do programa se assemelha mais ao de programas síncronos.
 
 {{index "Promise class", "asynchronous programming", "resolving (a promise)", "then method", "callback function"}}
 
-This is what the standard class `Promise` is for. A _promise_ is a receipt representing a value that may not be available yet. It provides a `then` method that allows you to register a function that should be called when the action for which it is waiting finishes. When the promise is _resolved_, meaning its value becomes available, such functions (there can be multiple) are called with the result value. It is possible to call `then` on a promise that has already resolved—your function will still be called.
+É para isso que serve a classe padrão `Promise`. Uma _promise_ é um recibo representando um valor que pode não estar disponível ainda. Ela fornece um método `then` que permite registrar uma função que deve ser chamada quando a ação que ela aguarda terminar. Quando a *promise* é _resolvida_, significando que seu valor se torna disponível, tais funções (pode haver múltiplas) são chamadas com o valor do resultado. É possível chamar `then` em uma *promise* que já foi resolvida — sua função ainda será chamada.
 
 {{index "Promise.resolve function"}}
 
-The easiest way to create a promise is by calling `Promise.resolve`. This function ensures that the value you give it is wrapped in a promise. If it's already a promise, it is simply returned. Otherwise, you get a new promise that immediately resolves with your value as its result.
+A maneira mais fácil de criar uma *promise* é chamando `Promise.resolve`. Essa função garante que o valor que você dá a ela seja envolvido em uma *promise*. Se já for uma *promise*, é simplesmente retornada. Caso contrário, você obtém uma nova *promise* que resolve imediatamente com seu valor como resultado.
 
 ```
 let fifteen = Promise.resolve(15);
@@ -122,9 +122,9 @@ fifteen.then(value => console.log(`Got ${value}`));
 
 {{index "Promise class"}}
 
-To create a promise that does not immediately resolve, you can use `Promise` as a constructor. It has a somewhat odd interface: the constructor expects a function as its argument, which it immediately calls, passing it a function that it can use to resolve the promise.
+Para criar uma *promise* que não resolve imediatamente, você pode usar `Promise` como construtor. Ele tem uma interface um tanto estranha: o construtor espera uma função como argumento, que ele chama imediatamente, passando a ela uma função que ela pode usar para resolver a *promise*.
 
-For example, this is how you could create a promise-based interface for the `readTextFile` function:
+Por exemplo, é assim que você poderia criar uma interface baseada em *promises* para a função `readTextFile`:
 
 {{index "textFile function"}}
 
@@ -138,13 +138,13 @@ function textFile(filename) {
 textFile("plans.txt").then(console.log);
 ```
 
-Note how, in contrast to callback-style functions, this asynchronous function returns a meaningful value—a promise to give you the contents of the file at some point in the future.
+Note como, em contraste com funções no estilo *callback*, esta função assíncrona retorna um valor significativo — uma *promise* de dar a você o conteúdo do arquivo em algum momento no futuro.
 
 {{index "then method"}}
 
-A useful thing about the `then` method is that it itself returns another promise. This one resolves to the value returned by the callback function or, if that returned value is a promise, to the value that promise resolves to. Thus, you can “chain” multiple calls to `then` together to set up a sequence of asynchronous actions.
+Uma coisa útil sobre o método `then` é que ele próprio retorna outra *promise*. Esta resolve para o valor retornado pela função de *callback* ou, se o valor retornado for uma *promise*, para o valor para o qual essa *promise* resolve. Assim, você pode "encadear" múltiplas chamadas a `then` para configurar uma sequência de ações assíncronas.
 
-This function, which reads a file full of filenames and returns the content of a random file in that list, shows this kind of asynchronous promise pipeline:
+Esta função, que lê um arquivo cheio de nomes de arquivos e retorna o conteúdo de um arquivo aleatório naquela lista, mostra esse tipo de *pipeline* assíncrono de *promises*:
 
 ```
 function randomFile(listFile) {
@@ -155,11 +155,11 @@ function randomFile(listFile) {
 }
 ```
 
-The function returns the result of this chain of `then` calls. The initial promise fetches the list of files as a string. The first `then` call transforms that string into an array of lines, producing a new promise. The second `then` call picks a random line from that, producing a third promise that yields a single filename. The final `then` call reads this file, so the result of the function as a whole is a promise that returns the content of a random file.
+A função retorna o resultado dessa cadeia de chamadas `then`. A *promise* inicial busca a lista de arquivos como *string*. A primeira chamada `then` transforma essa *string* em um *array* de linhas, produzindo uma nova *promise*. A segunda chamada `then` escolhe uma linha aleatória, produzindo uma terceira *promise* que contém um único nome de arquivo. A chamada `then` final lê esse arquivo, então o resultado da função como um todo é uma *promise* que retorna o conteúdo de um arquivo aleatório.
 
-In this code, the functions used in the first two `then` calls return a regular value that will immediately be passed into the promise returned by `then` when the function returns. The last `then` call returns a promise (`textFile(filename)`), making it an actual asynchronous step.
+Nesse código, as funções usadas nas duas primeiras chamadas `then` retornam um valor regular que será imediatamente passado para a *promise* retornada por `then` quando a função retornar. A última chamada `then` retorna uma *promise* (`textFile(filename)`), tornando-a um passo assíncrono real.
 
-It would also have been possible to perform all these steps inside a single `then` callback, since only the last step is actually asynchronous. But the kind of `then` wrappers that only do some synchronous data transformation are often useful, such as when you want to return a promise that produces a processed version of some asynchronous result.
+Também teria sido possível realizar todos esses passos dentro de um único *callback* `then`, pois apenas o último passo é realmente assíncrono. Mas o tipo de wrappers `then` que apenas fazem alguma transformação síncrona de dados é frequentemente útil, como quando se quer retornar uma *promise* que produz uma versão processada de algum resultado assíncrono.
 
 ```
 function jsonFile(filename) {
@@ -169,19 +169,19 @@ function jsonFile(filename) {
 jsonFile("package.json").then(console.log);
 ```
 
-Generally, it is useful to think of a promise as a device that lets code ignore the question of when a value is going to arrive. A normal value has to actually exist before we can reference it. A promised value is a value that _might_ already be there or might appear at some point in the future. Computations defined in terms of promises, by wiring them together with `then` calls, are executed asynchronously as their inputs become available.
+Geralmente, é útil pensar em uma *promise* como um dispositivo que permite ao código ignorar a questão de quando um valor vai chegar. Um valor normal precisa realmente existir antes de podermos referenciá-lo. Um valor prometido é um valor que _pode_ já estar lá ou pode aparecer em algum ponto no futuro. Computações definidas em termos de *promises*, conectando-as com chamadas `then`, são executadas assincronamente conforme suas entradas se tornam disponíveis.
 
-## Failure
+## Falha
 
 {{index "exception handling"}}
 
-Regular JavaScript computations can fail by throwing an exception. Asynchronous computations often need something like that. A network request may fail, a file may not exist, or some code that is part of the asynchronous computation may throw an exception.
+Computações JavaScript regulares podem falhar lançando uma exceção. Computações assíncronas frequentemente precisam de algo assim. Uma requisição de rede pode falhar, um arquivo pode não existir, ou algum código que faz parte da computação assíncrona pode lançar uma exceção.
 
 {{index "callback function", error}}
 
-One of the most pressing problems with the callback style of asynchronous programming is that it makes it extremely difficult to ensure failures are properly reported to the callbacks.
+Um dos problemas mais urgentes com o estilo *callback* de programação assíncrona é que torna extremamente difícil garantir que falhas sejam adequadamente reportadas aos *callbacks*.
 
-A common convention is to use the first argument to the callback to indicate that the action failed, and the second to pass the value produced by the action when it was successful.
+Uma convenção comum é usar o primeiro argumento do *callback* para indicar que a ação falhou, e o segundo para passar o valor produzido pela ação quando foi bem-sucedida.
 
 ```
 someAsyncFunction((error, value) => {
@@ -190,29 +190,29 @@ someAsyncFunction((error, value) => {
 });
 ```
 
-Such callback functions must always check whether they received an exception and make sure that any problems they cause, including exceptions thrown by functions they call, are caught and given to the right function.
+Tais funções de *callback* devem sempre verificar se receberam uma exceção e garantir que quaisquer problemas que causem, incluindo exceções lançadas por funções que chamam, sejam capturados e dados à função correta.
 
 {{index "rejecting (a promise)", "resolving (a promise)", "then method"}}
 
-Promises make this easier. They can be either resolved (the action finished successfully) or rejected (it failed). Resolve handlers (as registered with `then`) are called only when the action is successful, and rejections are propagated to the new promise returned by `then`. When a handler throws an exception, this automatically causes the promise produced by its `then` call to be rejected. If any element in a chain of asynchronous actions fails, the outcome of the whole chain is marked as rejected, and no success handlers are called beyond the point where it failed.
+*Promises* tornam isso mais fácil. Elas podem ser resolvidas (a ação terminou com sucesso) ou rejeitadas (ela falhou). Handlers de resolução (registrados com `then`) são chamados apenas quando a ação é bem-sucedida, e rejeições são propagadas para a nova *promise* retornada por `then`. Quando um handler lança uma exceção, isso automaticamente faz com que a *promise* produzida por sua chamada `then` seja rejeitada. Se qualquer elemento em uma cadeia de ações assíncronas falhar, o resultado da cadeia inteira é marcado como rejeitado, e nenhum handler de sucesso é chamado além do ponto onde falhou.
 
 {{index "Promise.reject function", "Promise class"}}
 
-Much like resolving a promise provides a value, rejecting one also provides a value, usually called the _reason_ of the rejection. When an exception in a handler function causes the rejection, the exception value is used as the reason. Similarly, when a handler returns a promise that is rejected, that rejection flows into the next promise. There's a `Promise.reject` function that creates a new, immediately rejected promise.
+Assim como resolver uma *promise* fornece um valor, rejeitar uma também fornece um valor, geralmente chamado de _razão_ da rejeição. Quando uma exceção em uma função handler causa a rejeição, o valor da exceção é usado como razão. Da mesma forma, quando um handler retorna uma *promise* que é rejeitada, essa rejeição flui para a próxima *promise*. Existe uma função `Promise.reject` que cria uma nova *promise* imediatamente rejeitada.
 
 {{index "catch method"}}
 
-To explicitly handle such rejections, promises have a `catch` method that registers a handler to be called when the promise is rejected, similar to how `then` handlers handle normal resolution. It's also very much like `then` in that it returns a new promise, which resolves to the original promise's value when that resolves normally and to the result of the `catch` handler otherwise. If a `catch` handler throws an error, the new promise is also rejected.
+Para lidar explicitamente com tais rejeições, *promises* possuem um método `catch` que registra um handler para ser chamado quando a *promise* é rejeitada, semelhante a como handlers `then` lidam com resolução normal. Também é muito parecido com `then` no sentido de que retorna uma nova *promise*, que resolve para o valor da *promise* original quando resolve normalmente e para o resultado do handler `catch` caso contrário. Se um handler `catch` lança um erro, a nova *promise* também é rejeitada.
 
 {{index "then method"}}
 
-As a shorthand, `then` also accepts a rejection handler as a second argument, so you can install both types of handlers in a single method call: `.then(acceptHandler, rejectHandler)`.
+Como atalho, `then` também aceita um handler de rejeição como segundo argumento, para que você possa instalar ambos os tipos de handlers em uma única chamada de método: `.then(acceptHandler, rejectHandler)`.
 
-A function passed to the `Promise` constructor receives a second argument, alongside the resolve function, which it can use to reject the new promise.
+Uma função passada ao construtor `Promise` recebe um segundo argumento, além da função de resolução, que pode usar para rejeitar a nova *promise*.
 
 {{index "textFile function"}}
 
-When our `readTextFile` function encounters a problem, it passes the error to its callback function as a second argument. Our `textFile` wrapper should actually check that argument so that a failure causes the promise it returns to be rejected.
+Quando nossa função `readTextFile` encontra um problema, ela passa o erro para sua função de *callback* como segundo argumento. Nosso wrapper `textFile` deveria na verdade verificar esse argumento para que uma falha faça a *promise* que retorna ser rejeitada.
 
 ```{includeCode: true}
 function textFile(filename) {
@@ -225,7 +225,7 @@ function textFile(filename) {
 }
 ```
 
-The chains of promise values created by calls to `then` and `catch` thus form a pipeline through which asynchronous values or failures move. Since such chains are created by registering handlers, each link has a success handler or a rejection handler (or both) associated with it. Handlers that don't match the type of outcome (success or failure) are ignored. Handlers that do match are called, and their outcome determines what kind of value comes next—success when they return a non-promise value, rejection when they throw an exception, and the outcome of the promise when they return a promise.
+As cadeias de valores de *promise* criadas por chamadas a `then` e `catch` formam assim um *pipeline* através do qual valores assíncronos ou falhas se movem. Como tais cadeias são criadas registrando handlers, cada elo tem um handler de sucesso ou um handler de rejeição (ou ambos) associado a ele. Handlers que não correspondem ao tipo de resultado (sucesso ou falha) são ignorados. Handlers que correspondem são chamados, e seu resultado determina que tipo de valor vem em seguida — sucesso quando retornam um valor que não é *promise*, rejeição quando lançam uma exceção, e o resultado da *promise* quando retornam uma *promise*.
 
 ```{test: no}
 new Promise((_, reject) => reject(new Error("Fail")))
@@ -239,39 +239,39 @@ new Promise((_, reject) => reject(new Error("Fail")))
 // → Handler 2: nothing
 ```
 
-The first `then` handler function isn't called because at that point of the pipeline the promise holds a rejection. The `catch` handler handles that rejection and returns a value, which is given to the second `then` handler function.
+A primeira função handler `then` não é chamada porque nesse ponto do *pipeline* a *promise* contém uma rejeição. O handler `catch` lida com essa rejeição e retorna um valor, que é dado à segunda função handler `then`.
 
 {{index "uncaught exception", "exception handling"}}
 
-Much like an uncaught exception is handled by the environment, JavaScript environments can detect when a promise rejection isn't handled and will report this as an error.
+Assim como uma exceção não capturada é tratada pelo ambiente, ambientes JavaScript podem detectar quando uma rejeição de *promise* não é tratada e reportarão isso como um erro.
 
 ## Carla
 
 {{index "Carla the crow"}}
 
-It's a sunny day in Berlin. The runway of the old, decommissioned airport is teeming with cyclists and inline skaters. In the grass near a garbage container, a flock of crows noisily mills about, trying to convince a group of tourists to part with their sandwiches.
+É um dia ensolarado em Berlim. A pista do antigo aeroporto desativado está repleta de ciclistas e patinadores. Na grama perto de um contêiner de lixo, um bando de corvos ruidosamente se movimenta, tentando convencer um grupo de turistas a abrir mão de seus sanduíches.
 
-One of the crows stands out—a large scruffy female with a few white feathers in her right wing. She is baiting people with a skill and confidence that suggest she's been doing this for a long time. When an elderly man is distracted by the antics of another crow, she casually swoops in, snatches his half-eaten bun from his hand, and sails away.
+Uma das corvos se destaca — uma fêmea grande e desgrenhada com algumas penas brancas na asa direita. Ela engana as pessoas com uma habilidade e confiança que sugerem que faz isso há muito tempo. Quando um senhor idoso é distraído pelas artimanhas de outra corvo, ela calmamente mergulha, agarra o pãozinho meio-comido da mão dele e voa embora.
 
-Contrary to the rest of the group, who look like they are happy to spend the day goofing around here, the large crow looks purposeful. Carrying her loot, she flies straight toward the roof of the hangar building, disappearing into an air vent.
+Ao contrário do resto do grupo, que parece feliz em passar o dia fazendo palhaçadas ali, a corvo grande parece determinada. Carregando seu espólio, ela voa direto para o telhado do prédio do hangar, desaparecendo em uma abertura de ventilação.
 
-Inside the building, you can hear an odd tapping sound—soft, but persistent. It comes from a narrow space under the roof of an unfinished stairwell. The crow is sitting there, surrounded by her stolen snacks, half a dozen smartphones (several of which are turned on), and a mess of cables. She rapidly taps the screen of one of the phones with her beak. Words are appearing on it. If you didn't know better, you'd think she was typing.
+Dentro do prédio, ouve-se um som estranho de batidas — suave, mas persistente. Ele vem de um espaço estreito sob o telhado de uma escadaria inacabada. A corvo está sentada ali, cercada por seus lanches roubados, meia dúzia de smartphones (vários dos quais estão ligados) e uma bagunça de cabos. Ela bate rapidamente na tela de um dos telefones com o bico. Palavras estão aparecendo nele. Se você não soubesse melhor, pensaria que ela está digitando.
 
-This crow is known to her peers as “cāāw-krö”. But since those sounds are poorly suited for human vocal chords, we'll refer to her as Carla.
+Essa corvo é conhecida por seus pares como "cāāw-krö". Mas como esses sons são pouco adequados para cordas vocais humanas, vamos nos referir a ela como Carla.
 
-Carla is a somewhat peculiar crow. In her youth, she was fascinated by human language, eavesdropping on people until she had a good grasp of what they were saying. Later in life, her interest shifted to human technology, and she started stealing phones to study them. Her current project is learning to program. The text she is typing in her hidden lab is, in fact, a piece of asynchronous JavaScript code.
+Carla é uma corvo um tanto peculiar. Na juventude, era fascinada pela linguagem humana, bisbilhotando as pessoas até ter um bom domínio do que diziam. Mais tarde na vida, seu interesse mudou para a tecnologia humana, e ela começou a roubar telefones para estudá-los. Seu projeto atual é aprender a programar. O texto que está digitando em seu laboratório escondido é, na verdade, um trecho de código JavaScript assíncrono.
 
-## Breaking In
+## Invadindo
 
 {{index "Carla the crow"}}
 
-Carla loves the internet. Annoyingly, the phone she is working on is about to run out of prepaid data. The building has a wireless network, but it requires a code to access.
+Carla adora a internet. Infelizmente, o telefone em que está trabalhando está prestes a ficar sem dados pré-pagos. O prédio tem uma rede sem fio, mas requer um código para acessar.
 
-Fortunately, the wireless routers in the building are 20 years old and poorly secured. Doing some research, Carla finds out that the network authentication mechanism has a flaw she can use. When joining the network, a device must send along the correct six-digit passcode. The access point will reply with a success or failure message depending on whether the right code is provided. However, when sending a partial code (say, only three digits), the response is different based on whether those digits are the correct start of the code or not. Sending incorrect numbers immediately returns a failure message. When sending the correct ones, the access point waits for more digits.
+Felizmente, os roteadores sem fio do prédio têm 20 anos e são mal protegidos. Pesquisando um pouco, Carla descobre que o mecanismo de autenticação da rede tem uma falha que ela pode usar. Ao entrar na rede, um dispositivo deve enviar a senha correta de seis dígitos. O ponto de acesso responderá com uma mensagem de sucesso ou falha dependendo de se o código correto foi fornecido. Porém, ao enviar um código parcial (digamos, apenas três dígitos), a resposta é diferente dependendo de se aqueles dígitos são o início correto do código ou não. Enviar números incorretos retorna imediatamente uma mensagem de falha. Ao enviar os corretos, o ponto de acesso espera por mais dígitos.
 
-This makes it possible to greatly speed up the guessing of the number. Carla can find the first digit by trying each number in turn, until she finds one that doesn't immediately return failure. Having one digit, she can find the second digit in the same way, and so on, until she knows the entire passcode.
+Isso torna possível acelerar enormemente a adivinhação do número. Carla pode encontrar o primeiro dígito tentando cada número por vez, até encontrar um que não retorne falha imediatamente. Tendo um dígito, ela pode encontrar o segundo da mesma forma, e assim por diante, até saber toda a senha.
 
-Assume Carla has a `joinWifi` function. Given the network name and the passcode (as a string), the function tries to join the network, returning a promise that resolves if successful and rejects if the authentication failed. The first thing she needs is a way to wrap a promise so that it automatically rejects after it takes too much time, to allow the program to quickly move on if the access point doesn't respond.
+Assuma que Carla tem uma função `joinWifi`. Dado o nome da rede e a senha (como *string*), a função tenta entrar na rede, retornando uma *promise* que resolve se bem-sucedida e rejeita se a autenticação falhou. A primeira coisa que ela precisa é uma maneira de envolver uma *promise* de modo que ela automaticamente rejeite se levar muito tempo, para permitir que o programa avance rapidamente se o ponto de acesso não responder.
 
 ```{includeCode: true}
 function withTimeout(promise, time) {
@@ -282,11 +282,11 @@ function withTimeout(promise, time) {
 }
 ```
 
-This makes use of the fact that a promise can be resolved or rejected only once. If the promise given as its argument resolves or rejects first, that result will be the result of the promise returned by `withTimeout`. If, on the other hand, the `setTimeout` fires first, rejecting the promise, any further resolve or reject calls are ignored.
+Isso usa o fato de que uma *promise* pode ser resolvida ou rejeitada apenas uma vez. Se a *promise* dada como argumento resolver ou rejeitar primeiro, esse resultado será o resultado da *promise* retornada por `withTimeout`. Se, por outro lado, o `setTimeout` disparar primeiro, rejeitando a *promise*, quaisquer chamadas posteriores de resolução ou rejeição são ignoradas.
 
-To find the whole passcode, the program needs to repeatedly look for the next digit by trying each digit. If authentication succeeds, we know we have found what we are looking for. If it immediately fails, we know that digit was wrong and must try the next digit. If the request times out, we have found another correct digit and must continue by adding another digit.
+Para encontrar a senha inteira, o programa precisa repetidamente procurar o próximo dígito tentando cada dígito. Se a autenticação tem sucesso, sabemos que encontramos o que procurávamos. Se falha imediatamente, sabemos que aquele dígito estava errado e devemos tentar o próximo. Se a requisição expira, encontramos outro dígito correto e devemos continuar adicionando outro dígito.
 
-Because you cannot wait for a promise inside a `for` loop, Carla uses a recursive function to drive this process. On each call, this function gets the code as we know it so far, as well as the next digit to try. Depending on what happens, it may return a finished code or call through to itself, to either start cracking the next position in the code or to try again with another digit.
+Como você não pode esperar por uma *promise* dentro de um *loop* `for`, Carla usa uma função recursiva para conduzir esse processo. A cada chamada, essa função recebe o código como o conhecemos até agora, bem como o próximo dígito a tentar. Dependendo do que acontece, ela pode retornar um código terminado ou chamar a si mesma, para começar a descobrir a próxima posição no código ou para tentar novamente com outro dígito.
 
 ```{includeCode: true}
 function crackPasscode(networkID) {
@@ -308,32 +308,32 @@ function crackPasscode(networkID) {
 }
 ```
 
-The access point tends to respond to bad authentication requests in about 20 milliseconds, so to be safe, this function waits for 50 milliseconds before timing out a request.
+O ponto de acesso tende a responder a requisições de autenticação inválidas em cerca de 20 milissegundos, então para segurança, esta função espera 50 milissegundos antes de expirar uma requisição.
 
 ```
 crackPasscode("HANGAR 2").then(console.log);
 // → 555555
 ```
 
-Carla tilts her head and sighs. This would have been more satisfying if the code had been a bit harder to guess.
+Carla inclina a cabeça e suspira. Isso teria sido mais satisfatório se o código fosse um pouco mais difícil de adivinhar.
 
-## Async functions
+## Funções async
 
 {{index "Promise class", recursion}}
 
-Even with promises, this kind of asynchronous code is annoying to write. Promises often need to be tied together in verbose, arbitrary-looking ways. To create an asynchronous loop, Carla was forced to introduce a recursive function.
+Mesmo com *promises*, esse tipo de código assíncrono é irritante de escrever. *Promises* frequentemente precisam ser conectadas de maneiras verbosas e aparentemente arbitrárias. Para criar um *loop* assíncrono, Carla foi forçada a introduzir uma função recursiva.
 
 {{index "synchronous programming", "asynchronous programming"}}
 
-The thing the cracking function actually does is completely linear—it always waits for the previous action to complete before starting the next one. In a synchronous programming model, it'd be more straightforward to express.
+O que a função de quebra de senha realmente faz é completamente linear — ela sempre espera que a ação anterior complete antes de iniciar a próxima. Em um modelo de programação síncrona, seria mais direto de expressar.
 
 {{index "async function", "await keyword"}}
 
-The good news is that JavaScript allows you to write pseudosynchronous code to describe asynchronous computation. An `async` function implicitly returns a promise and can, in its body, `await` other promises in a way that _looks_ synchronous.
+A boa notícia é que o JavaScript permite escrever código pseudossíncrono para descrever computação assíncrona. Uma função `async` retorna implicitamente uma *promise* e pode, em seu corpo, usar `await` em outras *promises* de uma maneira que _parece_ síncrona.
 
 {{index "findInStorage function"}}
 
-We can rewrite `crackPasscode` like this:
+Podemos reescrever `crackPasscode` assim:
 
 ```
 async function crackPasscode(networkID) {
@@ -356,29 +356,29 @@ async function crackPasscode(networkID) {
 }
 ```
 
-This version more clearly shows the double loop structure of the function (the inner loop tries digit 0 to 9 and the outer loop adds digits to the passcode).
+Essa versão mostra mais claramente a estrutura de *loop* duplo da função (o *loop* interno tenta os dígitos de 0 a 9 e o *loop* externo adiciona dígitos à senha).
 
 {{index "async function", "return keyword", "exception handling"}}
 
-An `async` function is marked by the word `async` before the `function` keyword. Methods can also be made `async` by writing `async` before their name. When such a function or method is called, it returns a promise. As soon as the function returns something, that promise is resolved. If the body throws an exception, the promise is rejected.
+Uma função `async` é marcada pela palavra `async` antes da palavra-chave `function`. Métodos também podem ser tornados `async` escrevendo `async` antes de seu nome. Quando tal função ou método é chamado, retorna uma *promise*. Assim que a função retorna algo, essa *promise* é resolvida. Se o corpo lança uma exceção, a *promise* é rejeitada.
 
 {{index "await keyword", ["control flow", asynchronous]}}
 
-Inside an `async` function, the word `await` can be put in front of an expression to wait for a promise to resolve and only then continue the execution of the function. If the promise rejects, an exception is raised at the point of the `await`.
+Dentro de uma função `async`, a palavra `await` pode ser colocada na frente de uma expressão para esperar que uma *promise* resolva e só então continuar a execução da função. Se a *promise* rejeitar, uma exceção é levantada no ponto do `await`.
 
-Such a function no longer runs from start to completion in one go like a regular JavaScript function. Instead, it can be _frozen_ at any point that has an `await` and can be resumed at a later time.
+Tal função não executa mais do início ao fim de uma só vez como uma função JavaScript regular. Em vez disso, pode ser _congelada_ em qualquer ponto que tenha um `await` e retomada em um momento posterior.
 
-For most asynchronous code, this notation is more convenient than directly using promises. You do still need an understanding of promises, since in many cases you'll still interact with them directly. But when wiring them together, `async` functions are generally more pleasant to write than chains of `then` calls.
+Para a maioria do código assíncrono, essa notação é mais conveniente do que usar *promises* diretamente. Você ainda precisa de um entendimento de *promises*, já que em muitos casos ainda interagirá com elas diretamente. Mas ao conectá-las, funções `async` são geralmente mais agradáveis de escrever do que cadeias de chamadas `then`.
 
 {{id generator}}
 
-## Generators
+## Geradores
 
 {{index "async function"}}
 
-This ability of functions to be paused and then resumed again is not exclusive to `async` functions. JavaScript also has a feature called _((generator))_ functions. These are similar, but without the promises.
+Essa capacidade de funções serem pausadas e depois retomadas não é exclusiva de funções `async`. O JavaScript também tem um recurso chamado funções _((geradora))s_. Essas são semelhantes, mas sem as *promises*.
 
-When you define a function with `function*` (placing an asterisk after the word `function`), it becomes a generator. When you call a generator, it returns an ((iterator)), which we already saw in [Chapter ?](object).
+Quando você define uma função com `function*` (colocando um asterisco após a palavra `function`), ela se torna um gerador. Quando você chama um gerador, ele retorna um ((iterador)), que já vimos no [Capítulo ?](object).
 
 ```
 function* powers(n) {
@@ -398,9 +398,9 @@ for (let power of powers(3)) {
 
 {{index "next method", "yield keyword"}}
 
-Initially, when you call `powers`, the function is frozen at its start. Every time you call `next` on the iterator, the function runs until it hits a `yield` expression, which pauses it and causes the yielded value to become the next value produced by the iterator. When the function returns (the one in the example never does), the iterator is done.
+Inicialmente, quando você chama `powers`, a função é congelada em seu início. Toda vez que você chama `next` no iterador, a função executa até atingir uma expressão `yield`, que a pausa e faz com que o valor *yielded* se torne o próximo valor produzido pelo iterador. Quando a função retorna (a do exemplo nunca retorna), o iterador está concluído.
 
-Writing iterators is often much easier when you use generator functions. The iterator for the `Group` class (from the exercise in [Chapter ?](object#group_iterator)) can be written with this generator:
+Escrever iteradores é frequentemente muito mais fácil quando se usam funções geradoras. O iterador para a classe `Group` (do exercício no [Capítulo ?](object#group_iterator)) pode ser escrito com este gerador:
 
 {{index "Group class"}}
 
@@ -421,31 +421,31 @@ class Group {
 
 {{index [state, in iterator]}}
 
-There's no longer a need to create an object to hold the iteration state—generators automatically save their local state every time they yield.
+Não há mais necessidade de criar um objeto para armazenar o estado da iteração — geradores automaticamente salvam seu estado local toda vez que fazem *yield*.
 
-Such `yield` expressions may occur only directly in the generator function itself and not in an inner function you define inside of it. The state a generator saves, when yielding, is only its _local_ environment and the position where it yielded.
+Tais expressões `yield` podem ocorrer apenas diretamente na própria função geradora e não em uma função interna que você define dentro dela. O estado que um gerador salva ao fazer *yield* é apenas seu ambiente _local_ e a posição onde fez *yield*.
 
 {{index "await keyword"}}
 
-An `async` function is a special type of generator. It produces a promise when called, which is resolved when it returns (finishes) and rejected when it throws an exception. Whenever it yields (awaits) a promise, the result of that promise (value or thrown exception) is the result of the `await` expression.
+Uma função `async` é um tipo especial de gerador. Ela produz uma *promise* quando chamada, que é resolvida quando retorna (termina) e rejeitada quando lança uma exceção. Sempre que faz *yield* (espera) uma *promise*, o resultado dessa *promise* (valor ou exceção lançada) é o resultado da expressão `await`.
 
-## A Corvid Art Project
+## Um Projeto de Arte Corvídea
 
 {{index "Carla the crow"}}
 
-One morning, Carla wakes up to unfamiliar noise from the tarmac outside of her hangar. Hopping onto the edge of the roof, she sees the humans are setting up for something. There's a lot of electric cabling, a stage, and some kind of big black wall being built up.
+Uma manhã, Carla acorda com um barulho desconhecido do asfalto do lado de fora de seu hangar. Pulando para a borda do telhado, ela vê que os humanos estão montando algo. Há muita fiação elétrica, um palco e algum tipo de grande parede preta sendo construída.
 
-Being a curious crow, Carla takes a closer look at the wall. It appears to consist of a number of large glass-fronted devices wired up to cables. On the back, the devices say “LedTec SIG-5030”.
+Sendo uma corvo curiosa, Carla examina a parede mais de perto. Ela parece consistir em vários dispositivos grandes com vidro frontal conectados a cabos. Na parte de trás, os dispositivos dizem "LedTec SIG-5030".
 
-A quick internet search turns up a user manual for these devices. They appear to be traffic signs, with a programmable matrix of amber LED lights. The intent of the humans is probably to display some kind of information on them during their event. Interestingly, the screens can be programmed over a wireless network. Could it be they are connected to the building's local network?
+Uma rápida pesquisa na internet revela um manual do usuário para esses dispositivos. Eles parecem ser placas de trânsito, com uma matriz programável de LEDs âmbar. A intenção dos humanos é provavelmente exibir algum tipo de informação neles durante seu evento. Curiosamente, as telas podem ser programadas por uma rede sem fio. Será que estão conectadas à rede local do prédio?
 
-Each device on a network gets an _IP address_, which other devices can use to send it messages. We talk more about that in [Chapter ?](browser). Carla notices that her own phones all get addresses like `10.0.0.20` or `10.0.0.33`. It might be worth trying to send messages to all such addresses and see if any one of them responds to the interface described in the manual for the signs.
+Cada dispositivo em uma rede recebe um _endereço IP_, que outros dispositivos podem usar para enviar mensagens a ele. Falamos mais sobre isso no [Capítulo ?](browser). Carla percebe que seus próprios telefones recebem endereços como `10.0.0.20` ou `10.0.0.33`. Pode valer a pena tentar enviar mensagens para todos esses endereços e ver se algum responde à interface descrita no manual das placas.
 
-[Chapter ?](http) shows how to make real requests on real networks. In this chapter, we'll use a simplified dummy function called `request` for network communication. This function takes two arguments—a network address and a message, which may be anything that can be sent as JSON—and returns a promise that either resolves to a response from the machine at the given address, or rejects if there was a problem.
+O [Capítulo ?](http) mostra como fazer requisições reais em redes reais. Neste capítulo, usaremos uma função simplificada fictícia chamada `request` para comunicação de rede. Esta função recebe dois argumentos — um endereço de rede e uma mensagem, que pode ser qualquer coisa que possa ser enviada como JSON — e retorna uma *promise* que resolve para uma resposta da máquina no endereço dado, ou rejeita se houve um problema.
 
-According to the manual, you can change what is displayed on a SIG-5030 sign by sending it a message with content like `{"command": "display", "data": [0, 0, 3, …]}`, where `data` holds one number per LED dot, providing its brightness—0 means off, 3 means maximum brightness. Each sign is 50 lights wide and 30 lights high, so an update command should send 1,500 numbers.
+De acordo com o manual, você pode mudar o que é exibido em uma placa SIG-5030 enviando uma mensagem com conteúdo como `{"command": "display", "data": [0, 0, 3, …]}`, onde `data` contém um número por ponto LED, fornecendo seu brilho — 0 significa desligado, 3 significa brilho máximo. Cada placa tem 50 luzes de largura e 30 de altura, então um comando de atualização deve enviar 1.500 números.
 
-This code sends a display update message to all addresses on the local network, to see what sticks.  Each of the numbers in an IP address can go from 0 to 255. In the data it sends, it activates a number of lights corresponding to the network address's last number.
+Este código envia uma mensagem de atualização de exibição para todos os endereços na rede local, para ver o que pega. Cada um dos números em um endereço IP pode ir de 0 a 255. Nos dados enviados, ele ativa um número de luzes correspondente ao último número do endereço de rede.
 
 ```
 for (let addr = 1; addr < 256; addr++) {
@@ -460,9 +460,9 @@ for (let addr = 1; addr < 256; addr++) {
 }
 ```
 
-Since most of these addresses won't exist or will not accept such messages, the `catch` call makes sure network errors don't crash the program. The requests are all sent out immediately, without waiting for other requests to finish, in order to not waste time when some of the machines don't answer.
+Como a maioria desses endereços não existirá ou não aceitará tais mensagens, a chamada `catch` garante que erros de rede não travem o programa. As requisições são todas enviadas imediatamente, sem esperar que outras terminem, para não desperdiçar tempo quando algumas máquinas não respondem.
 
-Having fired off her network scan, Carla heads back outside to see the result. To her delight, all of the screens are now showing a stripe of light in their upper-left corners. They _are_ on the local network, and they _do_ accept commands. She quickly notes the numbers shown on each screen. There are nine screens, arranged three high and three wide. They have the following network addresses:
+Tendo disparado sua varredura de rede, Carla volta para fora para ver o resultado. Para sua alegria, todas as telas agora mostram uma faixa de luz em seus cantos superiores esquerdos. Elas _estão_ na rede local e _aceitam_ comandos. Ela rapidamente anota os números mostrados em cada tela. Há nove telas, dispostas em três de altura por três de largura. Elas têm os seguintes endereços de rede:
 
 ```{includeCode: true}
 const screenAddresses = [
@@ -472,17 +472,17 @@ const screenAddresses = [
 ];
 ```
 
-Now this opens up possibilities for all kinds of shenanigans. She could show “crows rule, humans drool” on the wall in giant letters. But that feels a bit crude. Instead, she plans to show a video of a flying crow covering all of the screens at night.
+Agora isso abre possibilidades para todo tipo de travessura. Ela poderia mostrar "corvos mandam, humanos babam" na parede em letras gigantes. Mas isso parece um pouco grosseiro. Em vez disso, ela planeja mostrar um vídeo de uma corvo voando cobrindo todas as telas à noite.
 
-Carla finds a fitting video clip, in which a second and a half of footage can be repeated to create a looping video showing a crow's wingbeat. To fit the nine screens (each of which can show 50×30 pixels), Carla cuts and resizes the videos to get a series of 150×90 images, 10 per second. Those are then each cut into nine rectangles, and processed so that the dark spots on the video (where the crow is) show a bright light, and the light spots (no crow) are left dark, which should create the effect of an amber crow flying against a black background.
+Carla encontra um clipe de vídeo adequado, no qual um segundo e meio de filmagem pode ser repetido para criar um vídeo em *loop* mostrando a batida de asa de uma corvo. Para caber nas nove telas (cada uma podendo mostrar 50x30 pixels), Carla corta e redimensiona os vídeos para obter uma série de imagens de 150x90, 10 por segundo. Cada uma é então cortada em nove retângulos e processada de modo que os pontos escuros no vídeo (onde a corvo está) mostrem uma luz brilhante, e os pontos claros (sem corvo) fiquem escuros, o que deve criar o efeito de uma corvo âmbar voando contra um fundo preto.
 
-She has set up the `clipImages` variable to hold an array of frames, where each frame is represented with an array of nine sets of pixels—one for each screen—in the format that the signs expect.
+Ela configurou a variável `clipImages` para conter um *array* de quadros, onde cada quadro é representado com um *array* de nove conjuntos de pixels — um para cada tela — no formato que as placas esperam.
 
-To display a single frame of the video, Carla needs to send a request to all the screens at once. But she also needs to wait for the result of these requests, both in order to not start sending the next frame before the current one has been properly sent and in order to notice when requests are failing.
+Para exibir um único quadro do vídeo, Carla precisa enviar uma requisição para todas as telas ao mesmo tempo. Mas ela também precisa esperar pelo resultado dessas requisições, tanto para não começar a enviar o próximo quadro antes que o atual tenha sido adequadamente enviado quanto para perceber quando requisições estão falhando.
 
 {{index "Promise.all function"}}
 
-`Promise` has a static method `all` that can be used to convert an array of promises into a single promise that resolves to an array of results. This provides a convenient way to have some asynchronous actions happen alongside each other, wait for them all to finish, and then do something with their results (or at least wait for them to make sure they don't fail).
+`Promise` tem um método estático `all` que pode ser usado para converter um *array* de *promises* em uma única *promise* que resolve para um *array* de resultados. Isso fornece uma maneira conveniente de ter algumas ações assíncronas acontecendo lado a lado, esperar que todas terminem e então fazer algo com seus resultados (ou pelo menos esperar por elas para garantir que não falhem).
 
 ```{includeCode: true}
 function displayFrame(frame) {
@@ -495,10 +495,9 @@ function displayFrame(frame) {
 }
 ```
 
-This maps over the images in `frame` (which is an array of display data arrays) to create an array
-of request promises. It then returns a promise that combines all of those.
+Isso mapeia sobre as imagens em `frame` (que é um *array* de *arrays* de dados de exibição) para criar um *array* de *promises* de requisição. Então retorna uma *promise* que combina todas elas.
 
-In order to be able to stop a playing video, the process is wrapped in a class. This class has an asynchronous `play` method that returns a promise that resolves only when the playback is stopped again via the `stop` method.
+Para poder parar um vídeo em reprodução, o processo é envolvido em uma classe. Essa classe tem um método assíncrono `play` que retorna uma *promise* que resolve apenas quando a reprodução é parada novamente via o método `stop`.
 
 ```{includeCode: true}
 function wait(time) {
@@ -527,7 +526,7 @@ class VideoPlayer {
 }
 ```
 
-The `wait` function wraps `setTimeout` in a promise that resolves after the given number of milliseconds. This is useful for controlling the speed of the playback.
+A função `wait` envolve `setTimeout` em uma *promise* que resolve após o número dado de milissegundos. Isso é útil para controlar a velocidade de reprodução.
 
 ```{startCode: true}
 let video = new VideoPlayer(clipImages, 100);
@@ -537,21 +536,21 @@ video.play().catch(e => {
 setTimeout(() => video.stop(), 15000);
 ```
 
-For the entire week that the screen wall stands, every evening, when it is dark, a huge glowing orange bird mysteriously appears on it.
+Durante toda a semana que a parede de telas fica de pé, toda noite, quando escurece, um enorme pássaro laranja brilhante misteriosamente aparece nela.
 
-## The event loop
+## O loop de eventos
 
 {{index "asynchronous programming", scheduling, "event loop", timeline}}
 
-An asynchronous program starts by running its main script, which will often set up callbacks to be called later. That main script, as well as the callbacks, run to completion in one piece, uninterrupted. But between them, the program may sit idle, waiting for something to happen.
+Um programa assíncrono começa executando seu script principal, que frequentemente configura *callbacks* para serem chamados depois. Esse script principal, assim como os *callbacks*, executam até o fim de uma só vez, sem interrupção. Mas entre eles, o programa pode ficar ocioso, esperando algo acontecer.
 
 {{index "setTimeout function"}}
 
-So callbacks are not directly called by the code that scheduled them. If I call `setTimeout` from within a function, that function will have returned by the time the callback function is called. And when the callback returns, control does not go back to the function that scheduled it.
+Então *callbacks* não são chamados diretamente pelo código que os agendou. Se eu chamar `setTimeout` de dentro de uma função, aquela função já terá retornado no momento em que a função de *callback* é chamada. E quando o *callback* retorna, o controle não volta para a função que o agendou.
 
 {{index "Promise class", "catch keyword", "exception handling"}}
 
-Asynchronous behavior happens on its own empty function ((call stack)). This is one of the reasons that, without promises, managing exceptions across asynchronous code is so hard. Since each callback starts with a mostly empty stack, your `catch` handlers won't be on the stack when they throw an exception.
+O comportamento assíncrono acontece em sua própria ((pilha de chamadas)) vazia. Esta é uma das razões pelas quais, sem *promises*, gerenciar exceções através de código assíncrono é tão difícil. Como cada *callback* começa com uma pilha praticamente vazia, seus handlers `catch` não estarão na pilha quando lançarem uma exceção.
 
 ```
 try {
@@ -559,16 +558,16 @@ try {
     throw new Error("Woosh");
   }, 20);
 } catch (e) {
-  // This will not run
+  // Isso não executará
   console.log("Caught", e);
 }
 ```
 
 {{index thread, queue}}
 
-No matter how closely together events—such as timeouts or incoming requests—happen, a JavaScript environment will run only one program at a time. You can think of this as it running a big loop _around_ your program, called the _event loop_. When there's nothing to be done, that loop is paused. But as events come in, they are added to a queue, and their code is executed one after the other. Because no two things run at the same time, slow-running code can delay the handling of other events.
+Não importa quão próximos no tempo eventos — como timeouts ou requisições recebidas — aconteçam, um ambiente JavaScript executará apenas um programa por vez. Você pode pensar nisso como ele executando um grande *loop* _ao redor_ do seu programa, chamado de _loop de eventos_. Quando não há nada a ser feito, esse *loop* é pausado. Mas conforme eventos chegam, eles são adicionados a uma fila, e seu código é executado um após o outro. Como nada executa ao mesmo tempo, código de execução lenta pode atrasar o tratamento de outros eventos.
 
-This example sets a timeout but then dallies until after the timeout's intended point of time, causing the timeout to be late.
+Este exemplo define um timeout mas então demora além do momento pretendido do timeout, fazendo o timeout atrasar.
 
 ```
 let start = Date.now();
@@ -583,7 +582,7 @@ console.log("Wasted time until", Date.now() - start);
 
 {{index "resolving (a promise)", "rejecting (a promise)", "Promise class"}}
 
-Promises always resolve or reject as a new event. Even if a promise is already resolved, waiting for it will cause your callback to run after the current script finishes, rather than right away.
+*Promises* sempre resolvem ou rejeitam como um novo evento. Mesmo se uma *promise* já estiver resolvida, esperar por ela fará com que seu *callback* execute após o script atual terminar, em vez de imediatamente.
 
 ```
 Promise.resolve("Done").then(console.log);
@@ -592,15 +591,15 @@ console.log("Me first!");
 // → Done
 ```
 
-In later chapters we'll see various other types of events that run on the event loop.
+Em capítulos posteriores veremos vários outros tipos de eventos que executam no *loop* de eventos.
 
-## Asynchronous bugs
+## Bugs assíncronos
 
 {{index "asynchronous programming", [state, transitions]}}
 
-When your program runs synchronously, in a single go, there are no state changes happening except those that the program itself makes. For asynchronous programs this is different—they may have _gaps_ in their execution during which other code can run.
+Quando seu programa executa sincronamente, de uma só vez, não há mudanças de estado acontecendo exceto aquelas que o próprio programa faz. Para programas assíncronos isso é diferente — eles podem ter _lacunas_ em sua execução durante as quais outro código pode executar.
 
-Let's look at an example. This is a function that tries to report the size of each file in an array of files, making sure to read them all at the same time rather than in sequence.
+Vejamos um exemplo. Esta é uma função que tenta reportar o tamanho de cada arquivo em um *array* de arquivos, garantindo que todos sejam lidos ao mesmo tempo em vez de em sequência.
 
 {{index "fileSizes function"}}
 
@@ -617,13 +616,13 @@ async function fileSizes(files) {
 
 {{index "async function"}}
 
-The `async fileName =>` part shows how ((arrow function))s can also be made `async` by putting the word `async` in front of them.
+A parte `async fileName =>` mostra como ((arrow function))s também podem ser tornadas `async` colocando a palavra `async` na frente delas.
 
 {{index "Promise.all function"}}
 
-The code doesn't immediately look suspicious... it maps the `async` arrow function over the array of names, creating an array of promises, and then uses `Promise.all` to wait for all of these before returning the list they build up.
+O código não parece imediatamente suspeito... ele mapeia a *arrow function* `async` sobre o *array* de nomes, criando um *array* de *promises*, e então usa `Promise.all` para esperar por todas antes de retornar a lista que constroem.
 
-But this program is entirely broken. It'll always return only a single line of output, listing the file that took the longest to read.
+Mas esse programa está completamente quebrado. Ele sempre retornará apenas uma única linha de saída, listando o arquivo que levou mais tempo para ser lido.
 
 {{if interactive
 
@@ -634,19 +633,19 @@ fileSizes(["plans.txt", "shopping_list.txt"])
 
 if}}
 
-Can you work out why?
+Você consegue descobrir por quê?
 
 {{index "+= operator"}}
 
-The problem lies in the `+=` operator, which takes the _current_ value of `list` at the time the statement starts executing and then, when the `await` finishes, sets the `list` binding to be that value plus the added string.
+O problema está no operador `+=`, que pega o valor _atual_ de `list` no momento em que a declaração começa a executar e então, quando o `await` termina, define a *binding* `list` como aquele valor mais a *string* adicionada.
 
 {{index "await keyword"}}
 
-But between the time the statement starts executing and the time it finishes, there's an asynchronous gap. The `map` expression runs before anything has been added to the list, so each of the `+=` operators starts from an empty string and ends up, when its storage retrieval finishes, setting `list` to the result of adding its line to the empty string.
+Mas entre o momento em que a declaração começa a executar e o momento em que termina, há uma lacuna assíncrona. A expressão `map` executa antes de qualquer coisa ter sido adicionada à lista, então cada um dos operadores `+=` começa de uma *string* vazia e acaba, quando seu armazenamento termina, definindo `list` como o resultado de adicionar sua linha à *string* vazia.
 
 {{index "side effect"}}
 
-This could have easily been avoided by returning the lines from the mapped promises and calling `join` on the result of `Promise.all`, instead of building up the list by changing a binding. As usual, computing new values is less error prone than changing existing values.
+Isso poderia ter sido facilmente evitado retornando as linhas das *promises* mapeadas e chamando `join` no resultado de `Promise.all`, em vez de construir a lista alterando uma *binding*. Como de costume, computar novos valores é menos propenso a erros do que alterar valores existentes.
 
 {{index "fileSizes function"}}
 
@@ -660,25 +659,25 @@ async function fileSizes(files) {
 }
 ```
 
-Mistakes like this are easy to make, especially when using `await`, and you should be aware of where the gaps in your code occur. An advantage of JavaScript's _explicit_ asynchronicity (whether through callbacks, promises, or `await`) is that spotting these gaps is relatively easy.
+Erros como esse são fáceis de cometer, especialmente quando se usa `await`, e você deve estar ciente de onde estão as lacunas em seu código. Uma vantagem da assincronicidade _explícita_ do JavaScript (seja através de *callbacks*, *promises* ou `await`) é que identificar essas lacunas é relativamente fácil.
 
-## Summary
+## Resumo
 
-Asynchronous programming makes it possible to express waiting for long-running actions without freezing the whole program. JavaScript environments typically implement this style of programming using callbacks, functions that are called when the actions complete. An event loop schedules such callbacks to be called when appropriate, one after the other, so that their execution does not overlap.
+A programação assíncrona torna possível expressar a espera por ações de longa duração sem congelar o programa todo. Ambientes JavaScript tipicamente implementam esse estilo de programação usando *callbacks*, funções que são chamadas quando as ações completam. Um *loop* de eventos agenda tais *callbacks* para serem chamados quando apropriado, um após o outro, para que suas execuções não se sobreponham.
 
-Programming asynchronously is made easier by promises, objects that represent actions that might complete in the future, and `async` functions, which allow you to write an asynchronous program as if it were synchronous.
+Programar assincronamente é facilitado por *promises*, objetos que representam ações que podem completar no futuro, e funções `async`, que permitem escrever um programa assíncrono como se fosse síncrono.
 
-## Exercises
+## Exercícios
 
-### Quiet Times
+### Tempos Tranquilos
 
 {{index "quiet times (exercise)", "security camera", "Carla the crow", "async function"}}
 
-There's a security camera near Carla's lab that's activated by a motion sensor. It is connected to the network and starts sending out a video stream when it is active. Because she'd rather not be discovered, Carla has set up a system that notices this kind of wireless network traffic and turns on a light in her lair whenever there is activity outside, so she knows when to keep quiet.
+Há uma câmera de segurança perto do laboratório de Carla que é ativada por um sensor de movimento. Ela está conectada à rede e começa a enviar um fluxo de vídeo quando está ativa. Como prefere não ser descoberta, Carla montou um sistema que percebe esse tipo de tráfego de rede sem fio e acende uma luz em seu esconderijo sempre que há atividade do lado de fora, para que ela saiba quando ficar quieta.
 
 {{index "Date class", "Date.now function", timestamp}}
 
-She's also been logging the times at which the camera is tripped for a while and wants to use this information to visualize which times, in an average week, tend to be quiet and which tend to be busy. The log is stored in files holding one time stamp number (as returned by `Date.now()`) per line.
+Ela também tem registrado os horários em que a câmera é acionada por um tempo e quer usar essas informações para visualizar quais horários, em uma semana média, tendem a ser tranquilos e quais tendem a ser movimentados. O registro é armazenado em arquivos contendo um *timestamp* (como retornado por `Date.now()`) por linha.
 
 ```{lang: null}
 1695709940692
@@ -686,22 +685,22 @@ She's also been logging the times at which the camera is tripped for a while and
 1695701189163
 ```
 
-The `"camera_logs.txt"` file holds a list of logfiles. Write an asynchronous function `activityTable(day)` that for a given day of the week returns an array of 24 numbers, one for each hour of the day, that hold the number of camera network traffic observations seen in that hour of the day. Days are identified by number using the system used by `Date.getDay`, where Sunday is 0 and Saturday is 6.
+O arquivo `"camera_logs.txt"` contém uma lista de arquivos de log. Escreva uma função assíncrona `activityTable(day)` que para um dado dia da semana retorna um *array* de 24 números, um para cada hora do dia, que contém o número de observações de tráfego de rede da câmera vistas naquela hora do dia. Dias são identificados por número usando o sistema de `Date.getDay`, onde domingo é 0 e sábado é 6.
 
-The `activityGraph` function, provided by the sandbox, summarizes such a table into a string.
+A função `activityGraph`, fornecida pela *sandbox*, resume tal tabela em uma *string*.
 
 {{index "textFile function"}}
 
-To read the files, use the `textFile` function defined earlier—given a filename, it returns a promise that resolves to the file's content. Remember that `new Date(timestamp)` creates a `Date` object for that time, which has `getDay` and `getHours` methods returning the day of the week and the hour of the day.
+Para ler os arquivos, use a função `textFile` definida anteriormente — dado um nome de arquivo, ela retorna uma *promise* que resolve para o conteúdo do arquivo. Lembre-se de que `new Date(timestamp)` cria um objeto `Date` para aquele momento, que tem métodos `getDay` e `getHours` retornando o dia da semana e a hora do dia.
 
-Both types of files—the list of logfiles and the logfiles themselves—have each piece of data on its own line, separated by newline (`"\n"`) characters.
+Ambos os tipos de arquivos — a lista de arquivos de log e os arquivos de log em si — têm cada dado em sua própria linha, separados por caracteres de nova linha (`"\n"`).
 
 {{if interactive
 
 ```{test: no}
 async function activityTable(day) {
   let logFileList = await textFile("camera_logs.txt");
-  // Your code here
+  // Seu código aqui
 }
 
 activityTable(1)
@@ -714,28 +713,28 @@ if}}
 
 {{index "quiet times (exercise)", "split method", "textFile function", "Date class"}}
 
-You will need to convert the content of these files to an array. The easiest way to do that is to use the `split` method on the string produced by `textFile`. Note that for the logfiles, that will still give you an array of strings, which you have to convert to numbers before passing them to `new Date`.
+Você precisará converter o conteúdo desses arquivos em um *array*. A maneira mais fácil de fazer isso é usar o método `split` na *string* produzida por `textFile`. Note que para os arquivos de log, isso ainda dará um *array* de *strings*, que você precisa converter em números antes de passá-los para `new Date`.
 
-Summarizing all the time points into a table of hours can be done by creating a table (array) that holds a number for each hour in the day. You can then loop over all the timestamps (over the logfiles and the numbers in every logfile) and for each one, if it happened on the correct day, take the hour it occurred in, and add one to the corresponding number in the table.
+Resumir todos os pontos de tempo em uma tabela de horas pode ser feito criando uma tabela (*array*) que contém um número para cada hora do dia. Você pode então iterar sobre todos os *timestamps* (sobre os arquivos de log e os números em cada arquivo de log) e para cada um, se aconteceu no dia correto, pegar a hora em que ocorreu e somar um ao número correspondente na tabela.
 
 {{index "async function", "await keyword", "Promise class"}}
 
-Make sure you use `await` on the result of asynchronous functions before doing anything with it, or you'll end up with a `Promise` where you expected a string.
+Certifique-se de usar `await` no resultado de funções assíncronas antes de fazer qualquer coisa com ele, ou você acabará com uma `Promise` onde esperava uma *string*.
 
 hint}}
 
 
-### Real Promises
+### Promises Reais
 
 {{index "real promises (exercise)", "Promise class"}}
 
-Rewrite the function from the previous exercise without `async`/`await`, using plain `Promise` methods.
+Reescreva a função do exercício anterior sem `async`/`await`, usando métodos simples de `Promise`.
 
 {{if interactive
 
 ```{test: no}
 function activityTable(day) {
-  // Your code here
+  // Seu código aqui
 }
 
 activityTable(6)
@@ -746,41 +745,41 @@ if}}
 
 {{index "async function", "await keyword", performance}}
 
-In this style, using `Promise.all` will be more convenient than trying to model a loop over the logfiles. In the `async` function, just using `await` in a loop is simpler. If reading a file takes some time, which of these two approaches will take the least time to run?
+Neste estilo, usar `Promise.all` será mais conveniente do que tentar modelar um *loop* sobre os arquivos de log. Na função `async`, simplesmente usar `await` em um *loop* é mais simples. Se ler um arquivo leva algum tempo, qual dessas duas abordagens levará menos tempo para executar?
 
 {{index "rejecting (a promise)"}}
 
-If one of the files listed in the file list has a typo, and reading it fails, how does that failure end up in the `Promise` object that your function returns?
+Se um dos arquivos listados na lista de arquivos tiver um erro de digitação e a leitura falhar, como essa falha acaba no objeto `Promise` que sua função retorna?
 
 {{hint
 
 {{index "real promises (exercise)", "then method", "textFile function", "Promise.all function"}}
 
-The most straightforward approach to writing this function is to use a chain of `then` calls. The first promise is produced by reading the list of logfiles. The first callback can split this list and map `textFile` over it to get an array of promises to pass to `Promise.all`. It can return the object returned by `Promise.all`, so that whatever that returns becomes the result of the return value of this first `then`.
+A abordagem mais direta para escrever esta função é usar uma cadeia de chamadas `then`. A primeira *promise* é produzida lendo a lista de arquivos de log. O primeiro *callback* pode dividir essa lista e mapear `textFile` sobre ela para obter um *array* de *promises* para passar a `Promise.all`. Pode retornar o objeto retornado por `Promise.all`, de modo que o que quer que aquilo retorne se torne o resultado do valor de retorno deste primeiro `then`.
 
 {{index "asynchronous programming"}}
 
-We now have a promise that returns an array of logfiles. We can call `then` again on that, and put the timestamp-counting logic in there. Something like this:
+Agora temos uma *promise* que retorna um *array* de arquivos de log. Podemos chamar `then` novamente nela e colocar a lógica de contagem de *timestamps* ali. Algo assim:
 
 ```{test: no}
 function activityTable(day) {
   return textFile("camera_logs.txt").then(files => {
     return Promise.all(files.split("\n").map(textFile));
   }).then(logs => {
-    // analyze...
+    // analisar...
   });
 }
 ```
 
-Or you could, for even better work scheduling, put the analysis of each file inside of the `Promise.all`, so that that work can be started for the first file that comes back from disk, even before the other files come back.
+Ou você poderia, para um agendamento de trabalho ainda melhor, colocar a análise de cada arquivo dentro de `Promise.all`, de modo que esse trabalho possa ser iniciado para o primeiro arquivo que voltar do disco, antes mesmo dos outros arquivos voltarem.
 
 ```{test: no}
 function activityTable(day) {
-  let table = []; // init...
+  let table = []; // inicializar...
   return textFile("camera_logs.txt").then(files => {
     return Promise.all(files.split("\n").map(name => {
       return textFile(name).then(log => {
-        // analyze...
+        // analisar...
       });
     }));
   }).then(() => table);
@@ -789,34 +788,34 @@ function activityTable(day) {
 
 {{index "await keyword", scheduling}}
 
-This shows that the way you structure your promises can have a real effect on the way the work is scheduled. A simple loop with `await` in it will make the process completely linear—it waits for each file to load before proceeding. `Promise.all` makes it possible for multiple tasks to conceptually be worked on at the same time, allowing them to make progress while files are still being loaded. This can be faster, but it also makes the order in which things will happen less predictable. In this case, we're only going to be incrementing numbers in a table, which isn't hard to do in a safe way. For other kinds of problems, it may be a lot more difficult.
+Isso mostra que a maneira como você estrutura suas *promises* pode ter um efeito real na maneira como o trabalho é agendado. Um simples *loop* com `await` torna o processo completamente linear — espera cada arquivo carregar antes de prosseguir. `Promise.all` torna possível que múltiplas tarefas sejam conceitualmente trabalhadas ao mesmo tempo, permitindo-lhes progredir enquanto arquivos ainda estão sendo carregados. Isso pode ser mais rápido, mas também torna a ordem em que as coisas acontecerão menos previsível. Neste caso, estamos apenas incrementando números em uma tabela, o que não é difícil de fazer de forma segura. Para outros tipos de problemas, pode ser muito mais difícil.
 
 {{index "rejecting (a promise)", "then method"}}
 
-When a file in the list doesn't exist, the promise returned by `textFile` will be rejected. Because `Promise.all` rejects if any of the promises given to it fail, the return value of the callback given to the first `then` will also be a rejected promise. That makes the promise returned by `then` fail, so the callback given to the second `then` isn't even called, and a rejected promise is returned from the function.
+Quando um arquivo na lista não existe, a *promise* retornada por `textFile` será rejeitada. Como `Promise.all` rejeita se qualquer uma das *promises* dadas a ela falhar, o valor de retorno do *callback* dado ao primeiro `then` também será uma *promise* rejeitada. Isso faz a *promise* retornada por `then` falhar, então o *callback* dado ao segundo `then` nem sequer é chamado, e uma *promise* rejeitada é retornada da função.
 
 hint}}
 
-### Building Promise.all
+### Construindo Promise.all
 
 {{index "Promise class", "Promise.all function", "building Promise.all (exercise)"}}
 
-As we saw, given an array of ((promise))s, `Promise.all` returns a promise that waits for all of the promises in the array to finish. It then succeeds, yielding an array of result values. If a promise in the array fails, the promise returned by `all` fails too, passing on the failure reason from the failing promise.
+Como vimos, dado um *array* de ((promise))s, `Promise.all` retorna uma *promise* que espera todas as *promises* no *array* terminarem. Ela então tem sucesso, produzindo um *array* de valores resultado. Se uma *promise* no *array* falhar, a *promise* retornada por `all` também falha, passando adiante a razão da falha da *promise* que falhou.
 
-Implement something like this yourself as a regular function called `Promise_all`.
+Implemente algo assim você mesmo como uma função regular chamada `Promise_all`.
 
-Remember that after a promise has succeeded or failed, it can't succeed or fail again, and further calls to the functions that resolve it are ignored. This can simplify the way you handle a failure of your promise.
+Lembre-se de que depois que uma *promise* tem sucesso ou falha, ela não pode ter sucesso ou falhar novamente, e chamadas adicionais às funções que a resolvem são ignoradas. Isso pode simplificar a maneira como você lida com a falha da sua *promise*.
 
 {{if interactive
 
 ```{test: no}
 function Promise_all(promises) {
   return new Promise((resolve, reject) => {
-    // Your code here.
+    // Seu código aqui.
   });
 }
 
-// Test code.
+// Código de teste.
 Promise_all([]).then(array => {
   console.log("This should be []:", array);
 });
@@ -845,12 +844,12 @@ if}}
 
 {{index "Promise.all function", "Promise class", "then method", "building Promise.all (exercise)"}}
 
-The function passed to the `Promise` constructor will have to call `then` on each of the promises in the given array. When one of them succeeds, two things need to happen. The resulting value needs to be stored in the correct position of a result array, and we must check whether this was the last pending ((promise)) and finish our own promise if it was.
+A função passada ao construtor `Promise` terá que chamar `then` em cada uma das *promises* no *array* dado. Quando uma delas tem sucesso, duas coisas precisam acontecer. O valor resultante precisa ser armazenado na posição correta de um *array* de resultados, e precisamos verificar se esta era a última ((promise)) pendente e finalizar nossa própria *promise* se era.
 
 {{index "counter variable"}}
 
-The latter can be done with a counter that is initialized to the length of the input array and from which we subtract 1 every time a promise succeeds. When it reaches 0, we are done. Make sure you take into account the situation where the input array is empty (and thus no promise will ever resolve).
+Isso pode ser feito com um contador que é inicializado com o comprimento do *array* de entrada e do qual subtraímos 1 toda vez que uma *promise* tem sucesso. Quando chega a 0, terminamos. Certifique-se de levar em conta a situação onde o *array* de entrada está vazio (e portanto nenhuma *promise* jamais resolverá).
 
-Handling failure requires some thought but turns out to be extremely simple. Just pass the `reject` function of the wrapping promise to each of the promises in the array as a `catch` handler or as a second argument to `then` so that a failure in one of them triggers the rejection of the whole wrapper promise.
+Lidar com falha requer alguma reflexão, mas acaba sendo extremamente simples. Basta passar a função `reject` da *promise* wrapper para cada uma das *promises* no *array* como handler de `catch` ou como segundo argumento para `then`, de modo que uma falha em uma delas dispare a rejeição da *promise* wrapper inteira.
 
 hint}}

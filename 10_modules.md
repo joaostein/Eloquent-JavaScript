@@ -1,10 +1,10 @@
 {{meta {load_files: ["code/packages_chapter_10.js", "code/chapter/07_robot.js"]}}}
 
-# Modules
+# Módulos
 
 {{quote {author: "Tef", title: "programming is terrible", chapter: true}
 
-Write code that is easy to delete, not easy to extend.
+Escreva código que seja fácil de deletar, não fácil de estender.
 
 quote}}
 
@@ -14,51 +14,51 @@ quote}}
 
 {{index organization, [code, "structure of"]}}
 
-Ideally, a program has a clear, straightforward structure. The way it works is easy to explain, and each part plays a well-defined role.
+Idealmente, um programa tem uma estrutura clara e direta. A maneira como funciona é fácil de explicar, e cada parte desempenha um papel bem definido.
 
 {{index "organic growth"}}
 
-In practice, programs grow organically. Pieces of functionality are added as the programmer identifies new needs. Keeping such a program well structured requires constant attention and work. This is work that will pay off only in the future, the _next_ time someone works on the program, so it's tempting to neglect it and allow the various parts of the program to become deeply entangled.
+Na prática, programas crescem organicamente. Funcionalidades são adicionadas conforme o programador identifica novas necessidades. Manter tal programa bem estruturado requer atenção e trabalho constantes. Este é um trabalho que só compensará no futuro, na _próxima_ vez que alguém trabalhar no programa, então é tentador negligenciá-lo e permitir que as várias partes do programa se tornem profundamente emaranhadas.
 
 {{index readability, reuse, isolation}}
 
-This causes two practical issues. First, understanding an entangled system is hard. If everything can touch everything else, it is difficult to look at any given piece in isolation. You are forced to build up a holistic understanding of the entire thing. Second, if you want to use any of the functionality from such a program in another situation, rewriting it may be easier than trying to disentangle it from its context.
+Isso causa dois problemas práticos. Primeiro, entender um sistema emaranhado é difícil. Se tudo pode tocar em tudo o mais, é difícil olhar para qualquer parte isoladamente. Você é forçado a construir um entendimento holístico da coisa toda. Segundo, se quiser usar qualquer funcionalidade de tal programa em outra situação, reescrevê-la pode ser mais fácil do que tentar desemaranhá-la de seu contexto.
 
-The phrase "((big ball of mud))" is often used for such large, structureless programs. Everything sticks together, and when you try to pick out a piece, the whole thing comes apart, and you succeed only in making a mess.
+A frase "((grande bola de lama))" é frequentemente usada para tais programas grandes e sem estrutura. Tudo gruda junto, e quando você tenta pegar um pedaço, a coisa toda desmorona e você só consegue fazer uma bagunça.
 
-## Modular programs
+## Programas modulares
 
 {{index dependency, [interface, module]}}
 
-_Modules_ are an attempt to avoid these problems. A ((module)) is a piece of program that specifies which other pieces it relies on and which functionality it provides for other modules to use (its _interface_).
+_Módulos_ são uma tentativa de evitar esses problemas. Um ((módulo)) é um pedaço de programa que especifica de quais outros pedaços ele depende e que funcionalidade fornece para outros módulos usarem (sua _interface_).
 
 {{index "big ball of mud"}}
 
-Module interfaces have a lot in common with object interfaces, as we saw them in [Chapter ?](object#interface). They make part of the module available to the outside world and keep the rest private.
+Interfaces de módulos têm muito em comum com interfaces de objetos, como vimos no [Capítulo ?](object#interface). Elas tornam parte do módulo disponível para o mundo exterior e mantêm o restante privado.
 
 {{index dependency}}
 
-But the interface that a module provides for others to use is only half the story. A good module system also requires modules to specify which code _they_ use from other modules. These relations are called _dependencies_. If module A uses functionality from module B, it is said to _depend_ on that module. When these are clearly specified in the module itself, they can be used to figure out which other modules need to be present to be able to use a given module and to automatically load dependencies.
+Mas a interface que um módulo fornece para outros usarem é apenas metade da história. Um bom sistema de módulos também requer que módulos especifiquem qual código _eles_ usam de outros módulos. Essas relações são chamadas de _dependências_. Se o módulo A usa funcionalidade do módulo B, diz-se que _depende_ desse módulo. Quando estas são claramente especificadas no próprio módulo, podem ser usadas para descobrir quais outros módulos precisam estar presentes para poder usar um dado módulo e para carregar automaticamente as dependências.
 
-When the ways in which modules interact with each other are explicit, a system becomes more like ((LEGO)), where pieces interact through well-defined connectors, and less like mud, where everything mixes with everything else.
+Quando as maneiras como módulos interagem entre si são explícitas, um sistema se torna mais como ((LEGO)), onde peças interagem através de conectores bem definidos, e menos como lama, onde tudo se mistura com tudo.
 
 {{id es}}
 
-## ES modules
+## Módulos ES
 
 {{index "global scope", [binding, global]}}
 
-The original JavaScript language did not have any concept of a module. All scripts ran in the same scope, and accessing a function defined in another script was done by referencing the global bindings created by that script. This actively encouraged accidental, hard-to-see entanglement of code and invited problems like unrelated scripts trying to use the same binding name.
+A linguagem JavaScript original não tinha nenhum conceito de módulo. Todos os scripts rodavam no mesmo escopo, e acessar uma função definida em outro script era feito referenciando as *bindings* globais criadas por aquele script. Isso encorajava ativamente o emaranhamento acidental e difícil de ver do código e convidava problemas como scripts não relacionados tentando usar o mesmo nome de *binding*.
 
 {{index "ES modules"}}
 
-Since ECMAScript 2015, JavaScript supports two different types of programs. _Scripts_ behave in the old way: their bindings are defined in the global scope, and they have no way to directly reference other scripts. _Modules_ get their own separate scope and support the `import` and `export` keywords, which aren't available in scripts, to declare their dependencies and interface. This module system is usually called _ES modules_ (where _ES_ stands for ECMAScript).
+Desde o ECMAScript 2015, o JavaScript suporta dois tipos diferentes de programas. _Scripts_ se comportam da maneira antiga: suas *bindings* são definidas no escopo global e não têm como referenciar diretamente outros scripts. _Módulos_ obtêm seu próprio escopo separado e suportam as palavras-chave `import` e `export`, que não estão disponíveis em scripts, para declarar suas dependências e interface. Esse sistema de módulos é geralmente chamado de _módulos ES_ (onde _ES_ significa ECMAScript).
 
-A modular program is composed of a number of such modules, wired together via their imports and exports.
+Um programa modular é composto por vários desses módulos, conectados via seus *imports* e *exports*.
 
 {{index "Date class", "weekDay module"}}
 
-The following example module converts between day names and numbers (as returned by `Date`'s `getDay` method). It defines a constant that is not part of its interface, and two functions that are. It has no dependencies.
+O módulo de exemplo a seguir converte entre nomes de dias e números (como retornado pelo método `getDay` de `Date`). Ele define uma constante que não faz parte de sua interface e duas funções que fazem. Não tem dependências.
 
 ```
 const names = ["Sunday", "Monday", "Tuesday", "Wednesday",
@@ -72,7 +72,7 @@ export function dayNumber(name) {
 }
 ```
 
-The `export` keyword can be put in front of a function, class, or binding definition to indicate that that binding is part of the module's interface. This makes it possible for other modules to use that binding by importing it.
+A palavra-chave `export` pode ser colocada na frente de uma definição de função, classe ou *binding* para indicar que aquela *binding* faz parte da interface do módulo. Isso torna possível que outros módulos usem aquela *binding* importando-a.
 
 ```{test: no}
 import {dayName} from "./dayname.js";
@@ -83,15 +83,15 @@ console.log(`Today is ${dayName(now.getDay())}`);
 
 {{index "import keyword", dependency, "ES modules"}}
 
-The `import` keyword, followed by a list of binding names in braces, makes bindings from another module available in the current module. Modules are identified by quoted strings.
+A palavra-chave `import`, seguida de uma lista de nomes de *bindings* entre chaves, torna *bindings* de outro módulo disponíveis no módulo atual. Módulos são identificados por *strings* entre aspas.
 
 {{index [module, resolution], resolution}}
 
-How such a module name is resolved to an actual program differs by platform. The browser treats them as web addresses, whereas Node.js resolves them to files. When you run a module, all the other modules it depends on—and the modules _those_ depend on—are loaded, and the exported bindings are made available to the modules that import them.
+Como tal nome de módulo é resolvido para um programa real difere por plataforma. O *browser* os trata como endereços web, enquanto o Node.js os resolve como arquivos. Quando você executa um módulo, todos os outros módulos dos quais ele depende — e os módulos dos quais _aqueles_ dependem — são carregados, e as *bindings* exportadas são disponibilizadas para os módulos que as importam.
 
-Import and export declarations cannot appear inside of functions, loops, or other blocks. They are immediately resolved when the module is loaded, regardless of how the code in the module executes. To reflect this, they must appear only in the outer module body.
+Declarações de *import* e *export* não podem aparecer dentro de funções, *loops* ou outros blocos. Elas são resolvidas imediatamente quando o módulo é carregado, independentemente de como o código no módulo é executado. Para refletir isso, elas devem aparecer apenas no corpo externo do módulo.
 
-A module's interface thus consists of a collection of named bindings, which other modules that depend on the module can access. Imported bindings can be renamed to give them a new local name using `as` after their name.
+Assim, a interface de um módulo consiste em uma coleção de *bindings* nomeadas, que outros módulos que dependem do módulo podem acessar. *Bindings* importadas podem ser renomeadas para receber um novo nome local usando `as` após seu nome.
 
 ```
 import {dayName as nomDeJour} from "./dayname.js";
@@ -99,19 +99,19 @@ console.log(nomDeJour(3));
 // → Wednesday
 ```
 
-A module may also have a special export named `default`, which is often used for modules that only export a single binding. To define a default export, you write `export default` before an expression, a function declaration, or a class declaration.
+Um módulo também pode ter um *export* especial chamado `default`, que é frequentemente usado para módulos que exportam apenas uma única *binding*. Para definir um *export* padrão, escreva `export default` antes de uma expressão, declaração de função ou declaração de classe.
 
 ```
 export default ["Winter", "Spring", "Summer", "Autumn"];
 ```
 
-Such a binding is imported by omitting the braces around the name of the import.
+Tal *binding* é importada omitindo as chaves ao redor do nome do *import*.
 
 ```
 import seasonNames from "./seasonname.js";
 ```
 
-To import all bindings from a module at the same time, you can use `import *`. You provide a name, and that name will be bound to an object holding all the module's exports. This can be useful when you are using a lot of different exports.
+Para importar todas as *bindings* de um módulo de uma vez, você pode usar `import *`. Você fornece um nome, e esse nome será vinculado a um objeto contendo todas as exportações do módulo. Isso pode ser útil quando se usa muitas exportações diferentes.
 
 ```
 import * as dayName from "./dayname.js";
@@ -119,53 +119,53 @@ console.log(dayName.dayName(3));
 // → Wednesday
 ```
 
-## Packages
+## Pacotes
 
 {{index bug, dependency, structure, reuse}}
 
-One of the advantages of building a program out of separate pieces and being able to run some of those pieces on their own is that you might be able to use the same piece in different programs.
+Uma das vantagens de construir um programa a partir de pedaços separados e poder executar alguns desses pedaços por conta própria é que você pode usar o mesmo pedaço em programas diferentes.
 
 {{index "parseINI function"}}
 
-But how do you set this up? Say I want to use the `parseINI` function from [Chapter ?](regexp#ini) in another program. If it is clear what the function depends on (in this case, nothing), I can just copy that module into my new project and use it. But then, if I find a mistake in the code, I'll probably fix it in whichever program  I'm working with at the time and forget to also fix it in the other program.
+Mas como configurar isso? Digamos que quero usar a função `parseINI` do [Capítulo ?](regexp#ini) em outro programa. Se está claro do que a função depende (neste caso, nada), posso simplesmente copiar aquele módulo para meu novo projeto e usá-lo. Mas então, se encontrar um erro no código, provavelmente o corrigirei no programa em que estiver trabalhando no momento e esquecerei de corrigi-lo no outro programa.
 
 {{index duplication, "copy-paste programming"}}
 
-Once you start duplicating code, you'll quickly find yourself wasting time and energy moving copies around and keeping them up to date. That's where _((package))s_ come in. A package is a chunk of code that can be distributed (copied and installed). It may contain one or more modules and has information about which other packages it depends on. A package also usually comes with documentation explaining what it does so that people who didn't write it might still be able to use it.
+Uma vez que você começa a duplicar código, rapidamente se verá desperdiçando tempo e energia movendo cópias e mantendo-as atualizadas. É aí que os _((pacote))s_ entram. Um pacote é um pedaço de código que pode ser distribuído (copiado e instalado). Ele pode conter um ou mais módulos e tem informações sobre de quais outros pacotes depende. Um pacote também geralmente vem com documentação explicando o que faz, para que pessoas que não o escreveram ainda possam usá-lo.
 
-When a problem is found in a package or a new feature is added, the package is updated. Now the programs that depend on it (which may also be packages) can copy the new ((version)) to get the improvements that were made to the code.
+Quando um problema é encontrado em um pacote ou uma nova funcionalidade é adicionada, o pacote é atualizado. Agora os programas que dependem dele (que também podem ser pacotes) podem copiar a nova ((versão)) para obter as melhorias feitas no código.
 
 {{id modules_npm}}
 
 {{index installation, upgrading, "package manager", download, reuse}}
 
-Working in this way requires ((infrastructure)). We need a place to store and find packages and a convenient way to install and upgrade them. In the JavaScript world, this infrastructure is provided by ((NPM)) ([_https://npmjs.com_](https://npmjs.com)).
+Trabalhar dessa forma requer ((infraestrutura)). Precisamos de um lugar para armazenar e encontrar pacotes e uma maneira conveniente de instalá-los e atualizá-los. No mundo JavaScript, essa infraestrutura é fornecida pelo ((NPM)) ([_https://npmjs.com_](https://npmjs.com)).
 
-NPM is two things: an online service where you can download (and upload) packages, and a program (bundled with Node.js) that helps you install and manage them.
+O NPM é duas coisas: um serviço online onde você pode baixar (e enviar) pacotes, e um programa (incluído com o Node.js) que ajuda a instalá-los e gerenciá-los.
 
 {{index "ini package"}}
 
-At the time of writing, there are more than three million different packages available on NPM. A large portion of those are rubbish, to be fair. But almost every useful, publicly available JavaScript package can be found on NPM. For example, an INI file parser, similar to the one we built in [Chapter ?](regexp), is available under the package name `ini`.
+No momento da escrita, há mais de três milhões de pacotes diferentes disponíveis no NPM. Uma grande parte deles é lixo, para ser justo. Mas quase todo pacote JavaScript útil e publicamente disponível pode ser encontrado no NPM. Por exemplo, um analisador de arquivo INI, semelhante ao que construímos no [Capítulo ?](regexp), está disponível sob o nome de pacote `ini`.
 
 {{index "command line"}}
 
-[Chapter ?](node) will show how to install such packages locally using the `npm` command line program.
+O [Capítulo ?](node) mostrará como instalar tais pacotes localmente usando o programa de linha de comando `npm`.
 
-Having quality packages available for download is extremely valuable. It means that we can often avoid reinventing a program that 100 people have written before and get a solid, well-tested implementation at the press of a few keys.
+Ter pacotes de qualidade disponíveis para download é extremamente valioso. Significa que frequentemente podemos evitar reinventar um programa que 100 pessoas já escreveram antes e obter uma implementação sólida e bem testada pressionando algumas teclas.
 
 {{index maintenance}}
 
-Software is cheap to copy, so once someone has written it, distributing it to other people is an efficient process. Writing it in the first place _is_ work, though, and responding to people who have found problems in the code or who want to propose new features is even more work.
+Software é barato de copiar, então uma vez que alguém o escreveu, distribuí-lo a outras pessoas é um processo eficiente. Escrevê-lo em primeiro lugar _é_ trabalho, porém, e responder a pessoas que encontraram problemas no código ou que querem propor novas funcionalidades é ainda mais trabalho.
 
-By default, you own the ((copyright)) to the code you write, and other people may use it only with your permission. But because some people are just nice and because publishing good software can help make you a little bit famous among programmers, many packages are published under a ((license)) that explicitly allows other people to use it.
+Por padrão, você possui o ((copyright)) do código que escreve, e outras pessoas podem usá-lo apenas com sua permissão. Mas como algumas pessoas são simplesmente legais e porque publicar bom software pode ajudá-lo a se tornar um pouco famoso entre programadores, muitos pacotes são publicados sob uma ((licença)) que explicitamente permite que outras pessoas os usem.
 
-Most code on ((NPM)) is licensed this way. Some licenses require you to also publish code that you build on top of the package under the same license. Others are less demanding, requiring only that you keep the license with the code as you distribute it. The JavaScript community mostly uses the latter type of license. When using other people's packages, make sure you are aware of their licenses.
+A maioria do código no ((NPM)) é licenciado dessa forma. Algumas licenças exigem que você também publique código que constrói sobre o pacote sob a mesma licença. Outras são menos exigentes, requerendo apenas que você mantenha a licença com o código ao distribuí-lo. A comunidade JavaScript usa em grande parte o último tipo de licença. Ao usar pacotes de outras pessoas, certifique-se de estar ciente de suas licenças.
 
 {{id modules_ini}}
 
 {{index "ini package"}}
 
-Now, instead of writing our own INI file parser, we can use one from ((NPM)).
+Agora, em vez de escrever nosso próprio analisador de arquivo INI, podemos usar um do ((NPM)).
 
 ```
 import {parse} from "ini";
@@ -176,17 +176,15 @@ console.log(parse("x = 10\ny = 20"));
 
 {{id commonjs}}
 
-## CommonJS modules
+## Módulos CommonJS
 
-Before 2015, when the JavaScript language had no built-in module system, people were already building large systems in JavaScript. To make that workable, they _needed_ ((module))s.
+Antes de 2015, quando a linguagem JavaScript não tinha um sistema de módulos embutido, as pessoas já estavam construindo sistemas grandes em JavaScript. Para tornar isso viável, elas _precisavam_ de ((módulo))s.
 
 {{index [function, scope], [interface, module], [object, as module]}}
 
-The community designed its own improvised ((module system))s on top of the language. These use functions to create a local scope for the modules and regular objects to represent module interfaces.
+A comunidade projetou seus próprios ((sistemas de módulo))s improvisados sobre a linguagem. Esses usam funções para criar um escopo local para os módulos e objetos regulares para representar interfaces de módulos.
 
-Initially, people just manually wrapped their entire module in an “((immediately invoked function
-expression))” to create the module's scope and assigned their interface objects to a single global
-variable.
+Inicialmente, as pessoas simplesmente envolviam manualmente todo o seu módulo em uma "((expressão de função imediatamente invocada))" para criar o escopo do módulo e atribuíam seus objetos de interface a uma única variável global.
 
 ```
 const weekDay = function() {
@@ -204,21 +202,21 @@ console.log(weekDay.name(weekDay.number("Sunday")));
 
 {{index dependency, [interface, module]}}
 
-This style of modules provides ((isolation)), to a certain degree, but it does not declare dependencies. Instead, it just puts its interface into the ((global scope)) and expects its dependencies, if any, to do the same. This is not ideal.
+Esse estilo de módulos fornece ((isolamento)), até certo ponto, mas não declara dependências. Em vez disso, apenas coloca sua interface no ((escopo global)) e espera que suas dependências, se houver, façam o mesmo. Isso não é ideal.
 
 {{index "CommonJS modules"}}
 
-If we implement our own module loader, we can do better. The most widely used approach to bolted-on JavaScript modules is called _CommonJS modules_. ((Node.js)) used this module system from the start (though it now also knows how to load ES modules), and it is the module system used by many packages on ((NPM)).
+Se implementarmos nosso próprio carregador de módulos, podemos fazer melhor. A abordagem mais amplamente usada para módulos JavaScript acoplados é chamada de _módulos CommonJS_. O ((Node.js)) usou esse sistema de módulos desde o início (embora agora também saiba como carregar módulos ES), e é o sistema de módulos usado por muitos pacotes no ((NPM)).
 
 {{index "require function", [interface, module], "exports object"}}
 
-A CommonJS module looks like a regular script, but it has access to two bindings that it uses to interact with other modules. The first is a function called `require`. When you call this with the module name of your dependency, it makes sure the module is loaded and returns its interface. The second is an object named `exports`, which is the interface object for the module. It starts out empty and you add properties to it to define exported values.
+Um módulo CommonJS parece um script regular, mas tem acesso a duas *bindings* que usa para interagir com outros módulos. A primeira é uma função chamada `require`. Quando você a chama com o nome do módulo de sua dependência, ela garante que o módulo seja carregado e retorna sua interface. A segunda é um objeto chamado `exports`, que é o objeto de interface do módulo. Ele começa vazio e você adiciona propriedades a ele para definir valores exportados.
 
 {{index "formatDate module", "Date class", "ordinal package", "date-names package"}}
 
-This CommonJS example module provides a date-formatting function. It uses two ((package))s from NPM—`ordinal` to convert numbers to strings like `"1st"` and `"2nd"`, and `date-names` to get the English names for weekdays and months. It exports a single function, `formatDate`, which takes a `Date` object and a ((template)) string.
+Este módulo CommonJS de exemplo fornece uma função de formatação de data. Ele usa dois ((pacote))s do NPM — `ordinal` para converter números em *strings* como `"1st"` e `"2nd"`, e `date-names` para obter os nomes em inglês para dias da semana e meses. Ele exporta uma única função, `formatDate`, que recebe um objeto `Date` e uma *string* de ((template)).
 
-The template string may contain codes that direct the format, such as `YYYY` for the full year and `Do` for the ordinal day of the month. You could give it a string like `"MMMM Do YYYY"` to get output like `November 22nd 2017`.
+A *string* de template pode conter códigos que direcionam o formato, como `YYYY` para o ano completo e `Do` para o dia ordinal do mês. Você poderia dar a ela uma *string* como `"MMMM Do YYYY"` para obter uma saída como `November 22nd 2017`.
 
 ```
 const ordinal = require("ordinal");
@@ -238,9 +236,9 @@ exports.formatDate = function(date, format) {
 
 {{index "destructuring binding"}}
 
-The interface of `ordinal` is a single function, whereas `date-names` exports an object containing multiple things—`days` and `months` are arrays of names. Destructuring is very convenient when creating bindings for imported interfaces.
+A interface de `ordinal` é uma única função, enquanto `date-names` exporta um objeto contendo múltiplas coisas — `days` e `months` são *arrays* de nomes. A desestruturação é muito conveniente ao criar *bindings* para interfaces importadas.
 
-The module adds its interface function to `exports` so that modules that depend on it get access to it. We could use the module like this:
+O módulo adiciona sua função de interface a `exports` para que módulos que dependem dele tenham acesso a ela. Poderíamos usar o módulo assim:
 
 ```
 const {formatDate} = require("./format-date.js");
@@ -250,13 +248,13 @@ console.log(formatDate(new Date(2017, 9, 13),
 // → Friday the 13th
 ```
 
-CommonJS is implemented with a module loader that, when loading a module, wraps its code in a function (giving it its own local scope) and passes the `require` and `exports` bindings to that function as arguments.
+O CommonJS é implementado com um carregador de módulos que, ao carregar um módulo, envolve seu código em uma função (dando-lhe seu próprio escopo local) e passa as *bindings* `require` e `exports` para essa função como argumentos.
 
 {{id require}}
 
 {{index "require function", "CommonJS modules", "readFile function"}}
 
-If we assume we have access to a `readFile` function that reads a file by name and gives us its content, we can define a simplified form of `require` like this:
+Se assumirmos que temos acesso a uma função `readFile` que lê um arquivo pelo nome e nos dá seu conteúdo, podemos definir uma forma simplificada de `require` assim:
 
 ```{test: wrap, sandbox: require}
 function require(name) {
@@ -275,79 +273,79 @@ require.cache = Object.create(null);
 
 {{index "Function constructor", eval, security}}
 
-`Function` is a built-in JavaScript function that takes a list of arguments (as a comma-separated string) and a string containing the function body and returns a function value with those arguments and that body. This is an interesting concept—it allows a program to create new pieces of program from string data—but also a dangerous one, since if someone can trick your program into putting a string they provide into `Function`, they can make the program do anything they want.
+`Function` é uma função embutida do JavaScript que recebe uma lista de argumentos (como uma *string* separada por vírgulas) e uma *string* contendo o corpo da função e retorna um valor de função com esses argumentos e esse corpo. Este é um conceito interessante — permite que um programa crie novos trechos de programa a partir de dados de *string* — mas também perigoso, pois se alguém puder enganar seu programa para colocar uma *string* que forneça em `Function`, poderá fazer o programa fazer qualquer coisa que quiser.
 
 {{index [file, access]}}
 
-Standard JavaScript provides no such function as `readFile`, but different JavaScript environments, such as the browser and Node.js, provide their own ways of accessing files. The example just pretends that `readFile` exists.
+O JavaScript padrão não fornece tal função como `readFile`, mas diferentes ambientes JavaScript, como o *browser* e o Node.js, fornecem suas próprias maneiras de acessar arquivos. O exemplo apenas finge que `readFile` existe.
 
-To avoid loading the same module multiple times, `require` keeps a store (cache) of already loaded modules. When called, it first checks whether the requested module has been loaded and, if not, loads it. This involves reading the module's code, wrapping it in a function, and calling it.
+Para evitar carregar o mesmo módulo múltiplas vezes, `require` mantém um armazenamento (cache) de módulos já carregados. Quando chamada, primeiro verifica se o módulo solicitado já foi carregado e, se não, o carrega. Isso envolve ler o código do módulo, envolvê-lo em uma função e chamá-la.
 
 {{index "ordinal package", "exports object", "module object", [interface, module]}}
 
-By defining `require` and `exports` as ((parameter))s for the generated wrapper function (and passing the appropriate values when calling it), the loader makes sure that these bindings are available in the module's ((scope)).
+Ao definir `require` e `exports` como ((parâmetro))s para a função wrapper gerada (e passar os valores apropriados ao chamá-la), o carregador garante que essas *bindings* estejam disponíveis no ((escopo)) do módulo.
 
-An important difference between this system and ES modules is that ES module imports happen before a module's script starts running, whereas `require` is a normal function, invoked when the module is already running. Unlike `import` declarations, `require` calls _can_ appear inside functions, and the name of the dependency can be any expression that evaluates to a string, whereas `import` allows only plain quoted strings.
+Uma diferença importante entre este sistema e os módulos ES é que os *imports* de módulos ES acontecem antes de o script de um módulo começar a executar, enquanto `require` é uma função normal, invocada quando o módulo já está em execução. Diferentemente das declarações `import`, chamadas a `require` _podem_ aparecer dentro de funções, e o nome da dependência pode ser qualquer expressão que avalie para uma *string*, enquanto `import` permite apenas *strings* simples entre aspas.
 
-The transition of the JavaScript community from CommonJS style to ES modules has been a slow and somewhat rough one. Fortunately we are now at a point where most of the popular packages on NPM provide their code as ES modules, and Node.js allows ES modules to import from CommonJS modules. While CommonJS code is still something you will run across, there is no real reason to write new programs in this style anymore.
+A transição da comunidade JavaScript do estilo CommonJS para módulos ES tem sido lenta e um tanto áspera. Felizmente, agora estamos em um ponto onde a maioria dos pacotes populares no NPM fornece seu código como módulos ES, e o Node.js permite que módulos ES importem de módulos CommonJS. Embora código CommonJS ainda seja algo que você encontrará, não há mais razão real para escrever novos programas nesse estilo.
 
-## Building and bundling
+## Construção e empacotamento
 
 {{index compilation, "type checking"}}
 
-Many JavaScript packages aren't technically written in JavaScript. Language extensions such as TypeScript, the type checking ((dialect)) mentioned in [Chapter ?](error#typing), are widely used. People also often start using planned new language features long before they have been added to the platforms that actually run JavaScript. To make this possible, they _compile_ their code, translating it from their chosen JavaScript dialect to plain old JavaScript—or even to a past version of JavaScript—so that ((browsers)) can run it.
+Muitos pacotes JavaScript não são tecnicamente escritos em JavaScript. Extensões de linguagem como TypeScript, o ((dialeto)) de verificação de tipos mencionado no [Capítulo ?](error#typing), são amplamente usadas. As pessoas também frequentemente começam a usar funcionalidades planejadas da linguagem muito antes de serem adicionadas às plataformas que realmente executam JavaScript. Para tornar isso possível, elas _compilam_ seu código, traduzindo-o de seu dialeto JavaScript escolhido para JavaScript puro — ou até para uma versão anterior de JavaScript — para que ((browsers)) possam executá-lo.
 
 {{index latency, performance, [file, access], [network, speed]}}
 
-Including a modular program that consists of 200 different files in a ((web page)) produces its own problems. If fetching a single file over the network takes 50 milliseconds, loading the whole program takes 10 seconds, or maybe half that if you can load several files simultaneously. That's a lot of wasted time. Because fetching a single big file tends to be faster than fetching a lot of tiny ones, web programmers have started using tools that combine their programs (which they painstakingly split into modules) into a single big file before they publish it to the web. Such tools are called _((bundler))s_.
+Incluir um programa modular que consiste em 200 arquivos diferentes em uma ((página web)) produz seus próprios problemas. Se buscar um único arquivo pela rede leva 50 milissegundos, carregar o programa inteiro leva 10 segundos, ou talvez metade disso se puder carregar vários arquivos simultaneamente. Isso é muito tempo desperdiçado. Como buscar um único arquivo grande tende a ser mais rápido do que buscar muitos pequenos, programadores web começaram a usar ferramentas que combinam seus programas (que eles meticulosamente dividiram em módulos) em um único arquivo grande antes de publicá-lo na web. Tais ferramentas são chamadas de _((bundler))s_.
 
 {{index "file size"}}
 
-And we can go further. Apart from the number of files, the _size_ of the files also determines how fast they can be transferred over the network. Thus, the JavaScript community has invented _((minifier))s_. These are tools that take a JavaScript program and make it smaller by automatically removing comments and whitespace, renaming bindings, and replacing pieces of code with equivalent code that take up less space.
+E podemos ir mais longe. Além do número de arquivos, o _tamanho_ dos arquivos também determina a rapidez com que podem ser transferidos pela rede. Assim, a comunidade JavaScript inventou _((minificador))es_. Estas são ferramentas que pegam um programa JavaScript e o tornam menor, removendo automaticamente comentários e espaços em branco, renomeando *bindings* e substituindo trechos de código por código equivalente que ocupa menos espaço.
 
 {{index pipeline, tool}}
 
-It is not uncommon for the code that you find in an NPM package or that runs on a web page to have gone through _multiple_ stages of transformation—converting from modern JavaScript to historic JavaScript, combining the modules into a single file, and minifying the code. We won't go into the details of these tools in this book, since there are many of them, and which one is popular changes regularly. Just be aware that such things exist, and look them up when you need them.
+Não é incomum que o código que você encontra em um pacote NPM ou que roda em uma página web tenha passado por _múltiplos_ estágios de transformação — convertendo de JavaScript moderno para JavaScript histórico, combinando os módulos em um único arquivo e minificando o código. Não entraremos nos detalhes dessas ferramentas neste livro, pois há muitas delas, e qual é popular muda regularmente. Apenas esteja ciente de que tais coisas existem e procure-as quando precisar.
 
-## Module design
+## Design de módulos
 
 {{index [module, design], [interface, module], [code, "structure of"]}}
 
-Structuring programs is one of the subtler aspects of programming. Any nontrivial piece of functionality can be organized in various ways.
+Estruturar programas é um dos aspectos mais sutis da programação. Qualquer funcionalidade não-trivial pode ser organizada de várias maneiras.
 
-Good program design is subjective—there are trade-offs involved, and matters of taste. The best way to learn the value of well-structured design is to read or work on a lot of programs and notice what works and what doesn't. Don't assume that a painful mess is “just the way it is”. You can improve the structure of almost everything by putting more thought into it.
+O bom design de programa é subjetivo — há compensações envolvidas e questões de gosto. A melhor maneira de aprender o valor de um design bem estruturado é ler ou trabalhar em muitos programas e notar o que funciona e o que não funciona. Não assuma que uma bagunça dolorosa é "simplesmente assim". Você pode melhorar a estrutura de quase tudo colocando mais pensamento nisso.
 
 {{index [interface, module]}}
 
-One aspect of module design is ease of use. If you are designing something that is intended to be used by multiple people—or even by yourself, in three months when you no longer remember the specifics of what you did—it is helpful if your interface is simple and predictable.
+Um aspecto do design de módulos é a facilidade de uso. Se você está projetando algo que pretende ser usado por múltiplas pessoas — ou até por você mesmo, em três meses quando não se lembrar mais dos detalhes do que fez — é útil que sua interface seja simples e previsível.
 
 {{index "ini package", JSON}}
 
-That may mean following existing conventions. A good example is the `ini` package. This module imitates the standard `JSON` object by providing `parse` and `stringify` (to write an INI file) functions, and, like `JSON`, converts between strings and plain objects. The interface is small and familiar, and after you've worked with it once, you're likely to remember how to use it.
+Isso pode significar seguir convenções existentes. Um bom exemplo é o pacote `ini`. Esse módulo imita o objeto padrão `JSON` fornecendo funções `parse` e `stringify` (para escrever um arquivo INI) e, como `JSON`, converte entre *strings* e objetos simples. A interface é pequena e familiar, e depois de trabalhar com ela uma vez, é provável que se lembre de como usá-la.
 
 {{index "side effect", "hard disk", composability}}
 
-Even if there's no standard function or widely used package to imitate, you can keep your modules predictable by using simple ((data structure))s and doing a single, focused thing. Many of the INI-file parsing modules on NPM provide a function that directly reads such a file from the hard disk and parses it, for example. This makes it impossible to use such modules in the browser, where we don't have direct filesystem access, and adds complexity that would have been better addressed by _composing_ the module with some file-reading function.
+Mesmo que não haja uma função padrão ou pacote amplamente usado para imitar, você pode manter seus módulos previsíveis usando ((estruturas de dados)) simples e fazendo uma única coisa focada. Muitos dos módulos de análise de arquivo INI no NPM fornecem uma função que lê diretamente tal arquivo do disco rígido e o analisa, por exemplo. Isso torna impossível usar tais módulos no *browser*, onde não temos acesso direto ao sistema de arquivos, e adiciona complexidade que seria melhor resolvida _compondo_ o módulo com alguma função de leitura de arquivo.
 
 {{index "pure function"}}
 
-This points to another helpful aspect of module design—the ease with which something can be composed with other code. Focused modules that compute values are applicable in a wider range of programs than bigger modules that perform complicated actions with side effects. An INI file reader that insists on reading the file from disk is useless in a scenario where the file's content comes from some other source.
+Isso aponta para outro aspecto útil do design de módulos — a facilidade com que algo pode ser composto com outro código. Módulos focados que computam valores são aplicáveis em uma gama mais ampla de programas do que módulos maiores que realizam ações complicadas com efeitos colaterais. Um leitor de arquivo INI que insiste em ler o arquivo do disco é inútil em um cenário onde o conteúdo do arquivo vem de outra fonte.
 
 {{index "object-oriented programming"}}
 
-Relatedly, stateful objects are sometimes useful or even necessary, but if something can be done with a function, use a function. Several of the INI file readers on NPM provide an interface style that requires you to first create an object, then load the file into your object, and finally use specialized methods to get at the results. This type of thing is common in the object-oriented tradition, and it's terrible. Instead of making a single function call and moving on, you have to perform the ritual of moving your object through its various states. And because the data is now wrapped in a specialized object type, all code that interacts with it has to know about that type, creating unnecessary interdependencies.
+Relacionadamente, objetos com estado são às vezes úteis ou até necessários, mas se algo pode ser feito com uma função, use uma função. Vários dos leitores de arquivo INI no NPM fornecem um estilo de interface que requer que você primeiro crie um objeto, depois carregue o arquivo em seu objeto e finalmente use métodos especializados para obter os resultados. Esse tipo de coisa é comum na tradição orientada a objetos, e é terrível. Em vez de fazer uma única chamada de função e seguir em frente, você tem que realizar o ritual de mover seu objeto através de seus vários estados. E como os dados agora estão envolvidos em um tipo de objeto especializado, todo código que interage com ele precisa conhecer esse tipo, criando interdependências desnecessárias.
 
-Often, defining new data structures can't be avoided—only a few  basic ones are provided by the language standard, and many types of data have to be more complex than an array or a map. But when an array suffices, use an array.
+Frequentemente, definir novas estruturas de dados não pode ser evitado — apenas algumas básicas são fornecidas pelo padrão da linguagem, e muitos tipos de dados precisam ser mais complexos do que um *array* ou um map. Mas quando um *array* basta, use um *array*.
 
-An example of a slightly more complex data structure is the graph from [Chapter ?](robot). There is no single obvious way to represent a ((graph)) in JavaScript. In that chapter, we used an object whose properties hold arrays of strings—the other nodes reachable from that node.
+Um exemplo de uma estrutura de dados um pouco mais complexa é o grafo do [Capítulo ?](robot). Não há uma única maneira óbvia de representar um ((grafo)) em JavaScript. Naquele capítulo, usamos um objeto cujas propriedades armazenam *arrays* de *strings* — os outros nós alcançáveis a partir daquele nó.
 
-There are several different pathfinding packages on ((NPM)), but none of them uses this graph format. They usually allow the graph's edges to have a weight, which is the cost or distance associated with it. That isn't possible in our representation.
+Há vários pacotes de busca de caminho diferentes no ((NPM)), mas nenhum deles usa esse formato de grafo. Eles geralmente permitem que as arestas do grafo tenham um peso, que é o custo ou distância associado a ela. Isso não é possível em nossa representação.
 
 {{index "Dijkstra, Edsger", pathfinding, "Dijkstra's algorithm", "dijkstrajs package"}}
 
-For example, there's the `dijkstrajs` package. A well-known approach to pathfinding, quite similar to our `findRoute` function, is called _Dijkstra's algorithm_, after Edsger Dijkstra, who first wrote it down. The `js` suffix is often added to package names to indicate the fact that they are written in JavaScript. This `dijkstrajs` package uses a graph format similar to ours, but instead of arrays, it uses objects whose property values are numbers—the weights of the edges.
+Por exemplo, existe o pacote `dijkstrajs`. Uma abordagem bem conhecida para busca de caminho, bastante similar à nossa função `findRoute`, é chamada de _algoritmo de Dijkstra_, em homenagem a Edsger Dijkstra, que primeiro o escreveu. O sufixo `js` é frequentemente adicionado a nomes de pacotes para indicar que são escritos em JavaScript. Esse pacote `dijkstrajs` usa um formato de grafo semelhante ao nosso, mas em vez de *arrays*, usa objetos cujos valores de propriedade são números — os pesos das arestas.
 
-If we wanted to use that package, we'd have to make sure that our graph was stored in the format it expects. All edges get the same weight, since our simplified model treats each road as having the same cost (one turn).
+Se quiséssemos usar esse pacote, teríamos que garantir que nosso grafo estivesse armazenado no formato que ele espera. Todas as arestas recebem o mesmo peso, já que nosso modelo simplificado trata cada estrada como tendo o mesmo custo (um turno).
 
 ```
 const {find_path} = require("dijkstrajs");
@@ -364,29 +362,29 @@ console.log(find_path(graph, "Post Office", "Cabin"));
 // → ["Post Office", "Alice's House", "Cabin"]
 ```
 
-This can be a barrier to composition—when various packages are using different data structures to describe similar things, combining them is difficult. Therefore, if you want to design for composability, find out what ((data structure))s other people are using and, when possible, follow their example.
+Isso pode ser uma barreira à composição — quando vários pacotes usam estruturas de dados diferentes para descrever coisas semelhantes, combiná-los é difícil. Portanto, se quiser projetar para composabilidade, descubra quais ((estruturas de dados)) outras pessoas estão usando e, quando possível, siga o exemplo delas.
 
 {{index design}}
 
-Designing a fitting module structure for a program can be difficult. In the phase where you are still exploring the problem, trying  different things to see what works, you might want to not worry about it too much, since keeping everything organized can be a big distraction. Once you have something that feels solid, that's a good time to take a step back and organize it.
+Projetar uma estrutura de módulos adequada para um programa pode ser difícil. Na fase em que você ainda está explorando o problema, tentando coisas diferentes para ver o que funciona, pode querer não se preocupar muito com isso, pois manter tudo organizado pode ser uma grande distração. Uma vez que você tenha algo que pareça sólido, esse é um bom momento para dar um passo atrás e organizá-lo.
 
-## Summary
+## Resumo
 
-Modules provide structure to bigger programs by separating the code into pieces with clear interfaces and dependencies. The interface is the part of the module that's visible to other modules, and the dependencies are the other modules it makes use of.
+Módulos fornecem estrutura a programas maiores separando o código em pedaços com interfaces e dependências claras. A interface é a parte do módulo que é visível para outros módulos, e as dependências são os outros módulos que ele utiliza.
 
-Because JavaScript historically did not provide a module system, the CommonJS system was built on top of it. Then at some point it _did_ get a built-in system, which now coexists uneasily with the CommonJS system.
+Como o JavaScript historicamente não fornecia um sistema de módulos, o sistema CommonJS foi construído sobre ele. Então, em algum momento, ele _ganhou_ um sistema embutido, que agora coexiste de forma desconfortável com o sistema CommonJS.
 
-A package is a chunk of code that can be distributed on its own. NPM is a repository of JavaScript packages. You can download all kinds of useful (and useless) packages from it.
+Um pacote é um pedaço de código que pode ser distribuído por conta própria. O NPM é um repositório de pacotes JavaScript. Você pode baixar todos os tipos de pacotes úteis (e inúteis) dele.
 
-## Exercises
+## Exercícios
 
-### A modular robot
+### Um robô modular
 
 {{index "modular robot (exercise)", module, robot, NPM}}
 
 {{id modular_robot}}
 
-These are the bindings that the project from [Chapter ?](robot) creates:
+Estas são as *bindings* que o projeto do [Capítulo ?](robot) cria:
 
 ```{lang: "null"}
 roads
@@ -402,48 +400,48 @@ findRoute
 goalOrientedRobot
 ```
 
-If you were to write that project as a modular program, what modules would you create? Which module would depend on which other module, and what would their interfaces look like?
+Se você fosse escrever esse projeto como um programa modular, quais módulos criaria? Qual módulo dependeria de qual outro, e como seriam suas interfaces?
 
-Which pieces are likely to be available prewritten on NPM? Would you prefer to use an NPM package or write them yourself?
+Quais peças provavelmente estariam disponíveis já prontas no NPM? Você preferiria usar um pacote NPM ou escrevê-las você mesmo?
 
 {{hint
 
 {{index "modular robot (exercise)"}}
 
-Here's what I would have done (but again, there is no single _right_ way to design a given module):
+Aqui está o que eu teria feito (mas novamente, não há uma única maneira _certa_ de projetar um dado módulo):
 
 {{index "dijkstrajs package"}}
 
-The code used to build the road graph lives in the `graph.js` module. Because I'd rather use `dijkstrajs` from NPM than our own pathfinding code, we'll make this build the kind of graph data that `dijkstrajs` expects. This module exports a single function, `buildGraph`. I'd have `buildGraph` accept an array of two-element arrays, rather than strings containing hyphens, to make the module less dependent on the input format.
+O código usado para construir o grafo de estradas vive no módulo `graph.js`. Como eu preferiria usar `dijkstrajs` do NPM em vez do nosso próprio código de busca de caminho, faremos isso construir o tipo de dados de grafo que `dijkstrajs` espera. Esse módulo exporta uma única função, `buildGraph`. Eu faria `buildGraph` aceitar um *array* de *arrays* de dois elementos, em vez de *strings* contendo hífens, para tornar o módulo menos dependente do formato de entrada.
 
-The `roads.js` module contains the raw road data (the `roads` array) and the `roadGraph` binding. This module depends on `./graph.js` and exports the road graph.
+O módulo `roads.js` contém os dados brutos de estradas (o *array* `roads`) e a *binding* `roadGraph`. Esse módulo depende de `./graph.js` e exporta o grafo de estradas.
 
 {{index "random-item package"}}
 
-The `VillageState` class lives in the `state.js` module. It depends on the `./roads.js` module because it needs to be able to verify that a given road exists. It also needs `randomPick`. Since that is a three-line function, we could just put it into the `state.js` module as an internal helper function. But `randomRobot` needs it too. So we'd have to either duplicate it or put it into its own module. Since this function happens to exist on NPM in the `random-item` package, a reasonable solution is to just make both modules depend on that. We can add the `runRobot` function to this module as well, since it's small and closely related to state management. The module exports both the `VillageState` class and the `runRobot` function.
+A classe `VillageState` vive no módulo `state.js`. Ela depende do módulo `./roads.js` porque precisa verificar se uma dada estrada existe. Ela também precisa de `randomPick`. Como essa é uma função de três linhas, poderíamos simplesmente colocá-la no módulo `state.js` como uma função auxiliar interna. Mas `randomRobot` também precisa dela. Então teríamos que duplicá-la ou colocá-la em seu próprio módulo. Como essa função existe no NPM no pacote `random-item`, uma solução razoável é fazer ambos os módulos dependerem disso. Podemos adicionar a função `runRobot` a esse módulo também, já que é pequena e intimamente relacionada ao gerenciamento de estado. O módulo exporta tanto a classe `VillageState` quanto a função `runRobot`.
 
-Finally, the robots, along with the values they depend on, such as `mailRoute`, could go into an `example-robots.js` module, which depends on `./roads.js` and exports the robot functions. To make it possible for `goalOrientedRobot` to do route-finding, this module also depends on `dijkstrajs`.
+Finalmente, os robôs, junto com os valores dos quais dependem, como `mailRoute`, poderiam ir em um módulo `example-robots.js`, que depende de `./roads.js` e exporta as funções de robô. Para tornar possível que `goalOrientedRobot` faça busca de caminho, esse módulo também depende de `dijkstrajs`.
 
-By offloading some work to ((NPM)) modules, the code became a little smaller. Each individual module does something rather simple and can be read on its own. Dividing code into modules also often suggests further improvements to the program's design. In this case, it seems a little odd that the `VillageState` and the robots depend on a specific road graph. It might be a better idea to make the graph an argument to the state's constructor and make the robots read it from the state object—this reduces dependencies (which is always good) and makes it possible to run simulations on different maps (which is even better).
+Ao delegar parte do trabalho a módulos ((NPM)), o código ficou um pouco menor. Cada módulo individual faz algo bastante simples e pode ser lido por conta própria. Dividir código em módulos também frequentemente sugere melhorias adicionais no design do programa. Neste caso, parece um pouco estranho que `VillageState` e os robôs dependam de um grafo de estradas específico. Poderia ser uma ideia melhor fazer o grafo ser um argumento para o construtor do estado e fazer os robôs lerem-no do objeto de estado — isso reduz dependências (o que é sempre bom) e torna possível executar simulações em mapas diferentes (o que é ainda melhor).
 
-Is it a good idea to use NPM modules for things that we could have written ourselves? In principle, yes—for nontrivial things like the pathfinding function you are likely to make mistakes and waste time writing them yourself. For tiny functions like `random-item`, writing them yourself is easy enough. But adding them wherever you need them does tend to clutter your modules.
+É uma boa ideia usar módulos NPM para coisas que poderíamos ter escrito nós mesmos? Em princípio, sim — para coisas não-triviais como a função de busca de caminho, é provável que você cometa erros e desperdice tempo escrevendo-as. Para funções minúsculas como `random-item`, escrevê-las você mesmo é fácil o suficiente. Mas adicioná-las sempre que precisar tende a poluir seus módulos.
 
-However, you should also not underestimate the work involved in _finding_ an appropriate NPM package. And even if you find one, it might not work well or may be missing some feature you need. On top of that, depending on NPM packages means you have to make sure they are installed, you have to distribute them with your program, and you might have to periodically upgrade them.
+Porém, você também não deve subestimar o trabalho envolvido em _encontrar_ um pacote NPM apropriado. E mesmo que encontre um, ele pode não funcionar bem ou pode estar faltando alguma funcionalidade que precisa. Além disso, depender de pacotes NPM significa que precisa garantir que estejam instalados, precisa distribuí-los com seu programa e pode ter que atualizá-los periodicamente.
 
-So again, this is a trade-off, and you can decide either way depending on how much a given package actually helps you.
+Então, novamente, é uma compensação, e você pode decidir de qualquer forma dependendo de quanto um dado pacote realmente o ajuda.
 
 hint}}
 
-### Roads module
+### Módulo de estradas
 
 {{index "roads module (exercise)"}}
 
-Write an ES module based on the example from [Chapter ?](robot) that contains the array of roads and exports the graph data structure representing them as `roadGraph`. It depends on a module `./graph.js` that exports a function `buildGraph`, used to build the graph. This function expects an array of two-element arrays (the start and end points of the roads).
+Escreva um módulo ES baseado no exemplo do [Capítulo ?](robot) que contenha o *array* de estradas e exporte a estrutura de dados de grafo que as representa como `roadGraph`. Ele depende de um módulo `./graph.js` que exporta uma função `buildGraph`, usada para construir o grafo. Essa função espera um *array* de *arrays* de dois elementos (os pontos de início e fim das estradas).
 
 {{if interactive
 
 ```{test: no}
-// Add dependencies and exports
+// Adicione dependências e exportações
 
 const roads = [
   "Alice's House-Bob's House",   "Alice's House-Cabin",
@@ -462,26 +460,26 @@ if}}
 
 {{index "roads module (exercise)", "destructuring binding", "exports object"}}
 
-Since this is an ES module, you have to use `import` to access the graph module. That was described as exporting a `buildGraph` function, which you can pick out of its interface object with a destructuring `const` declaration.
+Como este é um módulo ES, você precisa usar `import` para acessar o módulo de grafo. Ele foi descrito como exportando uma função `buildGraph`, que você pode extrair do objeto de interface com uma declaração `const` de desestruturação.
 
-To export `roadGraph`, you put the keyword `export` before its definition. Because `buildGraph` takes a data structure that doesn't precisely match `roads`, the splitting of the road strings must happen in your module.
+Para exportar `roadGraph`, coloque a palavra-chave `export` antes de sua definição. Como `buildGraph` recebe uma estrutura de dados que não corresponde precisamente a `roads`, a divisão das *strings* de estradas deve acontecer em seu módulo.
 
 hint}}
 
-### Circular dependencies
+### Dependências circulares
 
 {{index dependency, "circular dependency", "require function"}}
 
-A circular dependency is a situation where module A depends on B, and B also, directly or indirectly, depends on A. Many module systems simply forbid this because whichever order you choose for loading such modules, you cannot make sure that each module's dependencies have been loaded before it runs.
+Uma dependência circular é uma situação onde o módulo A depende de B, e B também, direta ou indiretamente, depende de A. Muitos sistemas de módulos simplesmente proíbem isso porque qualquer que seja a ordem que você escolha para carregar tais módulos, não pode garantir que as dependências de cada módulo tenham sido carregadas antes de ele executar.
 
-((CommonJS modules)) allow a limited form of cyclic dependencies. As long as the modules don't access each other's interface until after they finish loading, cyclic dependencies are okay.
+((Módulos CommonJS)) permitem uma forma limitada de dependências cíclicas. Desde que os módulos não acessem a interface um do outro até que terminem de carregar, dependências cíclicas estão OK.
 
-The `require` function given [earlier in this chapter](modules#require) supports this type of dependency cycle. Can you see how it handles cycles?
+A função `require` fornecida [anteriormente neste capítulo](modules#require) suporta esse tipo de ciclo de dependência. Você consegue ver como ela lida com ciclos?
 
 {{hint
 
 {{index overriding, "circular dependency", "exports object"}}
 
-The trick is that `require` adds the interface object for a module to its cache _before_ it starts loading the module. That way, if any `require` call made while it is running tries to load it, it is already known, and the current interface will be returned, rather than starting to load the module once more (which would eventually overflow the stack).
+O truque é que `require` adiciona o objeto de interface de um módulo ao seu cache _antes_ de começar a carregar o módulo. Dessa forma, se qualquer chamada a `require` feita enquanto ele está em execução tentar carregá-lo, ele já é conhecido, e a interface atual será retornada, em vez de começar a carregar o módulo mais uma vez (o que eventualmente transbordaria a pilha).
 
 hint}}

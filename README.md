@@ -1,56 +1,45 @@
-# Eloquent JavaScript
+# JavaScript Eloquente — 4ª edição
 
-These are the sources used to build the fourth edition of Eloquent
-JavaScript (https://eloquentjavascript.net).
+**Uma introdução moderna ao JavaScript, programação e maravilhas digitais.**
 
-Feedback welcome, in the form of issues and pull requests.
+Tradução em Português Brasileiro do livro [Eloquent JavaScript](https://eloquentjavascript.net/) de Marijn Haverbeke.
 
-## Building
+## Conteúdo
 
-This builds the HTML output in `html/`, where `make` is GNU make:
+### Parte 1: Linguagem
 
-    npm install
-    make html
+0. [Introdução](html/00_intro.html)
+1. [Valores, Tipos e Operadores](html/01_values.html)
+2. [Estrutura do Programa](html/02_program_structure.html)
+3. [Funções](html/03_functions.html)
+4. [Estruturas de Dados: Objetos e Arrays](html/04_data.html)
+5. [Funções de Ordem Superior](html/05_higher_order.html)
+6. [A Vida Secreta dos Objetos](html/06_object.html)
+7. [Projeto: Um Robô](html/07_robot.html)
+8. [Bugs e Erros](html/08_error.html)
+9. [Expressões Regulares](html/09_regexp.html)
+10. [Módulos](html/10_modules.html)
+11. [Programação Assíncrona](html/11_async.html)
+12. [Projeto: Uma Linguagem de Programação](html/12_language.html)
 
-To build the PDF file (don't bother trying this unless you really need
-it, since this list has probably bitrotted again and getting all this
-set up is a pain):
+### Parte 2: Navegador
 
-    apt-get install texlive texlive-xetex fonts-inconsolata fonts-symbola texlive-lang-chinese inkscape
-    make book.pdf
+13. [JavaScript e o Navegador](html/13_browser.html)
+14. [O Document Object Model](html/14_dom.html)
+15. [Manipulando Eventos](html/15_event.html)
+16. [Projeto: Um Jogo de Plataforma](html/16_game.html)
+17. [Desenhando no Canvas](html/17_canvas.html)
+18. [HTTP e Formulários](html/18_http.html)
+19. [Projeto: Um Editor de Pixel Art](html/19_paint.html)
 
-## Translating
+### Parte 3: Node
 
-Translations are very much welcome. The license this book is published
-under allows non-commercial derivations, which includes open
-translations. If you do one, let me know, and I'll add a link to the
-website.
+20. [Node.js](html/20_node.html)
+21. [Projeto: Site de Compartilhamento de Habilidades](html/21_skillsharing.html)
 
-A note of caution though: This text consists of about 130 000 words,
-the paper book is 400 pages. That's a lot of text, which will take a
-lot of time to translate.
+## Créditos
 
-If that doesn't scare you off, the recommended way to go about a
-translation is:
-
- - Fork this repository on GitHub.
-
- - Create an issue on the repository describing your plan to translate.
-
- - Translate the `.md` files in your fork. These are
-   [CommonMark](https://commonmark.org/) formatted, with a few
-   extensions. You may consider omitting the index terms (indicated
-   with double parentheses and `{{index ...}}` syntax) from your
-   translation, since that's mostly relevant for print output.
-
- - Publish somewhere online or ask me to host the result.
-
-Doing this in public, and creating an issue that links to your work,
-helps avoid wasted effort, where multiple people start a translation
-to the same language (and possibly never finish it). (Since
-translations have to retain the license, it is okay to pick up someone
-else's translation and continue it, even when they have vanished from
-the internet.)
-
-I am not interested in machine translations. Please only ask me to
-link your translation when it was done by actual people.
+- **Autor:** Marijn Haverbeke
+- **Tradução:** Joao Stein
+- [Versão original em inglês](https://eloquentjavascript.net/)
+- Licenciado sob [Creative Commons BY-NC 3.0](http://creativecommons.org/licenses/by-nc/3.0/)
