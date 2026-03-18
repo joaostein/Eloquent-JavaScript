@@ -18,11 +18,11 @@
 
 <footer>Joan Miró</footer>
 
-</blockquote><figure class="chapter framed"><img src="img/chapter_picture_19.jpg" alt="Ilustração mostrando um mosaico de ladrilhos pretos, com potes de outros ladrilhos ao lado"></figure>
+</blockquote><figure class="chapter framed"><img src="img/chapter_picture_19.jpg" alt="Illustration showing a mosaic of black tiles, with jars of other tiles next to it"></figure>
 
 <p><a class="p_ident" id="p-+Mu2EkW6In" href="#p-+Mu2EkW6In" tabindex="-1" role="presentation"></a>O material dos capítulos anteriores lhe dá todos os elementos necessários para construir uma aplicação web básica. Neste capítulo, faremos exatamente isso.</p>
 
-<p><a class="p_ident" id="p-+YKKNMOa/q" href="#p-+YKKNMOa/q" tabindex="-1" role="presentation"></a>Nossa aplicação será um programa de desenho de pixels que permite modificar uma imagem pixel por pixel manipulando uma visão ampliada dela, mostrada como uma grade de quadrados coloridos. Você pode usar o programa para abrir arquivos de imagem, rabiscar neles com o mouse ou outro dispositivo apontador e salvá-los. É assim que ele vai parecer:</p><figure><img src="img/pixel_editor.png" alt="Captura de tela da interface do editor de pixels, com uma grade de pixels coloridos no topo e vários controles, na forma de campos e botões HTML, abaixo"></figure>
+<p><a class="p_ident" id="p-+YKKNMOa/q" href="#p-+YKKNMOa/q" tabindex="-1" role="presentation"></a>Nossa aplicação será um programa de desenho de pixels que permite modificar uma imagem pixel por pixel manipulando uma visão ampliada dela, mostrada como uma grade de quadrados coloridos. Você pode usar o programa para abrir arquivos de imagem, rabiscar neles com o mouse ou outro dispositivo apontador e salvá-los. É assim que ele vai parecer:</p><figure><img src="img/pixel_editor.png" alt="Screenshot of the pixel editor interface, with a grid of colored pixels at the top and a number of controls, in the form of HTML fields and buttons, below that"></figure>
 
 <p><a class="p_ident" id="p-0LAI1DBk10" href="#p-0LAI1DBk10" tabindex="-1" role="presentation"></a>Pintar em um computador é ótimo. Você não precisa se preocupar com materiais, habilidade ou talento. É só começar a borrar e ver onde você chega.</p>
 
@@ -321,7 +321,7 @@
 
 <p><a class="p_ident" id="p-uO4gf53T2d" href="#p-uO4gf53T2d" tabindex="-1" role="presentation"></a>Um detalhe importante nesta implementação é que ao arrastar, o retângulo é redesenhado na imagem a partir do estado <em>original</em>. Dessa forma, você pode aumentar e diminuir o retângulo novamente enquanto o cria, sem os retângulos intermediários ficando na imagem final. Esta é uma das razões pelas quais objetos de imagem imutáveis são úteis — veremos outra razão mais adiante.</p>
 
-<p><a class="p_ident" id="p-lJMEyoC/fp" href="#p-lJMEyoC/fp" tabindex="-1" role="presentation"></a>Implementar o preenchimento é um pouco mais complexo. Esta é uma ferramenta que preenche o pixel sob o ponteiro e todos os pixels adjacentes que têm a mesma cor. “Adjacente” significa diretamente adjacente horizontal ou verticalmente, não diagonalmente. Esta imagem ilustra o conjunto de pixels coloridos quando a ferramenta de preenchimento é usada no pixel marcado:</p><figure><img src="img/flood-grid.svg" alt="Diagrama de uma grade de pixels mostrando a área preenchida por uma operação de preenchimento"></figure>
+<p><a class="p_ident" id="p-lJMEyoC/fp" href="#p-lJMEyoC/fp" tabindex="-1" role="presentation"></a>Implementar o preenchimento é um pouco mais complexo. Esta é uma ferramenta que preenche o pixel sob o ponteiro e todos os pixels adjacentes que têm a mesma cor. “Adjacente” significa diretamente adjacente horizontal ou verticalmente, não diagonalmente. Esta imagem ilustra o conjunto de pixels coloridos quando a ferramenta de preenchimento é usada no pixel marcado:</p><figure><img src="img/flood-grid.svg" alt="Diagram of a pixel grid showing the area filled by a flood fill operation"></figure>
 
 <p><a class="p_ident" id="p-d1t6BaQ3Fe" href="#p-d1t6BaQ3Fe" tabindex="-1" role="presentation"></a>Curiosamente, a forma como faremos isso se parece um pouco com o código de busca de caminhos do <a href="07_robot.html">Capítulo 7</a>. Enquanto aquele código buscava em um grafo para encontrar uma rota, este código busca em uma grade para encontrar todos os pixels “conectados”. O problema de manter o rastreamento de um conjunto ramificado de possíveis rotas é semelhante.</p>
 
@@ -717,7 +717,7 @@
 
 <p><a class="p_ident" id="p-Ghy37UHoAc" href="#p-Ghy37UHoAc" tabindex="-1" role="presentation"></a>Para fazer isso, já que os pixels podem estar a uma distância arbitrária, você terá que escrever uma função geral de desenho de linha.</p>
 
-<p><a class="p_ident" id="p-kehXd3GPIn" href="#p-kehXd3GPIn" tabindex="-1" role="presentation"></a>Uma linha entre dois pixels é uma cadeia conectada de pixels, tão reta quanto possível, indo do início ao fim. Pixels diagonalmente adjacentes contam como conectados. Uma linha inclinada deve parecer com a imagem da esquerda, não a imagem da direita.</p><figure><img src="img/line-grid.svg" alt="Diagrama de duas linhas pixeladas, uma leve, pulando pixels diagonalmente, e uma pesada, com todos os pixels conectados horizontal ou verticalmente"></figure>
+<p><a class="p_ident" id="p-kehXd3GPIn" href="#p-kehXd3GPIn" tabindex="-1" role="presentation"></a>Uma linha entre dois pixels é uma cadeia conectada de pixels, tão reta quanto possível, indo do início ao fim. Pixels diagonalmente adjacentes contam como conectados. Uma linha inclinada deve parecer com a imagem da esquerda, não a imagem da direita.</p><figure><img src="img/line-grid.svg" alt="Diagram of two pixelated lines, one light, skipping across pixels diagonally, and one heavy, with all pixels connected horizontally or vertically"></figure>
 
 <p><a class="p_ident" id="p-ppspVNCb67" href="#p-ppspVNCb67" tabindex="-1" role="presentation"></a>Finalmente, se temos código que desenha uma linha entre dois pontos arbitrários, podemos também usá-lo para definir uma ferramenta <code>line</code>, que desenha uma linha reta entre o início e o fim de um arraste.</p>
 

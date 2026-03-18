@@ -10,7 +10,7 @@ quote}}
 
 {{index "Fielding, Roy"}}
 
-{{figure {url: "img/chapter_picture_18.jpg", alt: "Ilustração mostrando um formulário de cadastro web em um pergaminho", chapter: "framed"}}}
+{{figure {url: "img/chapter_picture_18.jpg", alt: "Illustration showing a web sign-up form on a parchment scroll", chapter: "framed"}}}
 
 {{index [browser, environment]}}
 
@@ -331,7 +331,7 @@ Campos de formulário não precisam necessariamente aparecer dentro de uma tag `
 
 Os campos criados com este código HTML se parecem com isto:
 
-{{figure {url: "img/form_fields.png", alt: "Captura de tela mostrando vários tipos de tags input", width: "4cm"}}}
+{{figure {url: "img/form_fields.png", alt: "Screenshot showing various types of input tags", width: "4cm"}}}
 
 if}}
 
@@ -365,7 +365,7 @@ Finalmente, a tag `<select>` é usada para criar um campo que permite ao usuári
 
 Tal campo se parece com isto:
 
-{{figure {url: "img/form_select.png", alt: "Captura de tela mostrando um campo select", width: "4cm"}}}
+{{figure {url: "img/form_select.png", alt: "Screenshot showing a select field", width: "4cm"}}}
 
 if}}
 
@@ -433,7 +433,7 @@ Campos desabilitados não podem receber ((foco)) ou ser alterados, e os navegado
 
 {{if book
 
-{{figure {url: "img/button_disabled.png", alt: "Captura de tela de um botão desabilitado", width: "3cm"}}}
+{{figure {url: "img/button_disabled.png", alt: "Screenshot of a disabled button", width: "3cm"}}}
 
 if}}
 

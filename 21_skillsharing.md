@@ -10,7 +10,7 @@ quote}}
 
 {{index "skill-sharing project", meetup, "project chapter"}}
 
-{{figure {url: "img/chapter_picture_21.jpg", alt: "Ilustração mostrando dois monociclos encostados em uma caixa de correio", chapter: "framed"}}}
+{{figure {url: "img/chapter_picture_21.jpg", alt: "Illustration showing two unicycles leaned against a mailbox", chapter: "framed"}}}
 
 Um encontro de _((compartilhamento de habilidades))_ é um evento onde pessoas com um interesse em comum se reúnem e fazem pequenas apresentações informais sobre coisas que conhecem. Em um encontro de compartilhamento de habilidades sobre ((jardinagem)), alguém pode explicar como cultivar ((aipo)). Ou em um grupo de compartilhamento de habilidades sobre programação, você poderia aparecer e contar às pessoas sobre Node.js.
 
@@ -28,7 +28,7 @@ Há uma parte _((servidor))_ neste projeto, escrita para ((Node.js)), e uma part
 
 O servidor mantém a lista de ((palestra))s propostas para o próximo encontro, e o cliente mostra essa lista. Cada palestra tem um nome de apresentador, um título, um resumo e um array de ((comentário))s associados a ela. O cliente permite que usuários proponham novas palestras (adicionando-as à lista), deletem palestras e comentem em palestras existentes. Sempre que o usuário faz tal mudança, o cliente faz uma ((requisição)) HTTP para dizer ao servidor sobre ela.
 
-{{figure {url: "img/skillsharing.png", alt: "Captura de tela do website de compartilhamento de habilidades", width: "10cm"}}}
+{{figure {url: "img/skillsharing.png", alt: "Screenshot of the skill-sharing website", width: "10cm"}}}
 
 {{index "live view", "user experience", "pushing data", connection}}
 

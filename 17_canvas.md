@@ -2,7 +2,7 @@
 
 # Desenhando no Canvas
 
-{{quote {author: "M.C. Escher", title: "citado por Bruno Ernst em The Magic Mirror of M.C. Escher", chapter: true}
+{{quote {author: "M.C. Escher", title: "cited by Bruno Ernst in The Magic Mirror of M.C. Escher", chapter: true}
 
 Desenhar é enganar.
 
@@ -10,7 +10,7 @@ quote}}
 
 {{index "Escher, M.C."}}
 
-{{figure {url: "img/chapter_picture_17.jpg", alt: "Ilustração mostrando um braço robótico de aparência industrial desenhando uma cidade em um pedaço de papel", chapter: "framed"}}}
+{{figure {url: "img/chapter_picture_17.jpg", alt: "Illustration showing an industrial-looking robot arm drawing a city on a piece of paper", chapter: "framed"}}}
 
 {{index CSS, "transform (CSS)", [DOM, graphics]}}
 
@@ -49,7 +49,7 @@ O atributo `xmlns` muda um elemento (e seus filhos) para um _namespace XML_ dife
 
 O documento é exibido assim:
 
-{{figure {url: "img/svg-demo.png", alt: "Captura de tela de uma imagem SVG incorporada em um documento HTML", width: "4.5cm"}}}
+{{figure {url: "img/svg-demo.png", alt: "Screenshot showing an SVG image embedded in an HTML document", width: "4.5cm"}}}
 
 if}}
 
@@ -98,7 +98,7 @@ Depois de criar o objeto de contexto, o exemplo desenha um ((retângulo)) vermel
 
 {{if book
 
-{{figure {url: "img/canvas_fill.png", alt: "Captura de tela de um canvas com um retângulo", width: "2.5cm"}}}
+{{figure {url: "img/canvas_fill.png", alt: "Screenshot of a canvas with a rectangle on it", width: "2.5cm"}}}
 
 if}}
 
@@ -145,7 +145,7 @@ A propriedade `strokeStyle` funciona de forma semelhante, mas determina a cor us
 
 Este código desenha dois quadrados azuis, usando uma linha mais grossa para o segundo.
 
-{{figure {url: "img/canvas_stroke.png", alt: "Captura de tela mostrando dois quadrados com contorno", width: "5cm"}}}
+{{figure {url: "img/canvas_stroke.png", alt: "Screenshot showing two outlined squares", width: "5cm"}}}
 
 if}}
 
@@ -180,7 +180,7 @@ Este exemplo cria um caminho com vários segmentos de ((linha)) horizontais e de
 
 O caminho descrito pelo programa anterior tem esta aparência:
 
-{{figure {url: "img/canvas_path.png", alt: "Captura de tela mostrando várias linhas verticais", width: "2.1cm"}}}
+{{figure {url: "img/canvas_path.png", alt: "Screenshot showing a number of vertical lines", width: "2.1cm"}}}
 
 if}}
 
@@ -204,7 +204,7 @@ Este exemplo desenha um triângulo preenchido. Note que apenas dois dos lados do
 
 {{if book
 
-{{figure {url: "img/canvas_triangle.png", alt: "Captura de tela mostrando um caminho preenchido", width: "2.2cm"}}}
+{{figure {url: "img/canvas_triangle.png", alt: "Screenshot showing a filled path", width: "2.2cm"}}}
 
 if}}
 
@@ -240,7 +240,7 @@ O método `quadraticCurveTo` desenha uma curva até um determinado ponto. Para d
 
 Produz um caminho que se parece com isto:
 
-{{figure {url: "img/canvas_quadraticcurve.png", alt: "Captura de tela de uma curva quadrática", width: "2.3cm"}}}
+{{figure {url: "img/canvas_quadraticcurve.png", alt: "Screenshot of a quadratic curve", width: "2.3cm"}}}
 
 if}}
 
@@ -271,7 +271,7 @@ Os dois pontos de controle especificam a direção em ambas as extremidades da c
 
 {{if book
 
-{{figure {url: "img/canvas_beziercurve.png", alt: "Captura de tela de uma curva bezier", width: "2.2cm"}}}
+{{figure {url: "img/canvas_beziercurve.png", alt: "Screenshot of a bezier curve", width: "2.2cm"}}}
 
 if}}
 
@@ -306,7 +306,7 @@ A imagem resultante contém uma ((linha)) da direita do círculo completo (prime
 
 {{if book
 
-{{figure {url: "img/canvas_circle.png", alt: "Captura de tela de um círculo", width: "4.9cm"}}}
+{{figure {url: "img/canvas_circle.png", alt: "Screenshot of a circle", width: "4.9cm"}}}
 
 if}}
 
@@ -362,7 +362,7 @@ Para desenhar um gráfico de pizza, desenhamos várias fatias, cada uma composta
 
 Isso desenha o seguinte gráfico:
 
-{{figure {url: "img/canvas_pie_chart.png", alt: "Captura de tela mostrando um gráfico de pizza", width: "5cm"}}}
+{{figure {url: "img/canvas_pie_chart.png", alt: "Screenshot showing a pie chart", width: "5cm"}}}
 
 if}}
 
@@ -428,7 +428,7 @@ Quando `drawImage` recebe _nove_ argumentos, ele pode ser usado para desenhar ap
 
 Isso pode ser usado para empacotar múltiplos _((sprite))s_ (elementos de imagem) em um único arquivo de imagem e então desenhar apenas a parte que você precisa. Por exemplo, esta imagem contém um personagem de jogo em múltiplas ((pose))s:
 
-{{figure {url: "img/player_big.png", alt: "Pixel art mostrando um personagem de jogo de computador em 10 poses diferentes. As primeiras 8 formam o ciclo de animação de corrida, a 9ª tem o personagem parado, e a 10ª mostra ele pulando.", width: "6cm"}}}
+{{figure {url: "img/player_big.png", alt: "Pixel art showing a computer game character in 10 different poses. The first 8 form its running animation cycle, the 9th has the character standing still, and the 10th shows him jumping.", width: "6cm"}}}
 
 {{index [animation, "platform game"]}}
 
@@ -496,7 +496,7 @@ Chamar o método `scale` fará com que qualquer coisa desenhada depois dele seja
 
 Por causa da chamada a `scale`, o círculo é desenhado três vezes mais largo e com metade da altura.
 
-{{figure {url: "img/canvas_scale.png", alt: "Captura de tela de um círculo escalado", width: "6.6cm"}}}
+{{figure {url: "img/canvas_scale.png", alt: "Screenshot of a scaled circle", width: "6.6cm"}}}
 
 if}}
 
@@ -516,7 +516,7 @@ Existem vários outros métodos além de `scale` que influenciam o sistema de co
 
 Se transladarmos por 10 pixels horizontais duas vezes, tudo será desenhado 20 pixels à direita. Se primeiro movermos o centro do sistema de coordenadas para (50, 50) e depois rotacionarmos por 20 ((grau))s (cerca de 0,1π ((radiano))s), essa rotação acontecerá _ao redor_ do ponto (50, 50).
 
-{{figure {url: "img/transform.svg", alt: "Diagrama mostrando o resultado de acumular transformações. O primeiro diagrama translada e depois rotaciona, fazendo a translação acontecer normalmente e a rotação acontecer ao redor do alvo da translação. O segundo diagrama primeiro rotaciona, e depois translada, fazendo a rotação acontecer ao redor da origem e a direção da translação ser inclinada por aquela rotação.", width: "9cm"}}}
+{{figure {url: "img/transform.svg", alt: "Diagram showing the result of stacking transformations. The first diagram translates and then rotates, causing the translation to happen normally and rotation to happen around the target of the translation. The second diagram first rotates, and then translates, causing the rotation to happen around the origin and the translation direction to be tilted by that rotation.", width: "9cm"}}}
 
 {{index coordinates}}
 
@@ -538,7 +538,7 @@ function flipHorizontally(context, around) {
 
 Movemos o ((eixo)) y para onde queremos que nosso ((espelho)) esteja, aplicamos o espelhamento e finalmente movemos o eixo y de volta ao seu lugar adequado no universo espelhado. A imagem a seguir explica por que isso funciona:
 
-{{figure {url: "img/mirror.svg", alt: "Diagrama mostrando o efeito de transladar e espelhar um triângulo", width: "8cm"}}}
+{{figure {url: "img/mirror.svg", alt: "Diagram showing the effect of translating and mirroring a triangle", width: "8cm"}}}
 
 {{index "translate method", "scale method", transformation, canvas}}
 
@@ -603,7 +603,7 @@ Esta função desenha uma forma semelhante a uma árvore desenhando uma linha, m
 
 O resultado é um fractal simples.
 
-{{figure {url: "img/canvas_tree.png", alt: "Captura de tela de um fractal", width: "5cm"}}}
+{{figure {url: "img/canvas_tree.png", alt: "Screenshot of a fractal", width: "5cm"}}}
 
 if}}
 
@@ -746,7 +746,7 @@ CanvasDisplay.prototype.drawBackground = function(level) {
 
 Blocos que não são vazios são desenhados com `drawImage`. A imagem `otherSprites` contém as figuras usadas para elementos que não são o jogador. Ela contém, da esquerda para a direita, o bloco de parede, o bloco de lava e o sprite de uma moeda.
 
-{{figure {url: "img/sprites_big.png", alt: "Pixel art mostrando três sprites: um pedaço de parede, feito de pequenas pedras brancas, um quadrado de lava laranja, e uma moeda redonda.", width: "1.4cm"}}}
+{{figure {url: "img/sprites_big.png", alt: "Pixel art showing three sprites: a piece of wall, made out of small white stones, a square of orange lava, and a round coin.", width: "1.4cm"}}}
 
 {{index scaling}}
 
@@ -842,7 +842,7 @@ if}}
 
 Isso conclui o novo sistema de ((exibição)). O jogo resultante se parece com algo assim:
 
-{{figure {url: "img/canvas_game.png", alt: "Captura de tela do jogo como mostrado no canvas", width: "8cm"}}}
+{{figure {url: "img/canvas_game.png", alt: "Screenshot of the game as shown on canvas", width: "8cm"}}}
 
 if}}
 
@@ -914,7 +914,7 @@ Escreva um programa que desenha as seguintes ((forma))s em um ((canvas)):
 
 5. Uma ((estrela)) amarela
 
-{{figure {url: "img/exercise_shapes.png", alt: "Imagem mostrando as formas que você deve desenhar", width: "8cm"}}}
+{{figure {url: "img/exercise_shapes.png", alt: "Picture showing the shapes you are asked to draw", width: "8cm"}}}
 
 Ao desenhar as duas últimas formas, você pode querer consultar a explicação de `Math.cos` e `Math.sin` no [Capítulo ?](dom#sin_cos), que descreve como obter coordenadas em um círculo usando essas funções.
 

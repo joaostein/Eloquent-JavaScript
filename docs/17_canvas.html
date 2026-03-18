@@ -16,9 +16,9 @@
 
 <p><a class="p_ident" id="p-8o+k7jtsKE" href="#p-8o+k7jtsKE" tabindex="-1" role="presentation"></a>Desenhar é enganar.</p>
 
-<footer>M.C. Escher, <cite>citado por Bruno Ernst em The Magic Mirror of M.C. Escher</cite></footer>
+<footer>M.C. Escher, <cite>cited by Bruno Ernst in The Magic Mirror of M.C. Escher</cite></footer>
 
-</blockquote><figure class="chapter framed"><img src="img/chapter_picture_17.jpg" alt="Ilustração mostrando um braço robótico de aparência industrial desenhando uma cidade em um pedaço de papel"></figure>
+</blockquote><figure class="chapter framed"><img src="img/chapter_picture_17.jpg" alt="Illustration showing an industrial-looking robot arm drawing a city on a piece of paper"></figure>
 
 <p><a class="p_ident" id="p-UD28ZFuPyP" href="#p-UD28ZFuPyP" tabindex="-1" role="presentation"></a>Os navegadores nos oferecem diversas formas de exibir gráficos. A maneira mais simples é usar estilos para posicionar e colorir elementos DOM comuns. Isso pode nos levar bem longe, como o jogo no <a href="16_game.html">capítulo anterior</a> mostrou. Ao adicionar imagemns de fundo parcialmente transparentes aos nós, podemos fazê-los parecer exatamente como queremos. É até possível rotacionar ou distorcer nós com o estilo <code>transform</code>.</p>
 
@@ -266,7 +266,7 @@ circle.setAttribute(<span class="tok-string">&quot;fill&quot;</span>, <span clas
 
 <p><a class="p_ident" id="p-uxQoiwhKCO" href="#p-uxQoiwhKCO" tabindex="-1" role="presentation"></a>Quando <code>drawImage</code> recebe <em>nove</em> argumentos, ele pode ser usado para desenhar apenas um fragmento de uma imagem. O segundo ao quinto argumentos indicam o retângulo (x, y, largura e altura) na imagem de origem que deve ser copiado, e o sexto ao nono argumentos fornecem o retângulo (no canvas) no qual ele deve ser copiado.</p>
 
-<p><a class="p_ident" id="p-au8rNwFsg7" href="#p-au8rNwFsg7" tabindex="-1" role="presentation"></a>Isso pode ser usado para empacotar múltiplos <em>sprites</em> (elementos de imagem) em um único arquivo de imagem e então desenhar apenas a parte que você precisa. Por exemplo, esta imagem contém um personagem de jogo em múltiplas poses:</p><figure><img src="img/player_big.png" alt="Pixel art mostrando um personagem de jogo de computador em 10 poses diferentes. As primeiras 8 formam o ciclo de animação de corrida, a 9ª tem o personagem parado, e a 10ª mostra ele pulando."></figure>
+<p><a class="p_ident" id="p-au8rNwFsg7" href="#p-au8rNwFsg7" tabindex="-1" role="presentation"></a>Isso pode ser usado para empacotar múltiplos <em>sprites</em> (elementos de imagem) em um único arquivo de imagem e então desenhar apenas a parte que você precisa. Por exemplo, esta imagem contém um personagem de jogo em múltiplas poses:</p><figure><img src="img/player_big.png" alt="Pixel art showing a computer game character in 10 different poses. The first 8 form its running animation cycle, the 9th has the character standing still, and the 10th shows him jumping."></figure>
 
 <p><a class="p_ident" id="p-0s+j5NBnh2" href="#p-0s+j5NBnh2" tabindex="-1" role="presentation"></a>Alternando qual pose desenhamos, podemos mostrar uma animação que parece um personagem caminhando.</p>
 
@@ -318,7 +318,7 @@ circle.setAttribute(<span class="tok-string">&quot;fill&quot;</span>, <span clas
 
 <p><a class="p_ident" id="p-I2RLZr+zAp" href="#p-I2RLZr+zAp" tabindex="-1" role="presentation"></a>Existem vários outros métodos além de <code>scale</code> que influenciam o sistema de coordenadas para um canvas. Você pode rotacionar formas desenhadas posteriormente com o método <code>rotate</code> e movê-las com o método <code>translate</code>. A coisa interessante — e confusa — é que essas transformações <em>se acumulam</em>, o que significa que cada uma acontece em relação às transformações anteriores.</p>
 
-<p><a class="p_ident" id="p-wyNVmx4qA7" href="#p-wyNVmx4qA7" tabindex="-1" role="presentation"></a>Se transladarmos por 10 pixels horizontais duas vezes, tudo será desenhado 20 pixels à direita. Se primeiro movermos o centro do sistema de coordenadas para (50, 50) e depois rotacionarmos por 20 graus (cerca de 0,1π radianos), essa rotação acontecerá <em>ao redor</em> do ponto (50, 50).</p><figure><img src="img/transform.svg" alt="Diagrama mostrando o resultado de acumular transformações. O primeiro diagrama translada e depois rotaciona, fazendo a translação acontecer normalmente e a rotação acontecer ao redor do alvo da translação. O segundo diagrama primeiro rotaciona, e depois translada, fazendo a rotação acontecer ao redor da origem e a direção da translação ser inclinada por aquela rotação."></figure>
+<p><a class="p_ident" id="p-wyNVmx4qA7" href="#p-wyNVmx4qA7" tabindex="-1" role="presentation"></a>Se transladarmos por 10 pixels horizontais duas vezes, tudo será desenhado 20 pixels à direita. Se primeiro movermos o centro do sistema de coordenadas para (50, 50) e depois rotacionarmos por 20 graus (cerca de 0,1π radianos), essa rotação acontecerá <em>ao redor</em> do ponto (50, 50).</p><figure><img src="img/transform.svg" alt="Diagram showing the result of stacking transformations. The first diagram translates and then rotates, causing the translation to happen normally and rotation to happen around the target of the translation. The second diagram first rotates, and then translates, causing the rotation to happen around the origin and the translation direction to be tilted by that rotation."></figure>
 
 <p><a class="p_ident" id="p-3QJbCCb/2J" href="#p-3QJbCCb/2J" tabindex="-1" role="presentation"></a>Mas se <em>primeiro</em> rotacionarmos por 20 graus e <em>depois</em> transladarmos por (50, 50), a translação acontecerá no sistema de coordenadas rotacionado e, portanto, produzirá uma orientação diferente. A ordem em que as transformações são aplicadas importa.</p>
 
@@ -330,7 +330,7 @@ circle.setAttribute(<span class="tok-string">&quot;fill&quot;</span>, <span clas
   context.translate(-around, <span class="tok-number">0</span>);
 }</pre>
 
-<p><a class="p_ident" id="p-YsN77jjbj+" href="#p-YsN77jjbj+" tabindex="-1" role="presentation"></a>Movemos o eixo y para onde queremos que nosso espelho esteja, aplicamos o espelhamento e finalmente movemos o eixo y de volta ao seu lugar adequado no universo espelhado. A imagem a seguir explica por que isso funciona:</p><figure><img src="img/mirror.svg" alt="Diagrama mostrando o efeito de transladar e espelhar um triângulo"></figure>
+<p><a class="p_ident" id="p-YsN77jjbj+" href="#p-YsN77jjbj+" tabindex="-1" role="presentation"></a>Movemos o eixo y para onde queremos que nosso espelho esteja, aplicamos o espelhamento e finalmente movemos o eixo y de volta ao seu lugar adequado no universo espelhado. A imagem a seguir explica por que isso funciona:</p><figure><img src="img/mirror.svg" alt="Diagram showing the effect of translating and mirroring a triangle"></figure>
 
 <p><a class="p_ident" id="p-57MR6VhxHd" href="#p-57MR6VhxHd" tabindex="-1" role="presentation"></a>Isso mostra os sistemas de coordenadas antes e depois do espelhamento em torno da linha central. Os triângulos são numerados para ilustrar cada etapa. Se desenharmos um triângulo em uma posição <em>x</em> positiva, ele estaria, por padrão, no lugar onde o triângulo 1 está. Uma chamada a <code>flipHorizontally</code> primeiro faz uma translação para a direita, o que nos leva ao triângulo 2. Depois escala, invertendo o triângulo para a posição 3. Este não é o lugar onde deveria estar, se fosse espelhado na linha dada. A segunda chamada <code>translate</code> corrige isso — ela “cancela” a translação inicial e faz o triângulo 4 aparecer exatamente onde deveria.</p>
 
@@ -486,7 +486,7 @@ CanvasDisplay.prototype.drawBackground = <span class="tok-keyword">function</spa
   }
 };</pre>
 
-<p><a class="p_ident" id="p-sEQvIqDPW9" href="#p-sEQvIqDPW9" tabindex="-1" role="presentation"></a>Blocos que não são vazios são desenhados com <code>drawImage</code>. A imagem <code>otherSprites</code> contém as figuras usadas para elementos que não são o jogador. Ela contém, da esquerda para a direita, o bloco de parede, o bloco de lava e o sprite de uma moeda.</p><figure><img src="img/sprites_big.png" alt="Pixel art mostrando três sprites: um pedaço de parede, feito de pequenas pedras brancas, um quadrado de lava laranja, e uma moeda redonda."></figure>
+<p><a class="p_ident" id="p-sEQvIqDPW9" href="#p-sEQvIqDPW9" tabindex="-1" role="presentation"></a>Blocos que não são vazios são desenhados com <code>drawImage</code>. A imagem <code>otherSprites</code> contém as figuras usadas para elementos que não são o jogador. Ela contém, da esquerda para a direita, o bloco de parede, o bloco de lava e o sprite de uma moeda.</p><figure><img src="img/sprites_big.png" alt="Pixel art showing three sprites: a piece of wall, made out of small white stones, a square of orange lava, and a round coin."></figure>
 
 <p><a class="p_ident" id="p-rt+qwPgb/B" href="#p-rt+qwPgb/B" tabindex="-1" role="presentation"></a>Os blocos de fundo são 20 por 20 pixels, pois usaremos a mesma escala de <code>DOMDisplay</code>. Assim, o deslocamento para blocos de lava é 20 (o valor da variável <code>scale</code>), e o deslocamento para paredes é 0.</p>
 
@@ -618,7 +618,7 @@ CanvasDisplay.prototype.drawPlayer = <span class="tok-keyword">function</span>(<
 
 <p><a class="p_ident" id="p-mJD5ixSuSI" href="#p-mJD5ixSuSI" tabindex="-1" role="presentation"></a>Uma estrela amarela</p></li>
 
-</ol><figure><img src="img/exercise_shapes.png" alt="Imagem mostrando as formas que você deve desenhar"></figure>
+</ol><figure><img src="img/exercise_shapes.png" alt="Picture showing the shapes you are asked to draw"></figure>
 
 <p><a class="p_ident" id="p-SB/bKcUUkJ" href="#p-SB/bKcUUkJ" tabindex="-1" role="presentation"></a>Ao desenhar as duas últimas formas, você pode querer consultar a explicação de <code>Math.cos</code> e <code>Math.sin</code> no <a href="14_dom.html#sin_cos">Capítulo 14</a>, que descreve como obter coordenadas em um círculo usando essas funções.</p>
 

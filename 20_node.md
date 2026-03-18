@@ -2,7 +2,7 @@
 
 # Node.js
 
-{{quote {author: "Mestre Yuan-Ma", title: "The Book of Programming", chapter: true}
+{{quote {author: "Master Yuan-Ma", title: "The Book of Programming", chapter: true}
 
 Um estudante perguntou: 'Os programadores de antigamente usavam apenas máquinas simples e nenhuma linguagem de programação, mas mesmo assim faziam programas bonitos. Por que usamos máquinas complicadas e linguagens de programação?' Fu-Tzu respondeu: 'Os construtores de antigamente usavam apenas gravetos e argila, mas mesmo assim faziam cabanas bonitas.'
 
@@ -10,7 +10,7 @@ quote}}
 
 {{index "Yuan-Ma", "Book of Programming"}}
 
-{{figure {url: "img/chapter_picture_20.jpg", alt: "Ilustração mostrando um poste de telefone com um emaranhado de fios indo em todas as direções", chapter: "framed"}}}
+{{figure {url: "img/chapter_picture_20.jpg", alt: "Illustration showing a telephone pole with a tangle of wires going in all directions", chapter: "framed"}}}
 
 {{index "command line"}}
 

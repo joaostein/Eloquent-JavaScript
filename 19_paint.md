@@ -10,7 +10,7 @@ quote}}
 
 {{index "Miró, Joan", "drawing program example", "project chapter"}}
 
-{{figure {url: "img/chapter_picture_19.jpg", alt: "Ilustração mostrando um mosaico de ladrilhos pretos, com potes de outros ladrilhos ao lado", chapter: "framed"}}}
+{{figure {url: "img/chapter_picture_19.jpg", alt: "Illustration showing a mosaic of black tiles, with jars of other tiles next to it", chapter: "framed"}}}
 
 O material dos capítulos anteriores lhe dá todos os elementos necessários para construir uma ((aplicação web)) básica. Neste capítulo, faremos exatamente isso.
 
@@ -18,7 +18,7 @@ O material dos capítulos anteriores lhe dá todos os elementos necessários par
 
 Nossa ((aplicação)) será um programa de ((desenho)) de ((pixel))s que permite modificar uma imagem pixel por pixel manipulando uma visão ampliada dela, mostrada como uma grade de quadrados coloridos. Você pode usar o programa para abrir arquivos de imagem, rabiscar neles com o mouse ou outro dispositivo apontador e salvá-los. É assim que ele vai parecer:
 
-{{figure {url: "img/pixel_editor.png", alt: "Captura de tela da interface do editor de pixels, com uma grade de pixels coloridos no topo e vários controles, na forma de campos e botões HTML, abaixo", width: "8cm"}}}
+{{figure {url: "img/pixel_editor.png", alt: "Screenshot of the pixel editor interface, with a grid of colored pixels at the top and a number of controls, in the form of HTML fields and buttons, below that", width: "8cm"}}}
 
 Pintar em um computador é ótimo. Você não precisa se preocupar com materiais, ((habilidade)) ou talento. É só começar a borrar e ver onde você chega.
 
@@ -354,7 +354,7 @@ Também precisamos poder mudar a cor, então vamos adicionar um controle para is
 
 Dependendo do navegador, o seletor de cor pode parecer assim:
 
-{{figure {url: "img/color-field.png", alt: "Captura de tela do campo de cor", width: "6cm"}}}
+{{figure {url: "img/color-field.png", alt: "Screenshot of color field", width: "6cm"}}}
 
 if}}
 
@@ -427,7 +427,7 @@ Um detalhe importante nesta implementação é que ao arrastar, o retângulo é 
 
 Implementar o ((preenchimento)) é um pouco mais complexo. Esta é uma ((ferramenta)) que preenche o pixel sob o ponteiro e todos os pixels adjacentes que têm a mesma cor. "Adjacente" significa diretamente adjacente horizontal ou verticalmente, não diagonalmente. Esta imagem ilustra o conjunto de ((pixel))s coloridos quando a ferramenta de preenchimento é usada no pixel marcado:
 
-{{figure {url: "img/flood-grid.svg", alt: "Diagrama de uma grade de pixels mostrando a área preenchida por uma operação de preenchimento", width: "6cm"}}}
+{{figure {url: "img/flood-grid.svg", alt: "Diagram of a pixel grid showing the area filled by a flood fill operation", width: "6cm"}}}
 
 {{index "fill function"}}
 
@@ -949,7 +949,7 @@ Para fazer isso, já que os pixels podem estar a uma distância arbitrária, voc
 
 Uma linha entre dois pixels é uma cadeia conectada de pixels, tão reta quanto possível, indo do início ao fim. Pixels diagonalmente adjacentes contam como conectados. Uma linha inclinada deve parecer com a imagem da esquerda, não a imagem da direita.
 
-{{figure {url: "img/line-grid.svg", alt: "Diagrama de duas linhas pixeladas, uma leve, pulando pixels diagonalmente, e uma pesada, com todos os pixels conectados horizontal ou verticalmente", width: "6cm"}}}
+{{figure {url: "img/line-grid.svg", alt: "Diagram of two pixelated lines, one light, skipping across pixels diagonally, and one heavy, with all pixels connected horizontally or vertically", width: "6cm"}}}
 
 Finalmente, se temos código que desenha uma linha entre dois pontos arbitrários, podemos também usá-lo para definir uma ferramenta `line`, que desenha uma linha reta entre o início e o fim de um arraste.
 

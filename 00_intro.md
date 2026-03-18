@@ -16,27 +16,27 @@ Se a tarefa que você tem para o seu computador é uma tarefa comum e bem compre
 
 É aí que a ((programação)) pode entrar. _Programar_ é o ato de construir um _programa_ — um conjunto de instruções precisas que dizem ao computador o que fazer. Como computadores são bestas burras e pedantes, programar é fundamentalmente tedioso e frustrante.
 
-{{index [programação, "alegria da"], velocidade}}
+{{index [programming, "joy of"], speed}}
 
 Felizmente, se você consegue superar esse fato — e talvez até gostar do rigor de pensar em termos que máquinas burras conseguem lidar — programar pode ser gratificante. Permite que você faça coisas em segundos que levariam uma _eternidade_ manualmente. É uma forma de fazer sua ferramenta computacional realizar coisas que não conseguia antes. Além disso, é um maravilhoso jogo de resolução de quebra-cabeças e pensamento abstrato.
 
 A maioria da programação é feita com ((linguagens de programação)). Uma _linguagem de programação_ é uma linguagem artificialmente construída usada para instruir computadores. É interessante que a forma mais eficaz que encontramos para nos comunicar com um computador tome tanto emprestado da forma como nos comunicamos uns com os outros. Assim como as linguagens humanas, linguagens de computador permitem que palavras e frases sejam combinadas de novas formas, tornando possível expressar conceitos sempre novos.
 
-{{index [JavaScript, "disponibilidade de"], "computação casual"}}
+{{index [JavaScript, "availability of"], "casual computing"}}
 
 Em determinado momento, interfaces baseadas em linguagem, como os prompts do BASIC e do DOS dos anos 1980 e 1990, eram o principal método de interação com computadores. Para uso rotineiro do computador, essas foram amplamente substituídas por interfaces visuais, que são mais fáceis de aprender mas oferecem menos liberdade. Mas se você souber onde procurar, as linguagens ainda estão lá. Uma delas, _JavaScript_, está embutida em todos os ((navegador))es web modernos — e, portanto, está disponível em praticamente todos os dispositivos.
 
-{{indexsee "navegador web", navegador}}
+{{indexsee "web browser", browser}}
 
 Este livro tentará familiarizá-lo o suficiente com essa linguagem para que você possa fazer coisas úteis e divertidas com ela.
 
 ## Sobre programação
 
-{{index [programação, "dificuldade da"]}}
+{{index [programming, "difficulty of"]}}
 
 Além de explicar JavaScript, vou apresentar os princípios básicos da programação. Programar, acontece que, é difícil. As regras fundamentais são simples e claras, mas programas construídos sobre essas regras tendem a se tornar complexos o suficiente para introduzir suas próprias regras e complexidade. Você está construindo seu próprio labirinto, de certa forma, e pode facilmente se perder nele.
 
-{{index aprendizado}}
+{{index learning}}
 
 Haverá momentos em que a leitura deste livro parecerá terrivelmente frustrante. Se você é novo em programação, haverá muito material novo para digerir. Muito desse material será então _combinado_ de formas que exigem que você faça conexões adicionais.
 
@@ -50,27 +50,27 @@ When action grows unprofitable, gather information; when information grows unpro
 
 quote}}
 
-{{index [programa, "natureza do"], dados}}
+{{index [program, "nature of"], data}}
 
 Um programa é muitas coisas. É um pedaço de texto digitado por um programador, é a força diretriz que faz o computador fazer o que faz, são dados na memória do computador e, ao mesmo tempo, controla as ações realizadas nessa memória. Analogias que tentam comparar programas a objetos familiares tendem a ficar aquém. Uma que se encaixa superficialmente é comparar um programa a uma máquina — muitas partes separadas tendem a estar envolvidas, e para fazer a coisa toda funcionar, precisamos considerar as formas como essas partes se interconectam e contribuem para o funcionamento do todo.
 
 Um ((computador)) é uma máquina física que atua como hospedeiro dessas máquinas imateriais. Computadores em si só conseguem fazer coisas estupidamente diretas. A razão pela qual são tão úteis é que fazem essas coisas a uma ((velocidade)) incrivelmente alta. Um programa pode combinar engenhosamente um enorme número dessas ações simples para fazer coisas muito complicadas.
 
-{{index [programação, "alegria da"]}}
+{{index [programming, "joy of"]}}
 
 Um programa é uma construção do pensamento. Não custa nada construí-lo, não tem peso e cresce facilmente sob nossos dedos que digitam. Mas conforme um programa cresce, também cresce sua ((complexidade)). A habilidade de programar é a habilidade de construir programas que não confundam o programador. Os melhores programas são aqueles que conseguem fazer algo interessante enquanto ainda são fáceis de entender.
 
-{{index "estilo de programação", "melhores práticas"}}
+{{index "programming style", "best practices"}}
 
 Alguns programadores acreditam que essa complexidade é melhor gerenciada usando apenas um pequeno conjunto de técnicas bem compreendidas em seus programas. Eles compuseram regras estritas ("melhores práticas") prescrevendo a forma que os programas devem ter e cuidadosamente permanecem dentro de sua pequena zona segura.
 
-{{index experimento}}
+{{index experiment}}
 
 Isso não é apenas chato — é ineficaz. Novos problemas frequentemente requerem novas soluções. O campo da programação é jovem e ainda está se desenvolvendo rapidamente, e é variado o suficiente para ter espaço para abordagens completamente diferentes. Há muitos erros terríveis a se cometer em design de programas, e você deveria ir em frente e cometê-los pelo menos uma vez para que os compreenda. A noção do que faz um bom programa se desenvolve com prática, não é aprendida a partir de uma lista de regras.
 
 ## Por que a linguagem importa
 
-{{index "linguagem de programação", "código de máquina", "dados binários"}}
+{{index "programming language", "machine code", "binary data"}}
 
 No início, no nascimento da computação, não havia linguagens de programação. Programas tinham esta aparência:
 
@@ -86,15 +86,15 @@ No início, no nascimento da computação, não havia linguagens de programaçã
 01100010 00000000 00000000
 ```
 
-{{index [programação, "história da"], "cartão perfurado", complexidade}}
+{{index [programming, "history of"], "punch card", complexity}}
 
 Esse é um programa para somar os números de 1 a 10 e imprimir o resultado: `1 + 2 + ... + 10 = 55`. Ele poderia rodar em uma máquina hipotética simples. Para programar os primeiros computadores, era necessário posicionar grandes conjuntos de interruptores na posição correta ou fazer furos em tiras de papelão e alimentá-las no computador. Você pode imaginar quão tedioso e propenso a erros esse procedimento era. Mesmo escrever programas simples exigia muita astúcia e disciplina. Os complexos eram quase inconcebíveis.
 
-{{index bit, "mago (poderoso)"}}
+{{index bit, "wizard (mighty)"}}
 
 É claro que inserir manualmente esses padrões arcanos de bits (os zeros e uns) dava ao programador uma profunda sensação de ser um mago poderoso. E isso tem que valer algo em termos de satisfação no trabalho.
 
-{{index memória, instrução}}
+{{index memory, instruction}}
 
 Cada linha do programa anterior contém uma única instrução. Poderia ser escrito em português assim:
 
@@ -108,7 +108,7 @@ Cada linha do programa anterior contém uma única instrução. Poderia ser escr
  8. Continue na instrução 3.
  9. Exiba o valor da posição de memória 0.
 
-{{index legibilidade, nomeação, binding}}
+{{index readability, naming, binding}}
 
 Embora isso já seja mais legível que a sopa de bits, ainda é bastante obscuro. Usar nomes em vez de números para as instruções e posições de memória ajuda.
 
@@ -126,7 +126,7 @@ Embora isso já seja mais legível que a sopa de bits, ainda é bastante obscuro
   Output "total".
 ```
 
-{{index loop, salto, "exemplo de soma"}}
+{{index loop, jump, "summing example"}}
 
 Você consegue ver como o programa funciona neste ponto? As duas primeiras linhas dão a duas posições de memória seus valores iniciais: `total` será usado para construir o resultado da computação, e `count` acompanhará o número que estamos olhando no momento. As linhas usando `compare` são provavelmente as mais confusas. O programa quer verificar se `count` é igual a 11 para decidir se pode parar de executar. Como nossa máquina hipotética é bastante primitiva, ela só consegue testar se um número é zero e tomar uma decisão com base nisso. Portanto, usa a posição de memória rotulada `compare` para calcular o valor de `count - 11` e toma uma decisão com base nesse valor. As duas linhas seguintes adicionam o valor de `count` ao resultado e incrementam `count` em 1 toda vez que o programa decide que `count` ainda não é 11.
 
@@ -142,7 +142,7 @@ console.log(total);
 // → 55
 ```
 
-{{index "while loop", loop, [chaves, bloco]}}
+{{index "while loop", loop, [braces, block]}}
 
 Esta versão nos dá algumas melhorias a mais. Mais importante, não há mais necessidade de especificar a forma como queremos que o programa salte para frente e para trás — a construção `while` cuida disso. Ela continua executando o bloco (envolvido em chaves) abaixo dela enquanto a condição fornecida se mantiver verdadeira. Essa condição é `count <= 10`, que significa "count é menor ou igual a 10". Não precisamos mais criar um valor temporário e compará-lo com zero, o que era apenas um detalhe desinteressante. Parte do poder das linguagens de programação é que elas podem cuidar de detalhes desinteressantes para nós.
 
@@ -150,7 +150,7 @@ Esta versão nos dá algumas melhorias a mais. Mais importante, não há mais ne
 
 No final do programa, após a construção `while` ter terminado, a operação `console.log` é usada para escrever o resultado.
 
-{{index "função sum", "função range", abstração, função}}
+{{index "sum function", "range function", abstraction, function}}
 
 Finalmente, aqui está como o programa poderia ficar se tivéssemos as operações convenientes `range` e `sum` disponíveis, que respectivamente criam uma ((coleção)) de números dentro de um intervalo e calculam a soma de uma coleção de números:
 
@@ -159,17 +159,17 @@ console.log(sum(range(1, 10)));
 // → 55
 ```
 
-{{index legibilidade}}
+{{index readability}}
 
 A moral desta história é que o mesmo programa pode ser expresso de formas longas e curtas, ilegíveis e legíveis. A primeira versão do programa era extremamente obscura, enquanto esta última é quase inglês: `log` a `sum` do `range` de números de 1 a 10. (Veremos em [capítulos posteriores](data) como definir operações como `sum` e `range`.)
 
-{{index ["linguagem de programação", "poder da"], composabilidade}}
+{{index ["programming language", "power of"], composability}}
 
 Uma boa linguagem de programação ajuda o programador ao permitir que fale sobre as ações que o computador deve realizar em um nível mais alto. Ajuda a omitir detalhes, fornece blocos de construção convenientes (como `while` e `console.log`), permite que você defina seus próprios blocos de construção (como `sum` e `range`) e torna esses blocos fáceis de compor.
 
 ## O que é JavaScript?
 
-{{index história, Netscape, navegador, "aplicação web", JavaScript, [JavaScript, "história do"], "World Wide Web"}}
+{{index history, Netscape, browser, "web application", JavaScript, [JavaScript, "history of"], "World Wide Web"}}
 
 {{indexsee WWW, "World Wide Web"}}
 
@@ -177,39 +177,39 @@ Uma boa linguagem de programação ajuda o programador ao permitir que fale sobr
 
 JavaScript foi introduzido em 1995 como uma forma de adicionar programas a páginas web no navegador Netscape Navigator. A linguagem foi desde então adotada por todos os outros principais navegadores web gráficos. Tornou possíveis as aplicações web modernas — ou seja, aplicações com as quais você pode interagir diretamente sem precisar recarregar a página a cada ação. JavaScript também é usado em sites mais tradicionais para fornecer diversas formas de interatividade e engenhosidade.
 
-{{index Java, nomeação}}
+{{index Java, naming}}
 
 É importante notar que JavaScript não tem quase nada a ver com a linguagem de programação chamada Java. O nome similar foi inspirado por considerações de marketing em vez de bom senso. Quando o JavaScript estava sendo introduzido, a linguagem Java estava sendo fortemente divulgada e ganhando popularidade. Alguém achou que seria uma boa ideia tentar surfar nesse sucesso. Agora estamos presos ao nome.
 
-{{index ECMAScript, compatibilidade}}
+{{index ECMAScript, compatibility}}
 
 Após sua adoção fora da Netscape, um documento de ((padrão)) foi escrito para descrever a forma como a linguagem JavaScript deveria funcionar, para que os diversos softwares que afirmavam suportar JavaScript pudessem ter certeza de que realmente forneciam a mesma linguagem. Isso é chamado de padrão ECMAScript, em homenagem à organização Ecma International que conduziu a padronização. Na prática, os termos ECMAScript e JavaScript podem ser usados de forma intercambiável — são dois nomes para a mesma linguagem.
 
-{{index [JavaScript, "fraquezas do"], depuração}}
+{{index [JavaScript, "weaknesses of"], debugging}}
 
 Há quem diga coisas _terríveis_ sobre JavaScript. Muitas dessas coisas são verdade. Quando fui obrigado a escrever algo em JavaScript pela primeira vez, rapidamente passei a desprezá-lo. Ele aceitava quase qualquer coisa que eu digitava, mas interpretava de uma forma completamente diferente do que eu queria dizer. Isso tinha muito a ver com o fato de que eu não fazia ideia do que estava fazendo, é claro, mas há um problema real aqui: JavaScript é ridiculamente liberal no que permite. A ideia por trás desse design era que tornaria a programação em JavaScript mais fácil para iniciantes. Na realidade, isso geralmente torna mais difícil encontrar problemas em seus programas, porque o sistema não os apontará para você.
 
-{{index [JavaScript, "flexibilidade do"], flexibilidade}}
+{{index [JavaScript, "flexibility of"], flexibility}}
 
 Essa flexibilidade também tem suas vantagens, no entanto. Ela deixa espaço para técnicas que são impossíveis em linguagens mais rígidas e proporciona um estilo de programação agradável e informal. Depois de ((aprender)) a linguagem adequadamente e trabalhar com ela por um tempo, passei a realmente _gostar_ de JavaScript.
 
-{{index futuro, [JavaScript, "versões do"], ECMAScript, "ECMAScript 6"}}
+{{index future, [JavaScript, "versions of"], ECMAScript, "ECMAScript 6"}}
 
 Houve várias versões de JavaScript. A versão 3 do ECMAScript era a versão amplamente suportada durante a ascensão do JavaScript ao domínio, aproximadamente entre 2000 e 2010. Durante esse período, estava em andamento o trabalho em uma ambiciosa versão 4, que planejava uma série de melhorias e extensões radicais à linguagem. Mudar uma linguagem viva e amplamente usada de forma tão radical acabou sendo politicamente difícil, e o trabalho na versão 4 foi abandonado em 2008. Uma versão 5 muito menos ambiciosa, que fez apenas algumas melhorias incontroverssas, saiu em 2009. Em 2015, saiu a versão 6, uma atualização importante que incluiu algumas das ideias planejadas para a versão 4. Desde então, temos tido atualizações novas e pequenas a cada ano.
 
 O fato de JavaScript estar evoluindo significa que os navegadores precisam acompanhar constantemente. Se você está usando um navegador mais antigo, ele pode não suportar todos os recursos. Os designers da linguagem são cuidadosos para não fazer nenhuma mudança que possa quebrar programas existentes, então novos navegadores ainda podem executar programas antigos. Neste livro, estou usando a versão 2024 do JavaScript.
 
-{{index [JavaScript, "usos do"]}}
+{{index [JavaScript, "uses of"]}}
 
 Navegadores web não são as únicas plataformas em que JavaScript é usado. Alguns bancos de dados, como MongoDB e CouchDB, usam JavaScript como sua linguagem de scripting e consulta. Várias plataformas para programação desktop e servidor, mais notavelmente o projeto ((Node.js)) (assunto do [Capítulo ?](node)), fornecem um ambiente para programar JavaScript fora do navegador.
 
 ## Código, e o que fazer com ele
 
-{{index "leitura de código", "escrita de código"}}
+{{index "reading code", "writing code"}}
 
 _Código_ é o texto que compõe programas. A maioria dos capítulos neste livro contém bastante código. Acredito que ler código e escrever ((código)) são partes indispensáveis de ((aprender)) a programar. Tente não apenas passar os olhos pelos exemplos — leia-os atentamente e entenda-os. Isso pode ser lento e confuso no início, mas prometo que você rapidamente pegará o jeito. O mesmo vale para os ((exercícios)). Não presuma que os entendeu até ter realmente escrito uma solução funcional.
 
-{{index interpretação}}
+{{index interpretation}}
 
 Recomendo que você tente suas soluções para os exercícios em um interpretador JavaScript real. Dessa forma, você terá feedback imediato sobre se o que está fazendo está funcionando e, espero, ficará tentado a ((experimentar)) e ir além dos exercícios.
 
@@ -221,13 +221,13 @@ if}}
 
 {{if book
 
-{{index download, sandbox, "executar código"}}
+{{index download, sandbox, "running code"}}
 
 A forma mais fácil de executar o código de exemplo do livro — e de experimentar com ele — é procurá-lo na versão online do livro em [_https://eloquentjavascript.net_](https://eloquentjavascript.net/). Lá, você pode clicar em qualquer exemplo de código para editá-lo e executá-lo e ver a saída que ele produz. Para trabalhar nos exercícios, vá para [_https://eloquentjavascript.net/code_](https://eloquentjavascript.net/code), que fornece código inicial para cada exercício de codificação e permite que você veja as soluções.
 
 if}}
 
-{{index "ferramentas de desenvolvedor", "console JavaScript"}}
+{{index "developer tools", "JavaScript console"}}
 
 Executar os programas definidos neste livro fora do site do livro requer algum cuidado. Muitos exemplos são autossuficientes e devem funcionar em qualquer ambiente JavaScript. Mas código em capítulos posteriores é frequentemente escrito para um ambiente específico (o navegador ou Node.js) e só pode ser executado lá. Além disso, muitos capítulos definem programas maiores, e os trechos de código que aparecem neles dependem uns dos outros ou de arquivos externos. O [sandbox](https://eloquentjavascript.net/code) no site fornece links para arquivos ZIP contendo todos os scripts e arquivos de dados necessários para executar o código de um determinado capítulo.
 
@@ -251,7 +251,7 @@ if}}
 
 ## Convenções tipográficas
 
-{{index "função fatorial"}}
+{{index "factorial function"}}
 
 Neste livro, texto escrito em uma fonte `monoespaçada` representará elementos de programas. Às vezes são fragmentos autossuficientes, e às vezes apenas se referem a parte de um programa próximo. Programas (dos quais você já viu alguns) são escritos da seguinte forma:
 
